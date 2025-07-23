@@ -62,15 +62,17 @@ Strict Implication (⊃)
 
 Modal: involves necessary connection Example: "If x is a bachelor, then x is unmarried"
 
-Represents logical necessity rather than mere material implication Translation Practice
+Represents logical necessity rather than mere material implication 
 
-From English to Symbolic Notation:
+Translation Practice: From English to Symbolic Notation
 
-"It's not both sunny and warm" Let p = "It's sunny", q = "It's warm" Translation: ¬(p ∧ q)
+"It's not both sunny and warm" 
+Let p = "It's sunny", q = "It's warm" 
+Translation: ¬(p ∧ q)
 
 "Either I'll go to the party or I'll stay home and study"
-
-Let p = "I'll go to the party", q = "I'll stay home", r = "I'll study" Translation: p ∨ (q ∧ r)
+Let p = "I'll go to the party", q = "I'll stay home", r = "I'll study" 
+Translation: p ∨ (q ∧ r)
 
 From Symbolic Notation to English:
 
