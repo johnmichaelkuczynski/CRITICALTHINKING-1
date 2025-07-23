@@ -1,3 +1,14 @@
+// Book content structure
+export interface BookContent {
+  title: string;
+  author: string;
+  sections: Array<{
+    id: string;
+    title: string;
+    content: string;
+  }>;
+}
+
 export const bookContent: BookContent = {
   title: "Symbolic Logic",
   author: " J.-M. Kuczynski",
@@ -3089,3 +3100,10 @@ Both are therefore non-recursive by reduction`
     }
   ]
 };
+
+// Helper function to get full document content as string
+export function getFullDocumentContent(): string {
+  return bookContent.sections.map(section => 
+    `${section.title}\n\n${section.content}`
+  ).join('\n\n');
+}
