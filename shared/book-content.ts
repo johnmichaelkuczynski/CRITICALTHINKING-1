@@ -1,1169 +1,3091 @@
-export interface BookSection {
-  id: string;
-  title: string;
-  content: string;
-}
-
-export interface BookContent {
-  title: string;
-  author: string;
-  sections: BookSection[];
-}
-
 export const bookContent: BookContent = {
-  title: "Introduction to Academic Writing",
-  author: "Zhi Systems",
+  title: "Symbolic Logic",
+  author: " J.-M. Kuczynski",
   sections: [
     {
       id: "section-1",
       title: "Section 1",
-      content: `Academic writing is the practice of clear, evidence-based communication that advances knowledge and understanding. While academic writing takes many forms, most analytical and professional writing follows three fundamental principles:
+      content: `Week 1: Basic Concepts, Notation, and Logical Operators
 
-- Clarity - The foundation of academic writing is precise, unambiguous communication
+Introduction to Logic
 
- - Key elements include:
+Logic is the study of valid reasoning. In this course, we'll focus on symbolic logic, which uses special symbols and precise rules to analyze and evaluate arguments. Unlike informal logic, symbolic logic gives us tools to determine validity with mathematical precision.
 
- - Clear thesis statements
+Basic Concepts
 
- - Well-defined terms
+Statement (Proposition): A sentence that is either true or false, but not both
 
- - Logical organization
+Argument: A sequence of statements where one (the conclusion) is claimed to follow from the others (the premises)
 
- - Precise word choice
+Validity: An argument is valid if it's impossible for all premises to be true while the conclusion is false
 
-- Evidence - Academic writing builds arguments on verifiable evidence
+Soundness: A valid argument with true premises
 
- - Key elements include:
+Basic Logical Symbols
 
- - Credible sources
+Negation (¬): "not" Example: If p = "It is raining" Then ¬p = "It is not raining"
 
- - Accurate citations
+Conjunction (∧): "and"
 
- - Relevant data
+Example: If p = "It is cold" and q = "It is windy" Then p ∧ q = "It is cold and windy"
 
- - Thorough documentation
+Disjunction (∨): "or"
 
-- Analysis - Academic writing requires critical engagement with ideas
+Example: If p = "I will study" and q = "I will fail" Then p ∨ q = "I will study or I will fail"
 
- - Key elements include:
+Conditional (→): "if...then"
 
- - Logical reasoning
+Example: If p = "It rains" and q = "The ground is wet"
 
- - Careful evaluation
+Then p → q = "If it rains, then the ground is wet"
 
- - Thoughtful synthesis
+Material vs. Strict Implication
 
- - Balanced consideration of alternatives
+Material Implication (→)
 
- Discussion Assignment 1: Understanding Academic Writing
+Truth-functional: deﬁned purely by truth values
 
-- Part 1 (20 points): Choose one of the 3 principles of academic writing discussed above. Write an original question about applying this principle that hasn't been written by one of your classmates. This is good practice for us!
+False only when antecedent is true and consequent is false Example: "If it rains, then the ground is wet"
 
-Example: Principle: Evidence. Question: When analyzing financial data in a business report, how do we balance the need for comprehensive data with the need for clarity? If I have 20 years of sales figures, how do I decide which ones are most relevant to include?
+Strict Implication (⊃)
 
-- Part 2 (10 points each reply, up to 30 points total): Reply to at least three of your classmates' posts. Post an answer to the question your classmates asked. Explain your answer. Your answer should draw on your experience with academic or professional writing. Be specific and practical. Also, be respectful.
+Modal: involves necessary connection Example: "If x is a bachelor, then x is unmarried"
 
-Example: When analyzing financial data, start by identifying your specific argument or conclusion. Then, select only the data points that directly support or challenge that argument. For a trend analysis, you might choose data points at regular intervals (every 5 years) or at significant moments (before/after major market changes). Include the full dataset in an appendix for readers who want more detail. This approach maintains clarity while ensuring transparency.
+Represents logical necessity rather than mere material implication Translation Practice
 
- Essay 1 -- Analyzing Academic vs. Popular Writing (50 points)
+From English to Symbolic Notation:
 
-In this class, you will write short essays designed to demonstrate your understanding of academic writing principles. There is no minimum or maximum word count for these assignments, though a typical essay may be anywhere from 1-5 pages, on average. Essay assignments, like this one, will often ask you to write multiple sections, and each section will usually have a point value associated with it.
+"It's not both sunny and warm" Let p = "It's sunny", q = "It's warm" Translation: ¬(p ∧ q)
 
-Write essays as though you were talking to a person unfamiliar with this class. (Write as though you were talking to someone who has never taken a college writing course.)
+"Either I'll go to the party or I'll stay home and study"
 
-When writing an academic paper, make sure to clearly label each section. You may choose to name each section with just a bold number, or may title the section as you see fit. Your essays are expected to discuss assigned readings, as well as previous assignments. However, if you choose to discuss external sources, make sure to include a Works Cited or Reference page to cite these external sources. (Use any citation style you're familiar with, but make sure to include the author's name, article or book title, and publication information.) A Works Cited page is not required unless your essay uses work from an external source.
+Let p = "I'll go to the party", q = "I'll stay home", r = "I'll study" Translation: p ∨ (q ∧ r)
 
-- Section 1 (30 points) Academic vs. Popular Writing
+From Symbolic Notation to English:
 
- - Choose a topic that has been covered in both academic and popular media (for example, a scientific discovery, historical event, or social issue)
+p → (q ∨ r)
 
- - Find one academic source and one popular source (like a newspaper article) on this topic
+Let p = "It rains", q = "I take an umbrella", r = "I stay inside" Translation: "If it rains, then I'll either take an umbrella or stay inside"
 
- - Compare how each source presents information, analyzing differences in:
+Practice Exercises
 
- - Language and terminology
+Translate these statements into symbolic notation:
 
- - Evidence presentation
+"If I study hard and get enough sleep, then I'll pass the exam"
 
- - Argument structure
+"It's not true that I'll both go to the movies and save money"
 
- - Audience consideration
+"Either I'll ﬁnish my homework or I won't watch TV"
 
- - Which version is more effective for its intended audience? Why?
+[Solutions will be discussed next class] Key Takeaways
 
-- Section 2 (20 points) Translation Exercise
+Symbolic logic provides precise tools for analyzing arguments
 
- - Take a key paragraph from your academic source
+Basic operators (¬, ∧, ∨, →) can combine to express complex statements
 
- - "Translate" it into language appropriate for a general audience
+Translation between natural language and logical notation requires careful attention to meaning
 
- - Explain your translation choices:
+Material implication differs from strict implication in important ways
 
- - What terminology did you change?
+Next week, we'll explore truth tables and begin formal proofs using these concepts.
 
- - What context did you add?
+Symbolic Logic - Homework 1 Basic Concepts and Notation Total Points: 50
 
- - What details did you keep or remove?
+Part 1: Translation (20 points)
 
- - How did you maintain accuracy while improving accessibility?
+Translate the following English statements into symbolic logic notation. Let:
 
- - Include both the original and your translation
+p = "It rains"
 
- - Discuss what this exercise reveals about effective academic writing
+q = "The streets are wet"
 
-This assignment teaches you to:
+r = "People use umbrellas"
 
-- Recognize the distinctive features of academic writing
+s = "Traffic slows down"
 
-- Understand how audience shapes writing choices
+"If it rains, then the streets are wet and people use umbrellas." (5 points)
 
-- Practice clear communication of complex ideas
+"Either traffic slows down or it's not raining." (5 points)
 
-- Develop awareness of writing conventions
+"It's not true that when it rains, traffic slows down." (5 points)
 
-Remember: Your goal is not to argue that one style is "better," but to understand how different writing approaches serve different purposes and audiences.
+"If the streets are wet and people use umbrellas, then it must be raining." (5 points) Part 2: Symbolization (20 points)
 
- Discussion 2: Types of Academic Evidence
+Create appropriate symbols and translate these statements into logical notation:
 
-Last week's assignments introduced the distinction between academic and popular writing. This week, we examine three fundamental types of evidence used in academic writing, each serving different purposes and carrying different strengths and limitations.
+"If John studies and gets tutoring, then he will pass the class. John studies and gets tutoring. Therefore, John will pass the class." (10 points)
 
-Academic writing relies on three main types of evidence:
+"Either Mary goes to the gym or she goes for a run, but not both. If she goes for a run, she will be tired." (10 points)
 
-Primary Sources involve:
+Part 3: Analysis (10 points)
 
-1. Original, firsthand material
+Explain the difference between material implication and strict implication using an
 
-2. Direct documentation or data
+example of each. (10 points)
 
-3. No intermediate interpretation
+Grading Rubric:
 
-Examples include:
+Part 1: 5 points per correct translation
 
-- Raw research data
+Part 2: 10 points per correct symbolization and translation Part 3:
 
-- Original documents
+5 points for correct explanation of the difference
 
-- Direct observations
+5 points for appropriate examples
 
-- Interview transcripts
+Symbolic Logic - Homework 1
 
-- Survey responses
+Basic Concepts and Notation (WITH ANSWERS) Total Points: 50
 
-Secondary Sources involve:
+Part 1: Translation (20 points)
 
-1. Analysis of primary sources
+Translate the following English statements into symbolic logic notation. Let:
 
-2. Expert interpretation
+p = "It rains"
 
-3. Scholarly synthesis
+q = "The streets are wet"
 
-Examples include:
+r = "People use umbrellas"
 
-- Academic journal articles
+s = "Traffic slows down"
 
-- Research papers
+"If it rains, then the streets are wet and people use umbrellas." (5 points)
 
-- Literature reviews
+Answer: p → (q ∧ r)
 
-- Expert analyses
+"Either traffic slows down or it's not raining." (5 points)
 
-- Academic books
+Answer: s ∨ ¬p
 
-Tertiary Sources involve:
+"It's not true that when it rains, traffic slows down." (5 points) Answer: ¬(p → s)
 
-1. Compilation of secondary sources
+"If the streets are wet and people use umbrellas, then it must be raining." (5 points) Answer: (q ∧ r) → p
 
-2. General overview material
+Part 2: Symbolization (20 points)
 
-3. Introductory information
+Create appropriate symbols and translate these statements into logical notation:
 
-Examples include:
+"If John studies and gets tutoring, then he will pass the class. John studies and gets tutoring. Therefore, John will pass the class." (10 points)
 
-- Textbooks
+Answer:
 
-- Encyclopedias
+Let s = "John studies"
 
-- Handbooks
+Let t = "John gets tutoring"
 
-- Literature surveys
+Let p = "John will pass the class" Translation: ((s ∧ t) → p) ∧ (s ∧ t) → p
 
-- Basic reference works
+"Either Mary goes to the gym or she goes for a run, but not both. If she goes for a run, she will be tired." (10 points)
 
-Consider this example:
+Answer:
 
-A historian studying World War II might use:
+Let g = "Mary goes to the gym" Let r = "Mary goes for a run" Let t = "Mary will be tired"
 
-- Primary source: Winston Churchill's personal letters
+Translation: ((g ∨ r) ∧ ¬(g ∧ r)) ∧ (r → t)
 
-- Secondary source: A scholarly analysis of Churchill's wartime leadership
+Part 3: Analysis (10 points)
 
-- Tertiary source: A general World War II textbook
+Explain the difference between material implication and strict implication using an example of each. (10 points)
 
-Directions:
+Answer:
 
-Part 1: Source Analysis (30 points): Choose one type of source (primary, secondary, or tertiary) and create an original example of how you would use it in academic writing. Your post should:
+Material implication (→) is truth-functional and is false only when the antecedent is true and the consequent is false. Example: "If it rains, then the ground is wet" (p → q). This is a material implication because it's based on observed correlation.
 
-- Identify the type of source
+Strict implication (⊃) involves logical necessity. Example: "If x is a square, then x has four equal sides." This is a strict implication because it's based on the deﬁnition of a square - it's impossible for the antecedent to be true and the consequent false by logical necessity.
 
-- Describe a specific example
+Grading Rubric:
 
-- Explain how you would use it in academic writing
+Part 1: 5 points per correct translation
 
-- Discuss its strengths and limitations for your purpose
+Part 2: 10 points per correct symbolization and translation
 
-Part 2: Response (20 points): Reply to at least one of your classmates' posts. Taking their example, explain how you would supplement it with one of the other two types of sources to strengthen the academic argument. Explain:
+Part 3:
 
-- Why this additional source type would help
+5 points for correct explanation of the difference
 
-- How it would complement the original source
+5 points for appropriate examples
 
-- What new perspective or information it would provide
+Propositional Calculus and Truth Tables 
 
-- How you would integrate both sources effectively
+Week 2: Truth Tables and Elementary Proofs
 
-Remember: The goal is not to argue that one type of source is "better," but to understand how different types of evidence serve different purposes in academic writing.
+The Propositional Calculus
 
- Essay 2 -- Source Evaluation and Analysis (50 points)
+Propositional calculus is a formal system for representing and analyzing logical relationships between propositions. It provides rules for:
 
-In this class, you will write short essays designed to demonstrate your understanding of academic writing principles. There is no minimum or maximum word count for these assignments, though a typical essay may be anywhere from 1-5 pages, on average. Essay assignments, like this one, will often ask you to write multiple sections, and each section will usually have a point value associated with it.
+Constructing well-formed formulas
 
-Write essays as though you were talking to a person unfamiliar with this class. (Write as though you were talking to a fellow student who hasn't taken a college writing course.)`
+Evaluating truth values
+
+Making valid inferences
+
+Truth Tables
+
+Truth tables systematically show all possible truth value combinations for propositional statements.
+
+Basic Truth Tables Negation (¬)
+
+| p | ¬p |
+
+| | |
+
+| T | F |
+
+| F | T |
+
+Conjunction (∧)
+
+| p | q | p ∧ q |
+
+| | | |
+
+| T | T | T |
+
+| T | F | F |
+
+| F | T | F |
+
+| F | F | F |
+
+Disjunction (∨)
+
+| p | q | p ∨ q |
+
+| | | |
+
+| T | T | T |
+
+| T | F | T |
+
+| F | T | T |
+
+| F | F | F |
+
+Conditional (→)
+
+| p | q | p → q |
+
+| | | |
+
+| T | T | T |
+
+| T | F | F |
+
+| F | T | T |
+
+| F | F | T |
+
+Elementary Proofs
+
+Proofs in propositional logic use rules of inference to derive conclusions from premises. Key Rules of Inference:
+
+Modus Ponens (MP) From p → q and p, infer q Example:
+
+If it rains, the ground is wet (p → q)
+
+It is raining (p)
+
+Therefore, the ground is wet (q)
+
+Modus Tollens (MT)
+
+From p → q and ¬q, infer ¬p
+
+Example:
+
+If it rains, the ground is wet (p → q) The ground is not wet (¬q) Therefore, it is not raining (¬p)
+
+Disjunctive Syllogism (DS) From p ∨ q and ¬p, infer q Example:
+
+Either I'll study or I'll fail (p ∨ q) I'm not studying (¬p) Therefore, I'll fail (q)
+
+Double Negation (DN)
+
+From ¬¬p, infer p (and vice versa) Example:
+
+It is not the case that it is not raining (¬¬p) Therefore, it is raining (p)
+
+De Morgan's Laws`
     },
     {
       id: "section-2",
       title: "Section 2",
-      content: `When writing an academic paper, make sure to clearly label each section. You may choose to name each section with just a bold number, or may title the section as you see fit. Your essays are expected to discuss material found in assigned readings, as well as previous assignments. However, if you choose to talk about external sources, make sure to include a Works Cited or Reference page to cite these external sources. (Feel free to cite these sources with any citation style you are familiar with, but make sure to include the author's name, article or book title, and publication information.) A Works Cited page is not required unless your essay uses work from an external source.
+      content: `These important laws show the relationship between negation and conjunction/disjunction:
 
-Section 1 (10 points) Introduction
+1. ¬(p ∧ q) ≡ (¬p ∨ ¬q)
 
-Write an introduction to source evaluation, explaining for a general audience:
+¬(p ∨ q) ≡ (¬p ∧ ¬q)
 
-- Why evaluating sources is crucial in academic writing
+Example:
 
-- What makes a source credible or not credible
+"It's not true that both the sun is shining and it's warm"
 
-- Brief overview of what you'll cover in the next two sections
+≡ "Either the sun is not shining or it's not warm"
 
-(Your introduction should be a guide, or map, to your paper.)
+Practice Problems
 
-Section 2 (20 points) Source Analysis
+Let's verify De Morgan's ﬁrst law using a truth table:
 
-Find a scholarly article in your field of study. Analyze it according to these criteria:
+| p | q | p ∧ q | ¬(p ∧ q) | ¬p | ¬q | ¬p ∨ ¬q |
 
-1. Credibility
+| | | | | | | |
 
- - Author credentials
+| T | T | T | F | F | F | F |
 
- - Publication venue
+| T | F | F | T | F | T | T |
 
- - Peer review status
+| F | T | F | T | T | F | T |
 
- - Institutional affiliation
+| F | F | F | T | T | T | T |
 
-2. Currency
+Notice how the columns for ¬(p ∧ q) and (¬p ∨ ¬q) are identical, proving their logical equivalence.
 
- - Publication date
+Key Takeaways
 
- - Topic timeliness
+Truth tables provide a mechanical method for determining validity
 
- - Updates or revisions
+Rules of inference allow us to construct valid proofs
 
- - Current relevance
+De Morgan's laws show how negation interacts with conjunction and disjunction
 
-3. Evidence
+Complex statements can be analyzed by breaking them down into components Next week, we'll explore Boolean algebra and its relationship to propositional logic.
 
- - Types of sources used
+Symbolic Logic - Homework 2 Truth Tables and Elementary Proofs Total Points: 50
 
- - Data presentation
+Part 1: Truth Tables (20 points)
 
- - Research methodology
+Construct complete truth tables for the following expressions: (5 points each)
 
- - Documentation quality
+a) (p → q) ∧ ¬p
 
-Explain how this source meets (or fails to meet) academic standards in each area.
+b) ¬(p ∨ q) ↔ (¬p ∧ ¬q)
 
-Section 3 (20 points) Comparative Analysis
+Part 2: Proofs (20 points)
 
-Find a non-academic source (website, magazine article, blog post) on the same topic as your scholarly article. Compare them in terms of:
+Construct proofs for the following arguments using rules of inference. Show each step. (10 points each)
 
-1. Treatment of the topic
+Prove: q from premises p → q, r → ¬p, r
 
- - Depth of analysis
+Prove: ¬p from premises p → q, p → r, ¬q ∨ ¬r
 
- - Use of evidence
+Part 3: Applications (10 points)
 
- - Presentation style
+Express these arguments in symbolic form and determine their validity using either a truth table or proof: (5 points each)
 
- - Target audience
+"If it's sunny, I'll go to the beach. If I go to the beach, I'll get a sunburn. It's sunny. Therefore, I'll get a sunburn."
 
-2. Strengths and weaknesses
+"Either the butler or the maid is guilty. The butler has an alibi. Therefore, the maid is guilty."
 
- - What does each source do well?
+Symbolic Logic - Homework 2
 
- - What are their limitations?
+Truth Tables and Elementary Proofs (WITH ANSWERS) Total Points: 50
 
- - How do they complement each other?
+Part 1: Truth Tables (20 points)
 
- - When might each be appropriate to use?
+Construct complete truth tables for the following expressions: (5 points each)
 
-Explain how understanding these differences helps you as an academic writer.
+a) (p → q) ∧ ¬p
 
-Remember: Your goal is not to simply dismiss non-academic sources, but to understand when and how different types of sources can be used effectively in academic writing.
+| p | q | p → q | ¬p | (p → q) ∧ ¬p |
 
- Discussion 3: Analyzing Academic Arguments
+| | | | | |
 
-In previous modules, we've examined different types of sources and evidence. Now we turn to how academic writers construct arguments from their evidence. Strong academic arguments generally have three key components:
+| T | T | T | F | F |
 
-1. Premises (claims supported by evidence)
+| T | F | F | F | F |
 
-2. Logical reasoning connecting the premises
+| F | T | T | T | T |
 
-3. A supported conclusion
+| F | F | T | T | T |
 
-However, arguments can appear strong while having hidden flaws. An argument might have:
+b) ¬(p ∨ q) ↔ (¬p ∧ ¬q)
 
-- Well-supported premises
+| p | q | p ∨ q | ¬(p ∨ q) | ¬p | ¬q | ¬p ∧ ¬q | ¬(p ∨ q) ↔ (¬p ∧ ¬q) |
 
-- Valid logical structure
+| | | | | | | | |
 
-- A conclusion that seems to follow
+| T | T | T | F | F | F | F | T |
 
-...but still fail to be fully convincing due to hidden assumptions, overlooked alternatives, or unstated qualifications.
+| T | F | T | F | F | T | F | T |
 
-Here's an example:
+| F | T | T | F | T | F | F | T |
 
-Flawed Academic Argument:
+| F | F | F | T | T | T | T | T |
 
-- Premise 1: Students who study more hours get better grades (supported by data)
+Part 2: Proofs (20 points)
 
-- Premise 2: Student A studies more hours than Student B (documented fact)
+Construct proofs for the following arguments using rules of inference. Show each step. (10 points each)
 
-- Conclusion: Therefore, Student A will get better grades than Student B
+Prove: q from premises p → q, r → ¬p, r
 
-This argument appears solid but overlooks crucial variables like:
+Answer:
 
-- Study effectiveness
+p → q (premise)
 
-- Prior knowledge
+r → ¬p (premise)
 
-- Subject difficulty
+r (premise)
 
-- Test-taking ability
+¬p (from 2,3 by MP)
 
-- External factors (health, stress, etc.)
+p → q (from 1)
 
-The premises are true, and the logic seems valid, but the conclusion oversimplifies a complex relationship.
+q (from 4,5 by MT)
 
-Discussion Assignment
+Prove: ¬p from premises p → q, p → r, ¬q ∨ ¬r
 
-Part 1 (30 points): Find an academic article in your field and identify an argument that appears strong but has potential flaws. Your post should:
+Answer:
 
-- Summarize the argument's key premises and conclusion
+p → q (premise)
 
-- Show how the argument is supported (evidence, reasoning)
+p → r (premise)
 
-- Identify potential weaknesses or overlooked factors
+¬q ∨ ¬r (premise)
 
-- Explain why these matter for the conclusion
+Assume p (for reductio)
 
-Part 2 (10 points each, up to 20 points total): Reply to at least two of your classmates' posts. Do one of the following:
+q (from 1,4 by MP)
 
-1. Strengthen the argument by addressing the identified weaknesses:
+r (from 2,4 by MP)
 
- - Add qualifying statements
+q ∧ r (from 5,6 by ∧I)
 
- - Acknowledge limitations
+Contradiction with 3
 
- - Include additional evidence
+Therefore, ¬p
 
- - Address alternative explanations
+Part 3: Applications (10 points)
 
-2. Propose a better version of the argument that:
+Express these arguments in symbolic form and determine their validity using either a truth table or proof: (5 points each)
 
- - Maintains the core insight
+"If it's sunny, I'll go to the beach. If I go to the beach, I'll get a sunburn. It's sunny. Therefore, I'll get a sunburn."
 
- - Addresses the weaknesses
+Answer:
 
- - Makes more modest claims
+Let p = "It's sunny"
 
- - Accounts for complexity
+Let q = "I'll go to the beach" Let r = "I'll get a sunburn"
 
-3. Show how the argument's structure could be improved by:
+Symbolic form: (p → q) ∧ (q → r) ∧ p ∴ r Proof:
 
- - Reorganizing the logic
+p → q (premise)
 
- - Clarifying assumptions
+q → r (premise)
 
- - Adding necessary context
+p (premise)
 
- - Strengthening connections between premises and conclusion
+q (from 1,3 by MP)
 
-Remember: The goal isn't to "destroy" arguments but to understand how they can be made more precise and convincing through careful analysis and revision.
+r (from 2,4 by MP)
 
- Essay 3 -- Argument and Counterargument (50 points)
+Valid argument
 
-Section 1 (30 points) The Argumentative Dilemma
+"Either the butler or the maid is guilty. The butler has an alibi. Therefore, the maid is guilty."
 
-In academic writing, we often face what we might call the "Clarity-Complexity Dilemma." This occurs when trying to balance two competing demands:
+Answer:
 
-1. The need to make clear, direct arguments that readers can easily follow
+Let b = "The butler is guilty" Let m = "The maid is guilty"
 
-2. The need to acknowledge complexity and avoid oversimplification
+Symbolic form: (b ∨ m) ∧ ¬b ∴ m
 
-In your own words, analyze this dilemma:
+This is a valid argument by disjunctive syllogism:
 
-- Explain why both clarity and complexity matter in academic writing
+b ∨ m (premise)
 
-- Discuss what happens when writers lean too far toward either extreme
+¬b (premise)
 
-- Provide concrete examples of both problems:
+m (from 1,2 by DS)
 
- - Arguments that are clear but oversimplified
+Symbolic Logic - Homework 2
 
- - Arguments that are nuanced but unclear
+Truth Tables and Elementary Proofs (WITH ANSWERS) Total Points: 50
 
-- Explain the challenges this creates for academic writers
+Part 1: Truth Tables (20 points)
 
-(Note: Feel free to consult external sources, but make sure to cite them properly. Many scholars have written about this tension in academic writing.)
+Construct complete truth tables for the following expressions: (5 points each)
 
-Section 2 (20 points) Resolving the Dilemma
+a) (p → q) ∧ ¬p
 
-How would you resolve this dilemma in your own academic writing? Consider:
+| p | q | p → q | ¬p | (p → q) ∧ ¬p |
 
-- Is it better to prioritize clarity or complexity?
+| | | | | |
 
-- Can we find a middle ground?
+| T | T | T | F | F |
 
-- What specific strategies help balance these competing demands?
+| T | F | F | F | F |
 
-Be specific. Give reasons to support your answer, and make sure to explain how your approach resolves the dilemma. You can use examples from your own academic writing or from sources you've read.
+| F | T | T | T | T |
 
-Consider strategies like:
+| F | F | T | T | T |
 
-- Using clear topic sentences followed by nuanced discussion
+b) ¬(p ∨ q) ↔ (¬p ∧ ¬q)
 
-- Employing precise qualifications of general claims
+| p | q | p ∨ q | ¬(p ∨ q) | ¬p | ¬q | ¬p ∧ ¬q | ¬(p ∨ q) ↔ (¬p ∧ ¬q) |
 
-- Structuring papers to build from simple to complex ideas
+| | | | | | | | |
 
-- Using examples to illustrate complex concepts
+| T | T | T | F | F | F | F | T |
 
-- Incorporating visual aids or diagrams
+| T | F | T | F | F | T | F | T |
 
-- Breaking down complex ideas into manageable parts
+| F | T | T | F | T | F | F | T |
 
-Sample Approaches to Consider:
+| F | F | F | T | T | T | T | T |
 
-1. The "Progressive Complexity" approach:
+Part 2: Proofs (20 points)
 
- - Start with clear, simple statements
+Construct proofs for the following arguments using rules of inference. Show each step. (10 points each)
 
- - Gradually add layers of complexity
+Prove: q from premises p → q, r → ¬p, r
 
- - Return to clear summaries at key points
+Answer:
 
-2. The "Qualified Clarity" approach:
+p → q (premise)
 
- - Make clear statements
+r → ¬p (premise)
 
- - Immediately acknowledge limitations
+r (premise)
 
- - Explain important exceptions
+¬p (from 2,3 by MP)
 
- - Specify conditions under which the argument holds
+p → q (from 1)
 
-3. The "Structured Complexity" approach:
+q (from 4,5 by MT)
 
- - Use clear organizational structures
+Prove: ¬p from premises p → q, p → r, ¬q ∨ ¬r Answer:
 
- - Create explicit roadmaps for readers
+p → q (premise)
 
- - Break complex ideas into clear sub-components
+p → r (premise)
 
- - Show relationships between parts
+¬q ∨ ¬r (premise)
 
-Choose an approach that works for your field and writing style, or develop your own approach. Whatever you choose, explain why it's effective and how it helps resolve the dilemma.
+Assume p (for reductio)
 
- Discussion 4: Theory and Evidence Integration
+q (from 1,4 by MP)
 
-A common challenge in academic writing is effectively connecting theoretical frameworks with empirical evidence. Just as Descartes grappled with how the mind and body interact, academic writers must address how abstract theories relate to concrete evidence.
+r (from 2,4 by MP)
 
-This integration is crucial because:
+q ∧ r (from 5,6 by ∧I)
 
-- Theories help organize and explain evidence
+Contradiction with 3
 
-- Evidence supports or challenges theories
+Therefore, ¬p
 
-- Together they create deeper understanding
+Part 3: Applications (10 points)
 
-- Neither is fully useful in isolation
+Express these arguments in symbolic form and determine their validity using either a truth table or proof: (5 points each)
 
-Yet writers often struggle with:
+"If it's sunny, I'll go to the beach. If I go to the beach, I'll get a sunburn. It's sunny. Therefore, I'll get a sunburn."
 
-- Making explicit connections between theory and evidence
+Answer:
 
-- Showing how evidence supports theoretical claims`
+Let p = "It's sunny"
+
+Let q = "I'll go to the beach" Let r = "I'll get a sunburn"
+
+Symbolic form: (p → q) ∧ (q → r) ∧ p ∴ r
+
+Proof:
+
+p → q (premise)
+
+q → r (premise)
+
+p (premise)
+
+q (from 1,3 by MP)
+
+r (from 2,4 by MP)
+
+Valid argument
+
+"Either the butler or the maid is guilty. The butler has an alibi. Therefore, the maid is guilty."
+
+Answer:
+
+Let b = "The butler is guilty" Let m = "The maid is guilty"
+
+Symbolic form: (b ∨ m) ∧ ¬b ∴ m
+
+This is a valid argument by disjunctive syllogism:
+
+b ∨ m (premise)
+
+¬b (premise)
+
+m (from 1,2 by DS)
+
+Boolean Algebra
+
+Week 3: Boolean Operations and Laws
+
+Introduction to Boolean Algebra
+
+Boolean algebra, developed by George Boole, is a mathematical structure dealing with operations on logical values. It forms the foundation of digital circuit design and computer science.
+
+Basic Operations
+
+NOT (Complement) Symbol: ¬ or '
+
+0' = 1
+
+1' = 0
+
+AND (Conjunction) Symbol: ∧ or ⋅
+
+1 ∧ 1 = 1
+
+1 ∧ 0 = 0
+
+0 ∧ 1 = 0
+
+0 ∧ 0 = 0
+
+OR (Disjunction) Symbol: ∨ or +
+
+1 ∨ 1 = 1
+
+1 ∨ 0 = 1
+
+0 ∨ 1 = 1
+
+0 ∨ 0 = 0
+
+Fundamental Laws of Boolean Algebra
+
+Identity Laws x ∨ 0 = x
+
+x ∧ 1 = x
+
+Null Laws
+
+x ∨ 1 = 1
+
+x ∧ 0 = 0
+
+Idempotent Laws x ∨ x = x
+
+x ∧ x = x
+
+Complement Laws x ∨ ¬x = 1
+
+x ∧ ¬x = 0
+
+Commutative Laws x ∨ y = y ∨ x
+
+x ∧ y = y ∧ x
+
+Associative Laws
+
+(x ∨ y) ∨ z = x ∨ (y ∨ z) (x ∧ y) ∧ z = x ∧ (y ∧ z)
+
+Distributive Laws
+
+x ∨ (y ∧ z) = (x ∨ y) ∧ (x ∨ z)
+
+x ∧ (y ∨ z) = (x ∧ y) ∨ (x ∧ z)
+
+De Morgan's Laws
+
+¬(x ∨ y) = ¬x ∧ ¬y
+
+¬(x ∧ y) = ¬x ∨ ¬y
+
+Boolean Functions and Truth Tables
+
+Any boolean function can be represented as a truth table: Example: f(x,y) = x ∧ (¬y)
+
+| x | y | ¬y | x ∧ (¬y) |
+
+| | | | |
+
+| 0 | 0 | 1 | 0 |
+
+| 0 | 1 | 0 | 0 |
+
+| 1 | 0 | 1 | 1 |
+
+| 1 | 1 | 0 | 0 |
+
+Boolean Expressions and Simpliﬁcation
+
+Boolean expressions can be simpliﬁed using the laws above.
+
+Example:
+
+Simplify: (x ∧ y) ∨ (x ∧ ¬y) ∨ (¬x ∧ y)
+
+Step 1: Factor out common terms
+
+(x ∧ y) ∨ (x ∧ ¬y) = x ∧ (y ∨ ¬y) = x (by complement law) So our expression is: x ∨ (¬x ∧ y)
+
+Step 2: Use distributive law
+
+x ∨ (¬x ∧ y) = (x ∨ ¬x) ∧ (x ∨ y) = 1 ∧ (x ∨ y) = (x ∨ y)
+
+Applications in Digital Logic
+
+Boolean algebra is fundamental to digital circuit design:
+
+AND Gate
+
+'''
+
+A
+
+---|
+
+Output = A∧B
+
+---| B
+
+'''
+
+OR Gate
+
+'''
+
+A
+
+---|
+
+Output = A∨B
+
+---| B
+
+'''
+
+NOT Gate
+
+'''
+
+Input ---|>o--- Output
+
+'''
+
+Key Takeaways
+
+Boolean algebra provides a mathematical framework for logical operations
+
+The fundamental laws allow for systematic simpliﬁcation of complex expressions
+
+Truth tables can represent any boolean function
+
+Applications extend to digital circuit design and computer science
+
+Next week, we'll begin exploring quantiﬁcation and how it extends our logical toolkit
+
+beyond simple true/false values.`
     },
     {
       id: "section-3",
       title: "Section 3",
-      content: `- Using theory to explain evidence without forcing fit
+      content: `Symbolic Logic - Homework 3 Boolean Algebra
 
-- Acknowledging when evidence challenges theory
+Total Points: 50
 
-For example, a sociologist studying education might:
+Part 1: Boolean Laws and Simpliﬁcation (20 points)
 
-- Use social reproduction theory (theoretical framework)
+Simplify the following Boolean expressions. Show your work and cite the laws used at each step. (5 points each)
 
-- Collect data on student outcomes (empirical evidence)
+(x ∧ y) ∨ (x ∧ ¬y) ∨ (x ∧ y)
 
-- Need to show how the theory explains patterns in the data
+¬(¬x ∨ y) ∧ (x ∨ ¬y)
 
-- Address cases where the data doesn't fit the theory
+(x ∨ y) ∧ (x ∨ ¬y) ∧ (¬x ∨ y)
 
-Directions:
+¬(x ∧ y) ∨ (x ∧ ¬y)
 
-Part 1 (20 Points)
+Part 2: Truth Tables and Boolean Functions (20 points)
 
-Describe an instance from your academic reading or writing where theory and evidence need to be connected. Your post should:
+Complete the truth tables for these Boolean functions and determine if they are equivalent: (10 points each)
 
-- Identify the theoretical framework
+f(x,y) = (x → y) ∧ ¬y g(x,y) = x ∧ ¬y
 
-- Describe the relevant evidence
+f(x,y,z) = x ∧ (y ∨ z)
 
-- Explain how they should relate
+g(x,y,z) = (x ∧ y) ∨ (x ∧ z)
 
-- Point out challenges in connecting them
+Part 3: Applications (10 points)
 
-A satisfactory post will demonstrate that you understand the challenges of integrating theoretical frameworks with empirical evidence.
+Design a Boolean circuit using AND, OR, and NOT gates to implement the following function:
 
-Part 2 (15 Points each reply, up to 30 points)
+f(x,y) = (x ∧ ¬y) ∨ (¬x ∧ y)
 
-Reply to at least two of your classmates' posts.
+Draw the circuit diagram and explain what the function does. Symbolic Logic - Homework 3
 
-- Suggest specific strategies for connecting theory and evidence in their example. Be creative but practical. Show how your approach would:
+Boolean Algebra Total Points: 50
 
- - Make explicit connections
+Part 1: Boolean Laws and Simpliﬁcation (20 points)
 
- - Maintain logical flow
+Simplify the following Boolean expressions. Show your work and cite the laws used at each step. (5 points each)
 
- - Address potential gaps
+(x ∧ y) ∨ (x ∧ ¬y) ∨ (x ∧ y)
 
- - Acknowledge limitations
+Answer:
 
- (10 points)
+(x ∧ y) ∨ (x ∧ ¬y) ∨ (x ∧ y)
 
-- Evaluate whether this solution is plausible. Why or why not? (5 points)
+= (x ∧ y) ∨ (x ∧ ¬y) [Idempotent Law]
 
-Remember: The goal is to develop practical strategies for integrating theoretical frameworks with empirical evidence in academic writing.
+= x ∧ (y ∨ ¬y) [Distributive Law]
 
- Discussion 5: The Problem of Contradictory Evidence
+= x ∧ 1 [Complement Law]
 
-Research Integration is often considered its own branch of academic writing, concerning itself with how to handle situations where different sources or pieces of evidence appear to conflict. Many academic writers face situations where their sources seem to have three challenging attributes:
+= x [Identity Law]
 
-- Sources are credible
+¬(¬x ∨ y) ∧ (x ∨ ¬y) Answer:
 
- - Each source meets academic standards
+¬(¬x ∨ y) ∧ (x ∨ ¬y)
 
- - Authors are qualified experts
+= (x ∧ ¬y) ∧ (x ∨ ¬y) [De Morgan's Law]
 
- - Methods appear sound
+= x ∧ ¬y [Absorption Law]
 
- - Peer review is present
+(x ∨ y) ∧ (x ∨ ¬y) ∧ (¬x ∨ y) Answer:
 
-- Sources are relevant
+(x ∨ y) ∧ (x ∨ ¬y) ∧ (¬x ∨ y)
 
- - They address the same topic
+= x ∨ (y ∧ ¬y) [Distributive Law]
 
- - Use similar methods
+= x ∨ 0 [Complement Law]
 
- - Study comparable populations
+= x [Identity Law]
 
- - Ask related questions
+¬(x ∧ y) ∨ (x ∧ ¬y) Answer:
 
-- Sources conflict
+¬(x ∧ y) ∨ (x ∧ ¬y)
 
- - They reach different conclusions
+= (¬x ∨ ¬y) ∨ (x ∧ ¬y) [De Morgan's Law]
 
- - Find contradictory results
+= ¬y ∨ (x ∧ ¬y) [Absorption Law]
 
- - Make opposing recommendations
+= ¬y [Absorption Law]
 
- - Interpret data differently
+Part 2: Truth Tables and Boolean Functions (20 points)
 
-When all three conditions exist, we face what we might call "The Problem of Contradictory Evidence." This creates challenges for academic writers who must:
+Complete the truth tables for these Boolean functions and determine if they are equivalent: (10 points each)
 
-- Acknowledge all relevant evidence
+f(x,y) = (x → y) ∧ ¬y g(x,y) = x ∧ ¬y
 
-- Maintain scholarly integrity
+Answer:
 
-- Draw reasonable conclusions
+| x | y | x → y | ¬y | (x → y) ∧ ¬y | x ∧ ¬y |
 
-- Make practical recommendations
+| | | | | | |
 
-Part 1 (30 points):
+| 0 | 0 | 1 | 1 | 1 | 0 |
 
-Choose one specific example from your field where credible sources conflict. Describe:
+| 0 | 1 | 1 | 0 | 0 | 0 |
 
-- The sources involved
+| 1 | 0 | 0 | 1 | 0 | 1 |
 
-- Their credibility markers
+| 1 | 1 | 1 | 0 | 0 | 0 |
 
-- The nature of their conflict
+The functions are not equivalent.
 
-- Why this matters for your field
+f(x,y,z) = x ∧ (y ∨ z)
 
-Part 2 (Up to 10 points each; 20 points total):
+g(x,y,z) = (x ∧ y) ∨ (x ∧ z)
 
-Reply to at least two of your classmates' posts. In each reply, do one of the following:
+Answer:
 
-1. Propose a way to resolve the contradiction by:
+| x | y | z | y ∨ z | x ∧ (y ∨ z) | x ∧ y | x ∧ z | (x ∧ y) ∨ (x ∧ z) |
 
- - Finding underlying patterns
+| | | | | | | | |
 
- - Identifying key variables
+| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
- - Suggesting mediating factors
+| 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 |
 
- - Proposing a synthesis
+| 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0 |
 
-2. Argue that the contradiction is only apparent by:
+| 0 | 1 | 1 | 1 | 0 | 0 | 0 | 0 |
 
- - Clarifying terms
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
- - Distinguishing contexts
+| 1 | 0 | 1 | 1 | 1 | 0 | 1 | 1 |
 
- - Identifying hidden assumptions
+| 1 | 1 | 0 | 1 | 1 | 1 | 0 | 1 |
 
- - Showing complementary aspects
+| 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
 
-3. Suggest that both positions might be partially correct by:
+The functions are equivalent (by distributive law).
 
- - Specifying conditions
+Part 3: Applications (10 points)
 
- - Limiting scope
+Design a Boolean circuit using AND, OR, and NOT gates to implement the following function:
 
- - Identifying overlaps
+f(x,y) = (x ∧ ¬y) ∨ (¬x ∧ y)
 
- - Proposing a more nuanced framework
+Answer:
 
-For example, if discussing contradictory findings about online learning effectiveness:
+'''
 
-"These studies might be reconciled by considering student characteristics. Source A focused on self-motivated adult learners, while Source B studied traditional undergraduates. This suggests online learning effectiveness may vary by student population..."
+x |AND|
 
-Remember: The goal isn't to force agreement but to handle contradictory evidence responsibly while maintaining academic credibility.
+| |
 
- Essay 4 -- Handling Conflicting Evidence (50 points)
+|NOT| |OR| Output
 
-When credible academic sources disagree about important findings or conclusions, writers face what we might call "The Research Integration Problem." Consider the following common scenario:
+| |
 
-A researcher has these three beliefs about their sources:
+y ---|AND|----
 
-- The sources are methodologically sound
+'''
 
-- The sources are relevant to the research question
+This is known as the XOR (exclusive or) function.
 
-- The sources reach contradictory conclusions
+The function outputs 1 when exactly one input is 1, and 0 otherwise. Symbolic Logic - First Midterm Examination
 
-When all three conditions exist, writers face challenging decisions about:
+Weeks 1-3: Basic Logic, Truth Tables, and Boolean Algebra Total Points: 250
 
-- How to present conflicting evidence fairly
+Time Allowed: 120 minutes
 
-- Which conclusions to draw
+Part I: Fundamentals of Logic (50 points)
 
-- What recommendations to make
+(25 points) Deﬁne and give an example of each of the following:
 
-- How to maintain credibility while acknowledging uncertainty
+Material implication
 
-Part 1 (20 points):
+Strict implication
 
-Give an example of conflicting evidence from your field that hasn't been discussed in class yet.
+Valid argument
 
-- Describe the evidence on both sides
+Sound argument
 
-- Explain why each source appears credible
+Well-formed formula
 
-- Discuss why this conflict matters for your field
+(25 points) Translate the following into symbolic notation AND its negation:
 
-Part 2 (10 points each, 30 points total):
+"If either John or Mary goes to the store, then Bill will cook dinner, but only if Sarah helps." Part II: Truth Tables and Validity (100 points)
 
-Imagine you're writing about this topic. Respond to the conflict in at least three of the following ways:
+(50 points) Use a truth table to determine if these arguments are valid:
 
-1. Propose a synthesis that:
+p → q, q → r ∴ p → r
 
- - Acknowledges both perspectives
+p ∨ q, ¬p ∧ ¬q ∴ r
 
- - Identifies common ground
+(50 points) Complete a truth table for:
 
- - Suggests conditions under which each might be valid
+((p → q) ∧ ¬r) ↔ (p ∧ (q ∨ ¬r))
 
- - Offers a new framework for understanding the conflict
+Part III: Boolean Algebra (100 points)
 
-2. Analyze methodological differences that might explain the conflict:
+(50 points) Simplify using Boolean algebra laws (show all steps): ((x ∧ y) ∨ (x ∧ ¬y)) ∧ (x ∨ y)
 
- - Research designs
+(50 points) Design a Boolean circuit for:
 
- - Population samples
+f(x,y,z) = (x ∧ y) ∨ (¬x ∧ z)
 
- - Measurement approaches
+Draw the circuit diagram and explain how it implements the given function.
 
- - Analytical methods
+Symbolic Logic - First Midterm Examination
 
-3. Examine contextual factors that might matter:
+Weeks 1-3: Basic Logic, Truth Tables, and Boolean Algebra Total Points: 250
 
- - Time periods
+Time Allowed: 120 minutes
 
- - Geographic locations
+Part I: Fundamentals of Logic (50 points)
 
- - Population characteristics
+(25 points) Deﬁne and give an example of each of the following:
 
- - Environmental conditions
+Material implication
 
-4. Consider theoretical frameworks that might:
+Strict implication
 
- - Explain the apparent contradiction
+Valid argument
 
- - Suggest mediating variables
+Sound argument
 
- - Provide new ways of understanding the problem
+Well-formed formula
 
- - Point toward future research
+Answer:
 
-Remember: Your goal is to demonstrate sophisticated handling of conflicting evidence while maintaining academic integrity.
+Material implication: A truth-functional conditional that is false only when the antecedent is true and consequent false.
 
- Discussion 6: Writing Context and Constraints
+Example: "If it rains, then the ground is wet." (p → q)
 
-Academic philosopher Aristotle noted that we can only be responsible for things within our control. Similarly, academic writing is always shaped by circumstances, some within and some beyond the writer's control. Writing Context involves how circumstances affect our writing choices and their effectiveness.
+Strict implication: A conditional expressing logical necessity.
 
-This week's readings examine four key types of contextual factors that shape academic writing:
+Example: "If x is a triangle, then x has three sides." (Necessarily true by deﬁnition)
 
-1. Situational Context - circumstances of the writing situation:
+Valid argument: An argument where it's impossible for all premises to be true and conclusion false.
 
- - Deadlines
+Example:
 
- - Word limits
+All men are mortal. Socrates is a man.
 
- - Assignment requirements
+Therefore, Socrates is mortal.
 
- - Available resources
+Sound argument: A valid argument with true premises.
 
- - Access to sources
+Example: The above argument about Socrates is also sound because its premises are true.
 
-2. Disciplinary Context - expectations of your field:
+Well-formed formula: An expression that follows the formal rules of logical syntax. Example: (p ∧ q) → r is well-formed; p ∧ → q is not.
 
- - Writing conventions
+(25 points) Translate the following into symbolic notation AND its negation:
 
- - Citation styles
+"If either John or Mary goes to the store, then Bill will cook dinner, but only if Sarah helps."
 
- - Methodological standards
+Answer:
 
- - Acceptable evidence
+Let: j = "John goes to the store" m = "Mary goes to the store" b = "Bill will cook dinner"
 
- - Key theories
+s = "Sarah helps"
 
-3. Audience Context - who will read your work:
+Translation: ((j ∨ m) → b) ∧ (b → s) Negation: ¬(((j ∨ m) → b) ∧ (b → s))
 
- - Knowledge level
+= ¬((j ∨ m) → b) ∨ ¬(b → s)
 
- - Field familiarity
+= ((j ∨ m) ∧ ¬b) ∨ (b ∧ ¬s)
 
- - Cultural background
+Part II: Truth Tables and Validity (100 points)
 
- - Language considerations
+(50 points) Use a truth table to determine if these arguments are valid:
 
- - Reading purpose
+p → q, q → r ∴ p → r
 
-4. Historical Context - timing of your writing:
+p ∨ q, ¬p ∧ ¬q ∴ r Answer:
 
- - Current state of research
+a)
 
- - Available technology
+| p | q | r | p → q | q → r | p → r |
 
- - Recent developments
+| | | | | | |
 
- - Cultural moment
+| T | T | T | T | T | T |
 
- - Political climate
+| T | T | F | T | F | F |
 
-Part 1 (30 points):
+| T | F | T | F | T | T |
 
-Choose one of the four types of context discussed above. Create an original case where this type of context significantly affects academic writing choices. Explain:
+| T | F | F | F | T | F |
 
-- The specific contextual factors
+| F | T | T | T | T | T |
 
-- How they influence writing decisions
+| F | T | F | T | F | T |
 
-- What makes these influences significant
+| F | F | T | T | T | T |
 
-- How writers might respond effectively
+| F | F | F | T | T | T |
 
-Part 2 (Up to 10 points each; 20 points total):
+Valid: In all rows where premises (p → q, q → r) are true, conclusion (p → r) is true.
 
-Reply to at least two of your classmates' posts. In each reply, do one of the following:
+b)
 
-1. Argue that the contextual factor they identify is actually within the writer's control, explaining how writers can overcome or manage it effectively.
+| p | q | r | p ∨ q | ¬p | ¬q | ¬p ∧ ¬q |
 
-2. Show how the contextual factor they discuss interacts with other types of context, creating more complex challenges for writers.
+| | | | | | | |
 
-3. Propose specific strategies for succeeding despite challenging contextual factors, providing concrete examples and practical approaches.`
+| T | T | T | T | F | F | F |
+
+| T | T | F | T | F | F | F |
+
+| T | F | T | T | F | T | F |
+
+| T | F | F | T | F | T | F |
+
+| F | T | T | T | T | F | F |
+
+| F | T | F | T | T | F | F |
+
+| F | F | T | F | T | T | T |
+
+| F | F | F | F | T | T | T |
+
+Invalid: Premises can be true (p ∨ q = F, ¬p ∧ ¬q = T) while conclusion (r) is false.
+
+(50 points) Complete a truth table for:
+
+((p → q) ∧ ¬r) ↔ (p ∧ (q ∨ ¬r))
+
+Answer:
+
+| p | q | r | p → q | ¬r | (p → q) ∧ ¬r | q ∨ ¬r | p ∧ (q ∨ ¬r) | ((p → q) ∧ ¬r) ↔ (p ∧ (q ∨ ¬r)) |
+
+| | | | | | | | | |
+
+| T | T | T | T | F | F | T | T | T |
+
+| T | T | F | T | T | T | T | T | T |
+
+| T | F | T | F | F | F | F | F | T |
+
+| T | F | F | F | T | F | T | T | F |
+
+| F | T | T | T | F | F | T | F | T |
+
+| F | T | F | T | T | T | T | F | F |
+
+| F | F | T | T | F | F | F | F | T |
+
+| F | F | F | T | T | T | T | F | F |
+
+Part III: Boolean Algebra (100 points)
+
+(50 points) Simplify using Boolean algebra laws (show all steps): ((x ∧ y) ∨ (x ∧ ¬y)) ∧ (x ∨ y)
+
+Answer:
+
+((x ∧ y) ∨ (x ∧ ¬y)) ∧ (x ∨ y)
+
+= [x ∧ (y ∨ ¬y)] ∧ (x ∨ y) [Distributive Law]
+
+= (x ∧ 1) ∧ (x ∨ y) [Complement Law]
+
+= x ∧ (x ∨ y) [Identity Law]
+
+= x [Absorption Law]
+
+(50 points) Design a Boolean circuit for: f(x,y,z) = (x ∧ y) ∨ (¬x ∧ z)
+
+Answer:
+
+'''
+
+x |AND|
+
+| |
+
+y ---- |OR| Output
+
+| |
+
+x ---|NOT|------|AND|----
+
+|
+
+z
+
+'''
+
+Explanation:
+
+Top path computes (x ∧ y)
+
+Bottom path computes (¬x ∧ z)
+
+Final OR gate combines the results
+
+Introduction to Quantiﬁcation
+
+Week 4: Quantiﬁer Logic and Translation Basic Concepts of Quantiﬁcation
+
+Universal Quantiﬁer (∀) Means "for all" or "for every"
+
+Example: ∀x(Px) means "For all x, P is true of x" Common natural language expressions: "Every"
+
+"All"
+
+"Each"
+
+"Any"
+
+"No matter which"
+
+Existential Quantiﬁer (∃)
+
+Means "there exists" or "there is at least one"`
     },
     {
       id: "section-4",
       title: "Section 4",
-      content: `For example: If discussing word limits (Situational Context), you might explain how careful organization, precise language, and strategic summarizing can help writers work effectively within strict length constraints while maintaining academic quality.
+      content: `Example: ∃x(Px) means "There exists an x such that P is true of x" Common natural language expressions:
 
- Essay 5 -- Voice, Style, and Academic Authority (50 points)
+"Some" "There exists" "There is"
 
-Section 1 (20 points)
+"At least one" "For some"
 
-The Case
+Domain of Discourse
 
-In academic writing, authors often face choices about voice, particularly around the use of first person ("I"). Consider the following approaches to presenting research:
+The set of all objects that variables can range over Must be speciﬁed or understood from context Examples:
 
-Option A (First Person):
+All real numbers All humans
 
-"I analyzed the survey data using regression analysis and found a strong correlation between variables X and Y."
+All integers
 
-Option B (Third Person/Passive):
+All students in this class
 
-"The survey data was analyzed using regression analysis, revealing a strong correlation between variables X and Y."
+Predicates
 
-Option C (Active but Impersonal):
+Functions that return true or false for given arguments Examples:
 
-"Regression analysis of the survey data revealed a strong correlation between variables X and Y."
+P(x): "x is prime"
 
-In this section:
+L(x,y): "x loves y"
 
-- Construct an original case where a writer faces this kind of stylistic choice 
+G(x): "x is greater than 5" Basic Translation Examples
 
-- What is at stake in the choice?
+"All dogs are mammals" Domain: All animals
 
-- What are the potential outcomes of each option?
+Let D(x): x is a dog
 
-- Be very clear about the context and constraints
+Let M(x): x is a mammal Translation: ∀x(D(x) → M(x))
 
-Section 2 (30 points)
+"Some students study logic" Domain: All students
 
-Style Choices and Academic Authority
+Let S(x): x studies logic Translation: ∃x(S(x))
 
-1. Analyze whether the writer in your case should use first person, passive voice, or impersonal active voice. Consider:
+"No one likes taxes" Domain: All people Let L(x): x likes taxes Translation: ¬∃x(L(x))
 
- - The discipline's conventions
+Equivalent to: ∀x(¬L(x))
 
- - The journal or publication's guidelines
+Multiple Quantiﬁers
 
- - The research methodology
+Order Matters
 
- - The argument's nature
+∀x∃y vs ∃y∀x can mean different things
 
- - The intended audience
+Example:
 
-2. Compare how the same content would read in each style. Would they be:
+"Everyone loves someone" vs "Someone is loved by everyone"
 
- - Equally effective?
+∀x∃y(L(x,y)) vs ∃y∀x(L(x,y))
 
- - Equally appropriate?
+Examples with Multiple Quantiﬁers:
 
- - Equally convincing?
+"Everyone has a mother" Domain: All people M(x,y): x is the mother of y Translation: ∀x∃y(M(y,x))
 
-3. Give reasons to support your analysis. Draw on:
+"Some people love everyone" Domain: All people
 
- - Disciplinary conventions
+L(x,y): x loves y Translation: ∃x∀y(L(x,y))
 
- - Reader expectations
+Advanced Translation Examples
 
- - Arguments about clarity
+"Between any two real numbers there is another real number" Domain: Real numbers
 
- - Issues of authority
+Translation: ∀x∀y∃z((x < y) → ((x < z) ∧ (z < y)))
 
-Remember: Your goal is to demonstrate understanding of how stylistic choices affect academic writing's effectiveness and authority.
+"For every positive number there is a smaller positive number" Domain: Real numbers
 
-Note: Feel free to argue for a position different from your usual writing style. Make this analysis as thorough as possible, considering multiple perspectives.
+Translation: ∀x((x > 0) → ∃y((y > 0) ∧ (y < x)))
 
- Discussion 7: Strategic Writing Choices
+Negating Quantiﬁed Statements
 
-In academic writing, authors often face situations where the obvious or conventional approach might not be the most effective. Just as Frankfurt challenged assumptions about free will and responsibility, we need to examine our assumptions about "correct" academic writing.
+Rules:
 
-Consider this example of a strategic writing choice:
+¬∀x(Px) ≡ ∃x(¬Px)
 
-Conventional Approach: 
+¬∃x(Px) ≡ ∀x(¬Px)
 
-A literature review that presents research chronologically:
+Examples:
 
-"Smith (2010) found X. Then Jones (2012) discovered Y. Later, Zhang (2015) demonstrated Z..."
+"Not everyone is happy"
 
-Strategic Approach:
+¬∀x(H(x)) ≡ ∃x(¬H(x)) "There is no free lunch"
 
-The same literature review organized by theme:
+¬∃x(F(x)) ≡ ∀x(¬F(x)) Practice Problems
 
-"Three key themes emerge from the literature: First, the role of X (Smith 2010)... Second, the impact of Y (Jones 2012)... Finally, the significance of Z (Zhang 2015)..."
+Translate:
 
-The strategic approach might be more effective even though the chronological approach seems more "natural" or "correct."
+"Every student who studies passes" Domain: All students
 
-Directions:
+S(x): x studies P(x): x passes
 
-Part 1 (30 points):
+Answer: ∀x(S(x) → P(x))
 
-Construct an original case where the conventional academic writing approach might not be the most effective. Your case should:
+Negate:
 
-- Describe the writing situation
+"All mathematicians are logical" Original: ∀x(M(x) → L(x))
 
-- Explain the conventional approach
+Negation: ∃x(M(x) ∧ ¬L(x))
 
-- Present your strategic alternative
+Key Takeaways
 
-- Analyze why your approach might be more effective
+Quantiﬁers allow us to make statements about collections of objects
 
-- Address potential objections
+Order of quantiﬁers matters
 
-Part 2 (10 points each, up to 20 points total):
+Translation requires careful attention to logical structure
 
-Reply to at least two of your classmates' posts. Do one of the following:
+Negation of quantiﬁed statements follows speciﬁc rules
 
-1. Argue that the conventional approach would actually be more effective in their case, explaining why. Consider:
+Next week, we'll explore more advanced quantiﬁcation concepts and their applications to
 
- - Reader expectations
+mathematical statements, including the famous epsilon-delta deﬁnition of limits.
 
- - Academic conventions
+Symbolic Logic - Homework 4 Introduction to Quantiﬁcation Total Points: 50
 
- - Clarity and understanding
+Part 1: Basic Translation (20 points)
 
- - Long-term implications
+Translate each statement into symbolic logic using quantiﬁers. Clearly state your predicate
 
-2. Suggest an even better strategic approach, explaining:
+symbols and domain. (5 points each)
 
- - How it would work
+"Every philosopher is wise"
 
- - Why it would be more effective
+"Some students failed but some students passed"
 
- - How it addresses potential problems
+"No one loves everyone"
 
- - When it would be most appropriate
+"Between any two distinct points, there is another point"
 
-3. Defend your classmate's strategic choice by:
+Part 2: Negations (15 points)
 
- - Strengthening their reasoning
+Negate each statement, then simplify using quantiﬁer negation rules. Show your work. (5
 
- - Addressing potential criticisms
+points each)
 
- - Providing additional examples
+∀x(P(x) → Q(x))
 
- - Suggesting specific implementation strategies
+∃x∀y(R(x,y))
 
-4. If your classmate's case isn't truly strategic, revise it to create a genuine strategic choice situation.
+∀x∃y(P(x) → Q(y))
 
-Remember: The goal isn't to reject conventions for their own sake, but to make thoughtful choices that enhance academic communication.
+Part 3: Analysis and Applications (15 points)
 
- Discussion 8: Academic Writing Ethics
+Consider these two statements:
 
-In academic writing, like in Plato's story of Gyges' Ring, we sometimes face situations where we could take shortcuts or make questionable choices that others might not detect. The pressure to publish, meet deadlines, or produce significant findings can create ethical temptations.
+"Everyone loves someone"
 
-Common ethical challenges include:
+"Someone is loved by everyone"
 
-- Selective reporting of data
+(5 points) Translate both statements into symbolic logic.
 
-- Strategic citation choices
+(5 points) Are these statements logically equivalent? Explain why or why not.
 
-- Partial literature reviews
+(5 points) Write the negation of both statements.
 
-- Overstated conclusions
+Note: For full credit, explain your reasoning and show all steps in your work.
 
-- Language recycling from previous work
+Symbolic Logic - Homework 4 Introduction to Quantiﬁcation Total Points: 50
 
-- Collaboration attribution
+Part 1: Basic Translation (20 points)
 
-- Data interpretation choices
+Translate each statement into symbolic logic using quantiﬁers. Clearly state your predicate
 
-Just as Gyges had to decide how to use his power of invisibility, academic writers must decide how to use their scholarly authority.
+symbols and domain. (5 points each)
 
-Part 1 (20 points):
+"Every philosopher is wise" Answer:
 
-Post a thread describing an ethical dilemma you've encountered or might encounter in academic writing. For example:
+Domain: All people P(x): x is a philosopher W(x): x is wise
 
-- You find a perfect quote that would strengthen your argument, but you can't relocate the source
+Translation: ∀x(P(x) → W(x))
 
-- You discover data that weakens your conclusion after completing most of your paper
+"Some students failed but some students passed"
 
-- You realize a colleague's work critiques your approach, but citing it would require major revisions
+Answer:
 
-- You're tempted to reuse substantial portions of your own previous work
+Domain: All students F(x): x failed
 
-Explain:
+P(x): x passed
 
-- The situation in detail
+Translation: ∃x(F(x)) ∧ ∃x(P(x))
 
-- What's at stake
+"No one loves everyone"
 
-- The tempting "easy" choice
+Answer:
 
-- The more difficult ethical choice
+Domain: All people L(x,y): x loves y Translation: ¬∃x∀y(L(x,y)) Alternative: ∀x∃y(¬L(x,y))
 
-- How you would handle it and why
+"Between any two distinct points, there is another point"
 
-Part 2 (10 points each post, 30 points total):
+Answer:
 
-Reply to at least three of your classmates' threads with one of the following:
+Domain: All points
 
-1. Propose a solution that maintains ethical standards while addressing practical concerns:
+Translation: ∀x∀y∃z(x ≠ y → ((x < z) ∧ (z < y)))
 
- - Suggest specific strategies
+Part 2: Negations (15 points)
 
- - Consider time/resource constraints
+Negate each statement, then simplify using quantiﬁer negation rules. Show your work. (5
 
- - Address professional pressures
+points each)
 
- - Maintain academic integrity
+∀x(P(x) → Q(x)) Answer:
 
-2. Analyze potential consequences of taking the "easy" route:
+¬∀x(P(x) → Q(x))
 
- - Short-term benefits
+∃x¬(P(x) → Q(x))
 
- - Long-term risks
+∃x(P(x) ∧ ¬Q(x))
 
- - Professional implications
+∃x∀y(R(x,y)) Answer:
 
- - Impact on academic discourse
+¬∃x∀y(R(x,y))
 
-3. If your classmate would make an ethically questionable choice, explain:
+∀x¬∀y(R(x,y))
 
- - How it could be detected
+∀x∃y(¬R(x,y))
 
- - What consequences might follow
+∀x∃y(P(x) → Q(y)) Answer:
 
- - What alternatives exist
+¬∀x∃y(P(x) → Q(y))
 
- - How to handle similar situations ethically
+∃x¬∃y(P(x) → Q(y))
 
-4. Identify ways academic systems or practices could be improved to reduce these ethical pressures:
+∃x∀y¬(P(x) → Q(y))
 
- - Policy changes
+∃x∀y(P(x) ∧ ¬Q(y))
 
- - Cultural shifts
+Part 3: Analysis and Applications (15 points)
 
- - Structural solutions
+Consider these two statements:
 
- - Support mechanisms
+"Everyone loves someone"
 
-Remember: The goal is to develop strategies for maintaining academic integrity while navigating real-world pressures and constraints.
+"Someone is loved by everyone"
 
- Term Paper Guidelines
+(5 points) Translate both statements into symbolic logic.
 
-Your Term Paper Assignment
+Answer:
 
-For your term paper, choose one of these three articles to analyze:
+L(x,y): x loves y Statement 1: ∀x∃y(L(x,y))
 
-1. Kenneth Burke's "The Language of Poetry" - A seminal work on how academic language differs from other forms of discourse
+Statement 2: ∃y∀x(L(x,y))
 
-2. Helen Sword's "Stylish Academic Writing" - An analysis of what makes academic writing engaging while maintaining rigor
+(5 points) Are these statements logically equivalent? Explain why or why not.
 
-3. Gerald Graff's "They Say/I Say" - An examination of how academic writers engage with other scholars' ideas
+Answer:
 
-Your term paper will analyze one argument from your chosen article. Your paper will include an Introduction, Argument Summary, Critical Analysis, Constructive Response, and Conclusion.
+No, they are not equivalent. Statement 1 allows each person to love a different person (everyone picks someone to love), while Statement 2 requires the existence of a single person who is loved by everyone (one person is universally loved).
 
-Directions:
+To see this isn't equivalent, consider a world with just Alice and Bob where Alice loves Alice
 
-Your paper must be ethically written. That means you alone must write it. No AI, ChatGPT, etc.
+and Bob loves Bob. This satisﬁes Statement 1 but not Statement 2.
 
-Introduction (5% of term paper grade):
+(5 points) Write the negation of both statements.
 
-This introduces your analysis for readers unfamiliar with academic writing scholarship. Here, briefly:
+Answer:
 
-- Identify your chosen article
+Negation of 1: ∃x∀y(¬L(x,y))
 
-- Explain its significance
+"There is someone who loves no one"
 
-- Preview your main sections
+Negation of 2: ∀y∃x(¬L(x,y))
 
-- State your analytical focus
+"For every person, there is someone who doesn't love them"
 
-Section 1: Argument Summary (40% of term paper grade):
+Advanced Quantiﬁcation and Mathematical Applications
 
-Choose one key argument from your selected article. For example:`
+Week 5: Complex Translation and Mathematical Logic Advanced Translation Patterns
+
+Uniqueness Quantiﬁer (∃!) Means "there exists exactly one" Example: ∃!x(Px)
+
+Equivalent to: ∃x(Px ∧ ∀y(Py → y = x))
+
+Example: "There is exactly one even prime number"
+
+∃x(Prime(x) ∧ Even(x) ∧ ∀y((Prime(y) ∧ Even(y)) → y = x))
+
+At Least/At Most/Exactly n
+
+"At least n": ∃x₁...∃xₙ(P(x₁) ∧...∧ P(xₙ) ∧ x₁≠x₂ ∧...∧ xₙ₋₁≠xₙ)
+
+"At most n": ∀x₁...∀xₙ₊₁(P(x₁) ∧...∧ P(xₙ₊₁) → (x₁=x₂ ∨...∨ xₙ=xₙ₊₁)) "Exactly n": Conjunction of "at least n" and "at most n"
+
+Complex Mathematical Statements
+
+Continuity
+
+A function f is continuous at a point c if:
+
+∀ε>0 ∃δ>0 ∀x(|x-c|<δ → |f(x)-f(c)|<ε)
+
+Limit Deﬁnition
+
+The limit of f(x) as x approaches c is L if:
+
+∀ε>0 ∃δ>0 ∀x(0<|x-c|<δ → |f(x)-L|<ε) The Epsilon-Delta Deﬁnition in Detail
+
+Components
+
+ε (epsilon): measures closeness to limit value δ (delta): measures closeness to input value Relationship: For any ε, we can ﬁnd δ
+
+Breaking Down the Deﬁnition
+
+∀ε>0: "For any positive error margin"
+
+∃δ>0: "There exists some positive distance"
+
+∀x: "For all input values"
+
+0<|x-c|<δ: "Within δ of c (but not equal to c)"
+
+|f(x)-L|<ε: "f(x) is within ε of L"
+
+Example: lim(x→2) x² = 4
+
+∀ε>0 ∃δ>0 ∀x(0<|x-2|<δ → |x²-4|<ε) To prove: For given ε, ﬁnd δ where:
+
+|x-2|<δ implies |x²-4|<ε
+
+|x²-4| = |(x+2)(x-2)| = |x+2||x-2| When |x-2|<1, |x+2|<5 Choose δ = min(1, ε/5)
+
+Advanced Translation Examples
+
+Inﬁnite Sequence Properties
+
+Bounded: ∃M∀n(|aₙ|≤M)
+
+Convergent: ∃L∀ε>0∃N∀n(n>N → |aₙ-L|<ε) Cauchy: ∀ε>0∃N∀m∀n(m,n>N → |aₘ-aₙ|<ε)
+
+Function Properties
+
+One-to-one: ∀x∀y(f(x)=f(y) → x=y) Onto: ∀y∃x(f(x)=y)
+
+Monotonic increasing: ∀x∀y(x<y → f(x)<f(y)) Practical Application Examples
+
+Database Queries
+
+"Find all students who passed all courses"
+
+∃x(Student(x) ∧ ∀y(Course(y) → Passed(x,y)))
+
+Software Speciﬁcations
+
+"Every request eventually gets a response"
+
+∀x(Request(x) → ∃y(Response(y,x))) Common Translation Patterns
+
+Only if
+
+"P only if Q" becomes P → Q
+
+Example: "A number is even only if it's divisible by 2"
+
+∀x(Even(x) → Divisible(x,2))
+
+Unless
+
+"P unless Q" becomes P ∨ Q Example: "I'll study unless I'm tired" Study(x) ∨ Tired(x)
+
+Neither/Nor
+
+"Neither P nor Q" becomes ¬P ∧ ¬Q Example: "Neither prime nor composite"
+
+¬Prime(x) ∧ ¬Composite(x)
+
+Key Takeaways
+
+Advanced quantiﬁcation allows precise expression of complex ideas`
     },
     {
       id: "section-5",
       title: "Section 5",
-      content: `- From Burke: How academic language creates particular relationships with readers
+      content: `Mathematical deﬁnitions often involve multiple nested quantiﬁers
 
-- From Sword: Why academic writers often choose complex over clear prose
+Understanding quantiﬁer order is crucial for correct interpretation
 
-- From Graff: How template phrases can enhance academic dialogue
+Epsilon-delta proofs follow a standard pattern
 
-Your summary should:
+Translation requires attention to subtle linguistic differences
 
-- Explain the argument for non-specialists
+Next week, we'll explore models and their use in proving invalidity and consistency.
 
-- Define key terms
+Symbolic Logic - Homework 5
 
-- Provide examples
+Advanced Quantiﬁcation and Mathematical Analysis
 
-- Show why this argument matters
+Total Points: 50
 
-Section 2: Critical Analysis (25% of term paper grade):
+Part 1: Advanced Translation (20 points)
 
-Develop an original critique of the argument. Consider:
+(10 points) Translate each statement into symbolic logic. State your predicates and domain.
 
-- Unstated assumptions
+"There is exactly one largest prime number less than 10."
 
-- Methodological issues
+"For any two different real numbers, their average lies between them."
 
-- Counterexamples
+(10 points) Negate and simplify the following statements:
 
-- Practical limitations
+∀x∃y∀z(P(x,y) → Q(y,z))
 
-- Alternative explanations
+∃!x∀y(P(x) ∧ Q(x,y))
 
-Section 3: Constructive Response (25% of term paper grade):
+Part 2: Epsilon-Delta Analysis (20 points)
 
-Rather than just criticizing, propose constructive solutions:
+(10 points) Prove that lim(x→3) x² = 9 using the epsilon-delta deﬁnition.
 
-- How could the argument be strengthened?
+(10 points) Write the formal epsilon-delta deﬁnition for continuity of f(x) = x² at x = 2.
 
-- What additional considerations matter?
+Part 3: Complex Mathematical Statements (10 points)
 
-- How might practice be improved?
+(5 points) Express the statement "A function f is uniformly continuous on an interval [a,b]" in symbolic logic.
 
-- What further research is needed?
+(5 points) Translate the deﬁnition of a Cauchy sequence into English and explain why it doesn't use a limit L in its deﬁnition.
 
-Conclusion (5% of term paper grade):
+Note: For full credit:
 
-Briefly summarize your analysis and discuss implications for:
+Show all work in epsilon-delta proofs
 
-- Academic writing practice
+Clearly state any predicates or domains used in translations
 
-- Writing instruction
+Provide step-by-step reasoning for complex negations
 
-- Future research
+Symbolic Logic - Homework 5
 
-- Professional development
+Advanced Quantiﬁcation and Mathematical Analysis
 
-Requirements:
+Total Points: 50
 
-- 6-10 pages
+Part 1: Advanced Translation (20 points)
 
-- Any standard citation style
+(10 points) Translate each statement into symbolic logic. State your predicates and domain.
 
-- Minimum 5 scholarly sources
+"There is exactly one largest prime number less than 10."
 
-- Clear section headings
+Answer:
 
-- Professional tone
+Domain: Natural numbers P(x): x is prime
 
-- Original analysis
+L(x,y): x is less than y
 
-Works Cited:
+∃x(P(x) ∧ L(x,10) ∧ ∀y((P(y) ∧ L(y,10)) → (x ≥ y)) ∧
 
-- Must include your primary article
+∀z((P(z) ∧ L(z,10) ∧ (x ≥ z)) → x = z))
 
-- Additional scholarly sources
+"For any two different real numbers, their average lies between them."
 
-- Any sources quoted or referenced
+Answer:
 
-- Follow consistent citation style`
+Domain: Real numbers
+
+Translation: ∀x∀y(x ≠ y → ∃z((z = (x+y)/2) ∧ ((x < z ∧ z < y) ∨ (y < z ∧ z < x))))
+
+(10 points) Negate and simplify the following statements:
+
+∀x∃y∀z(P(x,y) → Q(y,z)) Answer:
+
+¬∀x∃y∀z(P(x,y) → Q(y,z))
+
+≡ ∃x∀y∃z¬(P(x,y) → Q(y,z))
+
+≡ ∃x∀y∃z(P(x,y) ∧ ¬Q(y,z))
+
+∃!x∀y(P(x) ∧ Q(x,y)) Answer:
+
+¬∃!x∀y(P(x) ∧ Q(x,y))
+
+≡ ¬∃x(P(x) ∧ ∀y(Q(x,y)) ∧ ∀z((P(z) ∧ ∀y(Q(z,y))) → z = x))
+
+≡ ∀x¬(P(x) ∧ ∀y(Q(x,y))) ∨ ∃z∃w((P(z) ∧ ∀y(Q(z,y))) ∧ (P(w) ∧ ∀y(Q(w,y))) ∧ z ≠ w) Part 2: Epsilon-Delta Analysis (20 points)
+
+(10 points) Prove that lim(x→3) x² = 9 using the epsilon-delta deﬁnition.
+
+Answer:
+
+We need to prove: ∀ε>0 ∃δ>0 ∀x(0<|x-3|<δ → |x²-9|<ε)
+
+Proof:
+
+|x²-9| = |x+3||x-3|
+
+When |x-3| < 1, we have 2 < x < 4, so |x+3| < 7
+
+Let δ = min(1, ε/7)
+
+Then |x-3| < δ implies |x²-9| = |x+3||x-3| < 7δ ≤ ε
+
+(10 points) Write the formal epsilon-delta deﬁnition for continuity of f(x) = x² at x = 2.
+
+Answer:
+
+∀ε>0 ∃δ>0 ∀x(|x-2|<δ → |x²-4|<ε)
+
+To ﬁnd δ given ε:
+
+|x²-4| = |x+2||x-2|
+
+When |x-2| < 1, |x+2| < 5 Choose δ = min(1, ε/5)
+
+Part 3: Complex Mathematical Statements (10 points)
+
+(5 points) Express the statement "A function f is uniformly continuous on an interval [a,b]" in symbolic logic.
+
+Answer:
+
+∀ε>0 ∃δ>0 ∀x∀y((x∈[a,b] ∧ y∈[a,b] ∧ |x-y|<δ) → |f(x)-f(y)|<ε)
+
+(5 points) Translate the deﬁnition of a Cauchy sequence into English and explain why it doesn't use a limit L in its deﬁnition.
+
+Answer:
+
+Symbolic form: ∀ε>0 ∃N∀m∀n(m,n>N → |aₘ-aₙ|<ε)
+
+English: "For any positive error margin ε, there exists some point N in the sequence after
+
+which any two terms in the sequence differ by less than ε."
+
+Explanation: The Cauchy criterion doesn't reference a limit L because it deﬁnes convergence based on the behavior of the sequence terms relative to each other, not to some external value. This makes it useful in spaces where limits might not exist or be easily deﬁnable.
+
+Grading Rubric:
+
+Part 1: 10 points each for correct translations and negations
+
+Part 2: 5 points for correct formula, 5 points for correct proof/explanation
+
+Part 3: 5 points each for correct translation and explanation
+
+Models and Proof Theory
+
+Week 6: Using Models to Prove Invalidity and Consistency Introduction to Models
+
+Deﬁnition of a Model
+
+A mathematical structure that interprets: Domain of discourse
+
+Predicates Functions Constants
+
+Assigns truth values to formulas
+
+Components of a Model M Universe/Domain (|M|) Interpretation function (I) Variable assignment (v)
+
+Using Models to Prove Invalidity
+
+Strategy
+
+To prove an argument invalid:
+
+Find a model where premises are true But conclusion is false
+
+One counterexample suffices
+
+Example 1: Proving Invalidity
+
+Argument: ∀x(P(x) → Q(x)), ∃xP(x) ∴ ∀xQ(x) Countermodel:
+
+Domain = {a, b}
+
+P = {a}
+
+Q = {a}
+
+Analysis:
+
+∀x(P(x) → Q(x)) is true (vacuously for b)
+
+∃xP(x) is true (because of a)
+
+∀xQ(x) is false (because b∉Q)
+
+Example 2: More Complex Invalidation Argument: ∀x∃yR(x,y) ∴ ∃y∀xR(x,y) Countermodel:
+
+Domain = {1, 2}
+
+R = {(1,1), (2,2)}
+
+Analysis:
+
+∀x∃yR(x,y) is true (each x relates to itself)
+
+∃y∀xR(x,y) is false (no y relates to all x) Consistency Proofs
+
+Deﬁnition
+
+A set of sentences is consistent if:
+
+There exists a model satisfying all sentences No contradiction can be derived
+
+Methods to Prove Consistency
+
+Construct a model satisfying all sentences
+
+Show inability to derive contradiction Use semantic tableaux
+
+Example: Proving Consistency Sentences:
+
+∀x∃yR(x,y)
+
+∀x¬R(x,x)
+
+∀x∀y∀z((R(x,y) ∧ R(y,z)) → R(x,z)) Model:
+
+Domain = {1, 2, 3}
+
+R = {(1,2), (2,3), (1,3)}
+
+Veriﬁcation:
+
+Each x has a y it relates to No element relates to itself Transitivity holds
+
+Model Theory Techniques
+
+Finite Models
+
+Useful for disproving universally quantiﬁed statements
+
+Easy to verify all cases Example:
+
+To disprove "All groups are abelian"
+
+Use ﬁnite non-abelian group as model
+
+Inﬁnite Models
+
+Required for some mathematical structures Often use familiar structures (ℕ, ℤ, ℝ) Example:
+
+Natural numbers with usual < relation Models "No largest element exists"
+
+Model Construction Strategies Start with smallest possible domain Add elements only as needed
+
+Use diagrams or tables for relations Check all required properties
+
+Advanced Applications
+
+Independence Proofs
+
+Show axiom not derivable from others Need two models:
+
+One satisfying all axioms
+
+One satisfying all but the target axiom
+
+Categoricity
+
+All models are isomorphic Example:
+
+Complete ordered ﬁelds
+
+All isomorphic to real numbers Practical Examples
+
+Graph Theory
+
+Model: Vertices and edges Properties:
+
+Connectivity Coloring Paths
+
+Number Theory
+
+Model: Numbers with operations Properties:
+
+Divisibility Primality Ordering
+
+Common Mistakes to Avoid
+
+Domain Selection
+
+Don't make domain unnecessarily large Ensure domain includes all needed elements Check for implicit assumptions
+
+Relation Deﬁnition
+
+Must specify complete relation Check all pairs/tuples
+
+Verify properties (transitivity, etc.)
+
+Key Takeaways
+
+Models provide concrete examples or counterexamples
+
+One countermodel sufficient for invalidity
+
+Consistency requires showing possible satisfaction
+
+Start with simple models when possible
+
+Check all required properties systematically
+
+Next week, we'll explore recursivity and deﬁnable classes.
+
+Symbolic Logic - Homework 6 Models and Proofs
+
+Total Points: 50
+
+Part 1: Invalidity Proofs (20 points)
+
+(10 points) Provide a countermodel to prove each argument is invalid:
+
+∀x(P(x) → Q(x)), ∀x(Q(x) → R(x)) ∴ ∀x(P(x) → P(x))
+
+∀x∃yL(x,y) ∴ ∃y∀xL(x,y)
+
+(L(x,y) means "x loves y")
+
+(10 points) Show that these statements are not equivalent by providing a countermodel: "Everyone has a friend" and "Someone is friends with everyone"
+
+Part 2: Consistency Proofs (20 points)
+
+(10 points) Prove the following set of sentences is consistent by providing a model:
+
+∀x∃y(x < y)
+
+∀x∀y∀z((x < y ∧ y < z) → x < z)
+
+∀x¬(x < x)
+
+(10 points) Show the following set of sentences is consistent:
+
+∃xP(x)
+
+∃x¬P(x)
+
+∀x∀y(R(x,y) → (P(x) ↔ P(y)))`
+    },
+    {
+      id: "section-6",
+      title: "Section 6",
+      content: `Part 3: Model Analysis (10 points)
+
+(5 points) Given the model M with domain {1,2,3} and relation R = {(1,2), (2,3), (1,3)}, determine whether each statement is true or false:
+
+∀x∃yR(x,y)
+
+∀x∀y∀z((R(x,y) ∧ R(y,z)) → R(x,z))
+
+∃xR(x,x)
+
+∀x∃y(R(x,y) ∧ ¬R(y,x))
+
+(5 points) For the following properties, give the smallest possible domain size needed for a model where the property holds:
+
+∃x∃y(x ≠ y ∧ ∀z(z = x ∨ z = y))
+
+∃x∃y∃z(R(x,y) ∧ R(y,z) ∧ ¬R(x,z))
+
+Note: For full credit:
+
+Clearly specify domains and interpretations in your models
+
+Verify that your models satisfy all required conditions
+
+Explain why your counterexamples work
+
+Symbolic Logic - Homework 6 Models and Proofs
+
+Total Points: 50
+
+Part 1: Invalidity Proofs (20 points)
+
+(10 points) Provide a countermodel to prove each argument is invalid:
+
+∀x(P(x) → Q(x)), ∀x(Q(x) → R(x)) ∴ ∀x(P(x) → P(x)) Answer:
+
+This is actually valid! No countermodel exists because the conclusion is a tautology. Explanation: ∀x(P(x) → P(x)) is true in all models, regardless of premises.
+
+∀x∃yL(x,y) ∴ ∃y∀xL(x,y)
+
+(L(x,y) means "x loves y")
+
+Answer:
+
+Countermodel:
+
+Domain = {a, b} L = {(a,a), (b,b)}
+
+Veriﬁcation:
+
+∀x∃yL(x,y) is true (a loves a, b loves b)
+
+∃y∀xL(x,y) is false (no y is loved by everyone)
+
+(10 points) Show that these statements are not equivalent by providing a countermodel: "Everyone has a friend" and "Someone is friends with everyone"
+
+Answer:
+
+Domain = {Alice, Bob} F(x,y) = "x is friends with y"
+
+F = {(Alice,Alice), (Bob,Bob)}
+
+In this model:
+
+∀x∃yF(x,y) is true (everyone has themselves as a friend)
+
+∃y∀xF(x,y) is false (neither person is friends with everyone) Part 2: Consistency Proofs (20 points)
+
+(10 points) Prove the following set of sentences is consistent by providing a model:
+
+∀x∃y(x < y)
+
+∀x∀y∀z((x < y ∧ y < z) → x < z)
+
+∀x¬(x < x)
+
+Answer:
+
+Model: (ℕ, <)
+
+Domain: Natural numbers
+
+< is the usual less-than relation
+
+Veriﬁcation:
+
+∀x∃y(x < y): For any n, n+1 exists and n < n+1 Transitivity holds for usual <
+
+¬(x < x) holds for usual <
+
+(10 points) Show the following set of sentences is consistent:
+
+∃xP(x)
+
+∃x¬P(x)
+
+∀x∀y(R(x,y) → (P(x) ↔ P(y)))
+
+Answer:
+
+Model:
+
+Domain = {a, b} P = {a}
+
+R = ∅ (empty relation)
+
+Veriﬁcation:
+
+∃xP(x) true because a ∈ P
+
+∃x¬P(x) true because b ∉ P
+
+R(x,y) → (P(x) ↔ P(y)) vacuously true as R is empty Part 3: Model Analysis (10 points)
+
+(5 points) Given the model M with domain {1,2,3} and relation R = {(1,2), (2,3), (1,3)}, determine whether each statement is true or false:
+
+∀x∃yR(x,y)
+
+∀x∀y∀z((R(x,y) ∧ R(y,z)) → R(x,z))
+
+∃xR(x,x)
+
+∀x∃y(R(x,y) ∧ ¬R(y,x))
+
+Answer:
+
+False - 3 has no y where R(3,y)
+
+True - R is transitive
+
+False - no element relates to itself
+
+True - for 1→2, 2→3
+
+(5 points) For the following properties, give the smallest possible domain size needed for a model where the property holds:
+
+∃x∃y(x ≠ y ∧ ∀z(z = x ∨ z = y))
+
+∃x∃y∃z(R(x,y) ∧ R(y,z) ∧ ¬R(x,z))
+
+Answer:
+
+Domain size = 2
+
+Need exactly two distinct elements Smaller impossible, larger unnecessary
+
+Domain size = 3
+
+Need three elements for non-transitive relation Example: R = {(1,2), (2,3)}
+
+Cannot be done with fewer elements
+
+Symbolic Logic - Homework 6 Models and Proofs
+
+Total Points: 50
+
+Part 1: Invalidity Proofs (20 points)
+
+(10 points) Provide a countermodel to prove each argument is invalid:
+
+∀x(P(x) → Q(x)), ∀x(Q(x) → R(x)) ∴ ∀x(P(x) → P(x))
+
+∀x∃yL(x,y) ∴ ∃y∀xL(x,y)
+
+(L(x,y) means "x loves y")
+
+(10 points) Show that these statements are not equivalent by providing a countermodel: "Everyone has a friend" and "Someone is friends with everyone"
+
+Part 2: Consistency Proofs (20 points)
+
+(10 points) Prove the following set of sentences is consistent by providing a model:
+
+∀x∃y(x < y)
+
+∀x∀y∀z((x < y ∧ y < z) → x < z)
+
+∀x¬(x < x)
+
+(10 points) Show the following set of sentences is consistent:
+
+∃xP(x)
+
+∃x¬P(x)
+
+∀x∀y(R(x,y) → (P(x) ↔ P(y)))
+
+Part 3: Model Analysis (10 points)
+
+(5 points) Given the model M with domain {1,2,3} and relation R = {(1,2), (2,3), (1,3)}, determine whether each statement is true or false:
+
+∀x∃yR(x,y)
+
+∀x∀y∀z((R(x,y) ∧ R(y,z)) → R(x,z))
+
+∃xR(x,x)
+
+∀x∃y(R(x,y) ∧ ¬R(y,x))
+
+(5 points) For the following properties, give the smallest possible domain size needed for a model where the property holds:
+
+∃x∃y(x ≠ y ∧ ∀z(z = x ∨ z = y))
+
+∃x∃y∃z(R(x,y) ∧ R(y,z) ∧ ¬R(x,z))
+
+Note: For full credit:
+
+Clearly specify domains and interpretations in your models
+
+Verify that your models satisfy all required conditions
+
+Explain why your counterexamples work
+
+Symbolic Logic - Homework 6 Models and Proofs
+
+Total Points: 50
+
+Part 1: Invalidity Proofs (20 points)
+
+(10 points) Provide a countermodel to prove each argument is invalid:
+
+∀x(P(x) → Q(x)), ∀x(Q(x) → R(x)) ∴ ∀x(P(x) → P(x))
+
+Answer:
+
+This is actually valid! No countermodel exists because the conclusion is a tautology. Explanation: ∀x(P(x) → P(x)) is true in all models, regardless of premises.
+
+∀x∃yL(x,y) ∴ ∃y∀xL(x,y)
+
+(L(x,y) means "x loves y")
+
+Answer: Countermodel: Domain = {a, b} L = {(a,a), (b,b)}
+
+Veriﬁcation:
+
+∀x∃yL(x,y) is true (a loves a, b loves b)
+
+∃y∀xL(x,y) is false (no y is loved by everyone)
+
+(10 points) Show that these statements are not equivalent by providing a countermodel: "Everyone has a friend" and "Someone is friends with everyone"
+
+Answer:
+
+Domain = {Alice, Bob} F(x,y) = "x is friends with y"
+
+F = {(Alice,Alice), (Bob,Bob)}
+
+In this model:
+
+∀x∃yF(x,y) is true (everyone has themselves as a friend)
+
+∃y∀xF(x,y) is false (neither person is friends with everyone) Part 2: Consistency Proofs (20 points)
+
+(10 points) Prove the following set of sentences is consistent by providing a model:
+
+∀x∃y(x < y)
+
+∀x∀y∀z((x < y ∧ y < z) → x < z)
+
+∀x¬(x < x)
+
+Answer:
+
+Model: (ℕ, <)
+
+Domain: Natural numbers
+
+< is the usual less-than relation
+
+Veriﬁcation:
+
+∀x∃y(x < y): For any n, n+1 exists and n < n+1 Transitivity holds for usual
+
+¬(x < x) holds for usual
+
+(10 points) Show the following set of sentences is consistent:
+
+∃xP(x)
+
+∃x¬P(x)
+
+∀x∀y(R(x,y) → (P(x) ↔ P(y)))
+
+Answer:
+
+Model:
+
+Domain = {a, b} P = {a}
+
+R = ∅ (empty relation)
+
+Veriﬁcation:
+
+∃xP(x) true because a ∈ P
+
+∃x¬P(x) true because b ∉ P
+
+R(x,y) → (P(x) ↔ P(y)) vacuously true as R is empty Part 3: Model Analysis (10 points)
+
+(5 points) Given the model M with domain {1,2,3} and relation R = {(1,2), (2,3), (1,3)}, determine whether each statement is true or false:
+
+∀x∃yR(x,y)
+
+∀x∀y∀z((R(x,y) ∧ R(y,z)) → R(x,z))
+
+∃xR(x,x)
+
+∀x∃y(R(x,y) ∧ ¬R(y,x))
+
+Answer:
+
+False - 3 has no y where R(3,y)
+
+True - R is transitive
+
+False - no element relates to itself
+
+True - for 1→2, 2→3
+
+(5 points) For the following properties, give the smallest possible domain size needed for a model where the property holds:
+
+∃x∃y(x ≠ y ∧ ∀z(z = x ∨ z = y))
+
+∃x∃y∃z(R(x,y) ∧ R(y,z) ∧ ¬R(x,z))
+
+Answer:
+
+Domain size = 2
+
+Need exactly two distinct elements Smaller impossible, larger unnecessary
+
+Domain size = 3
+
+Need three elements for non-transitive relation Example: R = {(1,2), (2,3)}
+
+Cannot be done with fewer elements
+
+Recursivity and Non-Recursive Classes
+
+Week 7: From Number Systems to Statement Classes
+
+Recursive Number Systems and Their Limits
+
+Natural Numbers (ℕ) Base case: 0 ∈ ℕ
+
+Recursive step: If n ∈ ℕ, then S(n) ∈ ℕ
+
+Complete: Every element reachable from 0 by ﬁnite applications of S
+
+Recursively enumerable: {0, 1, 2, 3, ...}
+
+Integers (ℤ)
+
+Base: Natural numbers
+
+Recursive step: If n ∈ ℤ, then -n ∈ ℤ
+
+Complete: All integers reachable by these rules Recursively enumerable: {0, 1, -1, 2, -2, ...}
+
+Rational Numbers (ℚ) Base: Integers
+
+Recursive step: If p,q ∈ ℤ and q≠0, then p/q ∈ ℚ
+
+Normalization: Reduce to lowest terms
+
+Complete: All fractions constructible from integers Recursively enumerable via systematic enumeration
+
+Non-Recursive Real Numbers (ℝ)
+
+Cantor's Diagonal Proof
+
+Assume reals are recursively enumerable List all numbers between 0 and 1:
+
+r₁ = 0.a₁₁a₁₂a₁₃... r₂ = 0.a₂₁a₂₂a₂₃... r₃ = 0.a₃₁a₃₂a₃₃...
+
+Construct new number d = 0.d₁d₂d₃...
+
+Where dₙ ≠ aₙₙ`
+    },
+    {
+      id: "section-7",
+      title: "Section 7",
+      content: `d differs from every listed number Therefore, list cannot be complete ℝ is non-recursive (incomplete)
+
+Implications of Non-Recursivity Cannot enumerate all reals
+
+No effective procedure generates all reals Uncountably inﬁnite
+
+Associated with incompleteness
+
+Completeness vs. Incompleteness
+
+Recursive Systems (Complete) Can be generated by ﬁnite rules Countably inﬁnite
+
+Examples: Natural numbers Integers
+
+Rational numbers
+
+Well-formed formulas
+
+Valid propositional formulas
+
+Non-Recursive Systems (Incomplete) Cannot be generated by ﬁnite rules Usually uncountably inﬁnite Examples:
+
+Real numbers
+
+Set of all subsets of ℕ
+
+True arithmetic statements
+
+Valid ﬁrst-order formulas
+
+General Recursive Deﬁnitions
+
+Basic Concept
+
+Recursive deﬁnition: deﬁnes objects in terms of previously deﬁned objects
+
+Base case: initial elements
+
+Recursive step: rules for generating new elements
+
+Closure: only elements generated by these rules are in the set
+
+Well-Formed Formulas (WFF) Base: Atomic formulas are WFF Recursive steps:
+
+If A is WFF, then ¬A is WFF
+
+If A, B are WFF, then (A ∧ B) is WFF If A, B are WFF, then (A ∨ B) is WFF If A, B are WFF, then (A → B) is WFF Closure: Nothing else is WFF
+
+Properties of Recursive Deﬁnitions
+
+Well-Foundedness
+
+Every element must be reachable from base cases
+
+No inﬁnite descent possible
+
+Example: Cannot deﬁne natural numbers as "n is natural if n-1 is natural"
+
+Uniqueness
+
+Each element has a unique construction Important for inductive proofs
+
+May need parsing rules for expressions
+
+Non-Recursive Classes Beyond Numbers
+
+Deﬁnition
+
+Classes that cannot be generated by ﬁnite recursive rules Often require inﬁnite information
+
+Example: Set of all true arithmetic statements
+
+Examples
+
+The set of all prime numbers
+
+The set of all halting Turing machine programs The set of all valid mathematical proofs
+
+Applications and Techniques
+
+Mathematical Applications Formal language theory Computability theory
+
+Set theory Model theory
+
+Proof Techniques Structural induction
+
+Recursive function deﬁnitions Diagonal arguments Cardinality proofs
+
+Key Takeaways
+
+Recursive deﬁnitions provide complete, countable systems
+
+Some mathematical objects resist recursive deﬁnition
+
+Non-recursivity often implies incompleteness
+
+Cantor's diagonal argument proves fundamental limits
+
+Understanding recursivity helps clarify mathematical foundations
+
+Next week will be our review session preparing for the ﬁnal exam.
+
+Symbolic Logic - Homework 7 Recursivity and Non-Recursive Classes Total Points: 50
+
+Part 1: Number Systems and Recursivity (20 points)
+
+(10 points) Show that the following sets are recursively enumerable by:
+
+Providing the recursive deﬁnition
+
+Showing the ﬁrst 8 elements in your enumeration
+
+The positive rational numbers between 0 and 1
+
+The integers arranged by absolute value
+
+(10 points) Explain why each of these sets cannot be recursively enumerated. Be
+
+speciﬁc.
+
+The set of all real numbers between 0 and 1
+
+The set of all inﬁnite sequences of 0s and 1s Part 2: Recursive Deﬁnitions (20 points)
+
+(10 points) Give a recursive deﬁnition for each of the following:
+
+The set of all binary strings containing an equal number of 0s and 1s
+
+The set of all well-formed parentheses strings
+
+(10 points) For each recursive deﬁnition, prove a property using structural induction:
+
+Prove that any string generated by your deﬁnition in 3a has equal 0s and 1s
+
+Part 3: Completeness and Incompleteness (10 points)
+
+(10 points) For each set, determine if it is recursively enumerable or not. Justify your answer.
+
+The set of all ﬁnite subsets of natural numbers
+
+The set of all functions from ℕ to {0,1} Note: For full credit:
+
+Provide complete recursive deﬁnitions including base cases, recursive steps, and closure
+
+Show all steps in your proofs
+
+Give detailed explanations for non-recursivity
+
+Use proper mathematical notation
+
+Symbolic Logic - Homework 7 Recursivity and Non-Recursive Classes Total Points: 50
+
+Part 1: Number Systems and Recursivity (20 points)
+
+(10 points) Show that the following sets are recursively enumerable by:
+
+Providing the recursive deﬁnition
+
+Showing the ﬁrst 8 elements in your enumeration
+
+The positive rational numbers between 0 and 1
+
+Answer:
+
+Recursive Deﬁnition:
+
+Base: 1/2 is in the set
+
+Recursive step: For any p/q in lowest terms, add all fractions with:
+
+Numerator p' ≤ q' Denominator q' = q + 1 That lie between 0 and 1
+
+First 8 elements (in order of increasing denominator):
+
+1/2, 1/3, 2/3, 1/4, 3/4, 1/5, 2/5, 3/5
+
+The integers arranged by absolute value Answer:
+
+Recursive Deﬁnition:
+
+Base: 0 is in the set
+
+Recursive step: If n is in the set, add both +(|n|+1) and -(|n|+1)
+
+First 8 elements:
+
+0, +1, -1, +2, -2, +3, -3, +4
+
+(10 points) Explain why each of these sets cannot be recursively enumerated. Be
+
+speciﬁc.
+
+The set of all real numbers between 0 and 1
+
+Answer:
+
+Apply Cantor's diagonal argument:
+
+Assume the set is enumerable: r₁, r₂, r₃, ...
+
+Write each in decimal: r₁ = 0.a₁₁a₁₂a₁₃... r₂ = 0.a₂₁a₂₂a₂₃...
+
+r₃ = 0.a₃₁a₃₂a₃₃...
+
+Construct d = 0.d₁d₂d₃... where dᵢ ≠ aᵢᵢ
+
+d is between 0 and 1 but differs from every number in the list
+
+Therefore, the list cannot be complete
+
+The set of all inﬁnite sequences of 0s and 1s
+
+Answer:
+
+Similar diagonal argument:
+
+If enumerable, list sequences: s₁ = (a₁₁,a₁₂,...) s₂ = (a₂₁,a₂₂,...)
+
+Create new sequence d where dᵢ = 1-aᵢᵢ
+
+d differs from every sequence in list at position i
+
+Therefore, not enumerable
+
+Part 2: Recursive Deﬁnitions (20 points)
+
+(10 points) Give a recursive deﬁnition for each of the following:
+
+The set of all binary strings containing an equal number of 0s and 1s
+
+Answer:
+
+Base case: The empty string ε belongs to the set Recursive steps:
+
+If s is in the set, then 0s1 and 1s0 are in the set
+
+If s and t are in the set, then st is in the set Closure: No other strings are in the set
+
+The set of all well-formed parentheses strings
+
+Answer:
+
+Base case: () is in the set Recursive steps:
+
+If s is in the set, then (s) is in the set
+
+If s and t are in the set, then st is in the set Closure: No other strings are in the set
+
+(10 points) For each recursive deﬁnition, prove a property using structural induction:
+
+Prove that any string generated by your deﬁnition in 3a has equal 0s and 1s
+
+Answer:
+
+Base case: ε has 0 of each (equal) Inductive steps:
+
+If s has equal 0s and 1s:
+
+0s1 adds one 0 and one 1 (still equal) 1s0 adds one 1 and one 0 (still equal)
+
+If s and t have equal 0s and 1s:
+
+st combines their counts (sum of equals is equal) Part 3: Completeness and Incompleteness (10 points)
+
+(10 points) For each set, determine if it is recursively enumerable or not. Justify your answer.
+
+The set of all ﬁnite subsets of natural numbers
+
+Answer:
+
+Recursively enumerable.
+
+Can enumerate by size: ﬁrst all subsets of size 0, then size 1, etc.
+
+For each size n, list all combinations of n numbers in increasing order
+
+This generates all ﬁnite subsets eventually
+
+The set of all functions from ℕ to {0,1}
+
+Answer:
+
+Not recursively enumerable.
+
+Each function corresponds to an inﬁnite sequence of 0s and 1s
+
+By previous proof (2b), such sequences cannot be enumerated
+
+Therefore, these functions cannot be enumerated
+
+This set is equivalent to the power set of ℕ (uncountable)
+
+Symbolic Logic Course Review
+
+Week 8: Comprehensive Overview and Exam Preparation
+
+Basic Concepts and Notation (Week 1)
+
+Fundamental Concepts Statements and propositions Validity vs. soundness Material vs. strict implication
+
+Basic Symbols Negation (¬) Conjunction (∧) Disjunction (∨) Conditional (→) Biconditional (↔)
+
+Translation Skills
+
+Natural language to symbolic form Symbolic form to natural language Common patterns and pitfalls
+
+Truth Tables and Elementary Proofs (Week 2)
+
+Truth Tables
+
+Construction and evaluation Testing validity
+
+Checking equivalence
+
+Rules of Inference Modus Ponens Modus Tollens Disjunctive Syllogism Double Negation
+
+De Morgan's Laws
+
+¬(p ∧ q) ≡ (¬p ∨ ¬q)
+
+¬(p ∨ q) ≡ (¬p ∧ ¬q)
+
+Boolean Algebra (Week 3)
+
+Basic Operations NOT, AND, OR`
+    },
+    {
+      id: "section-8",
+      title: "Section 8",
+      content: `Truth tables Boolean functions
+
+Laws and Properties Identity Complement Associative Distributive
+
+De Morgan's Absorption
+
+Applications Circuit design
+
+Expression simpliﬁcation
+
+Truth function analysis
+
+Introduction to Quantiﬁcation (Week 4)
+
+Basic Quantiﬁers Universal (∀) Existential (∃) Domains of discourse
+
+Translation Techniques
+
+Simple quantiﬁed statements
+
+Multiple quantiﬁers Order of quantiﬁers
+
+Negation Rules
+
+¬∀x(Px) ≡ ∃x(¬Px)
+
+¬∃x(Px) ≡ ∀x(¬Px)
+
+Advanced Quantiﬁcation (Week 5)
+
+Complex Translations Nested quantiﬁers Mixed quantiﬁers
+
+Mathematical statements
+
+Epsilon-Delta Deﬁnitions
+
+Limits Continuity
+
+Mathematical analysis
+
+Formal Proofs With quantiﬁers Mathematical rigor Common patterns
+
+Models and Proofs (Week 6)
+
+Model Theory Structure of models Domains Interpretations
+
+Proving Invalidity Countermodels Construction techniques Veriﬁcation
+
+Consistency Proofs Model construction Veriﬁcation methods Common strategies
+
+Recursivity (Week 7)
+
+Recursive Number Systems
+
+Natural numbers Integers Rationals
+
+Non-recursive reals
+
+Cantor's Proof Diagonal argument Uncountability Implications
+
+Recursive vs. Non-Recursive Completeness Incompleteness Applications
+
+Exam Preparation Strategies
+
+Key Skills to Practice Translation (both directions) Truth table construction Model building
+
+Proof techniques
+
+Recursive deﬁnitions
+
+Common Pitfalls
+
+Confusing material/strict implication
+
+Order of quantiﬁers
+
+Model completeness Recursive vs. non-recursive
+
+Problem-Solving Approach Read carefully
+
+Identify key concepts Plan solution strategy Show all work
+
+Verify answers
+
+Practice Problems Focus Areas
+
+Translation Complex statements Multiple quantiﬁers
+
+Mathematical concepts
+
+Proofs Validity/invalidity Consistency
+
+Model construction
+
+Recursivity Deﬁnitions Enumeration
+
+Non-recursive examples
+
+Final Exam Format Total points: 500
+
+Time: 180 minutes Sections:
+
+Translation and Basic Concepts Truth Tables and Boolean Algebra Quantiﬁcation and Models Recursivity and Deﬁnability Comprehensive Problem Solving
+
+Symbolic Logic - Final Examination Total Points: 500
+
+Time Allowed: 180 minutes
+
+Part I: Translation and Basic Concepts (100 points)
+
+(40 points) Translate each statement into symbolic logic. State your predicates and domain clearly.
+
+"Between any two real numbers there is a rational number and an irrational number."
+
+"Not every student who studies hard fails any exam."
+
+(30 points) Negate each statement, simplify, then translate back to English:
+
+∀x∃y(P(x) → (Q(y) ∧ R(x,y)))
+
+(30 points) Explain the difference between material and strict implication using
+
+examples. Provide truth conditions for each.
+
+Part II: Truth Tables and Boolean Algebra (100 points)
+
+(40 points) Use truth tables to determine if these arguments are valid:
+
+a) p → q, q → r, ¬r ∴ ¬p
+
+(30 points) Simplify using Boolean algebra (show steps):
+
+((x ∧ y) ∨ (¬x ∧ y)) ∧ (x ∨ ¬y)
+
+(30 points) Design a Boolean circuit for:
+
+f(x,y,z) = (x ∧ ¬y) ∨ (¬x ∧ y ∧ z)
+
+Part III: Quantiﬁcation and Models (150 points)
+
+(50 points) Prove that these statements are not equivalent using a countermodel:
+
+∀x∃y∀zR(x,y,z) and ∃y∀x∀zR(x,y,z)
+
+(50 points) Write the epsilon-delta proof that lim(x→2) x³ = 8
+
+(50 points) Construct a model that demonstrates the consistency of:
+
+∀x∃yR(x,y)
+
+∀x¬R(x,x)
+
+∀x∀y∀z((R(x,y) ∧ R(y,z)) → R(x,z))
+
+Part IV: Recursivity and Deﬁnability (150 points)
+
+(50 points) Prove that the set of real numbers is not recursively enumerable using Cantor's diagonal argument.
+
+(50 points) Give a recursive deﬁnition for each:
+
+The set of all strings over {a,b} with equal numbers of a's and b's
+
+The arithmetic expressions using only numbers and +
+
+(50 points) Show that the following questions about an arbitrary recursive deﬁnition are
+
+themselves non-recursive:
+
+Whether a given element belongs to the recursively deﬁned set
+
+Whether a given property holds for all elements of the set
+
+Note: For full credit:
+
+Show all work clearly
+
+Justify each step in proofs
+
+State any assumptions or additional deﬁnitions used
+
+Verify all conditions in model constructions
+
+Provide clear explanations for conceptual questions
+
+Symbolic Logic - Final Examination Total Points: 500
+
+Time Allowed: 180 minutes
+
+Part I: Translation and Basic Concepts (100 points)
+
+(40 points) Translate each statement into symbolic logic. State your predicates and domain clearly.
+
+"Between any two real numbers there is a rational number and an irrational number."
+
+Answer:
+
+Domain: Real numbers Q(x): x is rational
+
+I(x): x is irrational
+
+∀x∀y(x < y → ∃z∃w((x < z < y) ∧ (x < w < y) ∧ Q(z) ∧ I(w)))
+
+"Not every student who studies hard fails any exam."
+
+Answer:
+
+Domain: Students S(x): x studies hard F(x,y): x fails exam y
+
+¬∀x(S(x) → ∀y(F(x,y)))
+
+≡ ∃x(S(x) ∧ ∃y(¬F(x,y)))
+
+(30 points) Negate each statement, simplify, then translate back to English:
+
+∀x∃y(P(x) → (Q(y) ∧ R(x,y))) Answer:
+
+¬∀x∃y(P(x) → (Q(y) ∧ R(x,y)))
+
+≡ ∃x∀y¬(P(x) → (Q(y) ∧ R(x,y)))
+
+≡ ∃x∀y(P(x) ∧ ¬(Q(y) ∧ R(x,y)))
+
+≡ ∃x∀y(P(x) ∧ (¬Q(y) ∨ ¬R(x,y)))
+
+English: "There exists something that has property P, and for all things, either they don't
+
+have property Q or they don't stand in relation R to the ﬁrst thing."
+
+(30 points) Explain the difference between material and strict implication using
+
+examples. Provide truth conditions for each.
+
+Answer:
+
+Material implication (p → q):
+
+Truth-functional: false only when p true and q false
+
+Example: "If it rains, the ground is wet"
+
+No necessary connection required
+
+Truth table shows all cases
+
+Strict implication (p ⊃ q):
+
+Based on logical necessity
+
+Example: "If x is a square, then x has four equal sides"
+
+Requires conceptual connection
+
+Cannot be captured by truth table alone
+
+Modal concept: true in all possible worlds
+
+Part II: Truth Tables and Boolean Algebra (100 points)
+
+(40 points) Use truth tables to determine if these arguments are valid:
+
+a) p → q, q → r, ¬r ∴ ¬p Answer:
+
+| p | q | r | p → q | q → r | ¬r | ¬p |
+
+| | | | | | | |
+
+| T | T | T | T | T | F | F |
+
+| T | T | F | T | F | T | F |
+
+| T | F | T | F | T | F | F |
+
+| T | F | F | F | T | T | F |
+
+| F | T | T | T | T | F | T |
+
+| F | T | F | T | F | T | T |
+
+| F | F | T | T | T | F | T |
+
+| F | F | F | T | T | T | T |
+
+Valid: When premises are all true (row 2), conclusion is true.
+
+(30 points) Simplify using Boolean algebra (show steps): ((x ∧ y) ∨ (¬x ∧ y)) ∧ (x ∨ ¬y)
+
+Answer:
+
+((x ∧ y) ∨ (¬x ∧ y)) ∧ (x ∨ ¬y)
+
+≡ (y ∧ (x ∨ ¬x)) ∧ (x ∨ ¬y) [Distributive]
+
+≡ (y ∧ 1) ∧ (x ∨ ¬y) [Complement]
+
+≡ y ∧ (x ∨ ¬y) [Identity]
+
+≡ (y ∧ x) ∨ (y ∧ ¬y) [Distributive]
+
+≡ (y ∧ x) ∨ 0 [Complement]
+
+≡ y ∧ x [Identity]
+
+(30 points) Design a Boolean circuit for:
+
+f(x,y,z) = (x ∧ ¬y) ∨ (¬x ∧ y ∧ z)
+
+Answer:
+
+'''
+
+x ---|AND|----
+
+| |
+
+y ---|NOT| |OR| Output
+
+| |
+
+x ---|NOT| |
+
+| |
+
+y ---|AND| |
+
+|
+
+z |
+
+'''
+
+Part III: Quantiﬁcation and Models (150 points)
+
+(50 points) Prove that these statements are not equivalent using a countermodel:
+
+∀x∃y∀zR(x,y,z) and ∃y∀x∀zR(x,y,z)
+
+Answer:
+
+Countermodel:
+
+Domain = {1, 2}
+
+R = {(1,1,1), (1,1,2), (2,2,1), (2,2,2)}
+
+In this model:
+
+∀x∃y∀zR(x,y,z) is true because:
+
+For x=1, y=1 works for all z For x=2, y=2 works for all z
+
+∃y∀x∀zR(x,y,z) is false because:
+
+No single y works for all x and z
+
+(50 points) Write the epsilon-delta proof that lim(x→2) x³ = 8
+
+Answer:
+
+To prove: ∀ε>0 ∃δ>0 ∀x(0<|x-2|<δ → |x³-8|<ε)
+
+|x³-8| = |x³-2³|
+
+= |(x-2)(x²+2x+4)|
+
+= |x-2||x²+2x+4|
+
+When |x-2| < 1, then 1 < x < 3
+
+Then |x²+2x+4| ≤ 19
+
+Choose δ = min(1, ε/19)
+
+Then |x³-8| = |x-2||x²+2x+4| < δ·19 ≤ ε
+
+(50 points) Construct a model that demonstrates the consistency of:
+
+∀x∃yR(x,y)
+
+∀x¬R(x,x)
+
+∀x∀y∀z((R(x,y) ∧ R(y,z)) → R(x,z))
+
+Answer:
+
+Model:
+
+Domain: ℤ (integers) R(x,y): x < y
+
+Veriﬁcation:
+
+∀x∃yR(x,y): For any x, x+1 exists and x < x+1
+
+∀x¬R(x,x): No number is less than itself Transitivity: If x < y and y < z then x < z
+
+Part IV: Recursivity and Deﬁnability (150 points)
+
+(50 points) Prove that the set of real numbers is not recursively enumerable using Cantor's diagonal argument.
+
+Answer:`
+    },
+    {
+      id: "section-9",
+      title: "Section 9",
+      content: `Assume reals are enumerable: r₁, r₂, r₃, ...
+
+Write decimal expansions:
+
+r₁ = 0.a₁₁a₁₂a₁₃... r₂ = 0.a₂₁a₂₂a₂₃... r₃ = 0.a₃₁a₃₂a₃₃...
+
+Construct d = 0.d₁d₂d₃... where:
+
+dᵢ = 1 if aᵢᵢ = 2 dᵢ = 2 if aᵢᵢ ≠ 2
+
+d is a real number but differs from every number in list
+
+Therefore, list cannot be complete
+
+Thus, reals are not recursively enumerable
+
+(50 points) Give a recursive deﬁnition for each:
+
+The set of all strings over {a,b} with equal numbers of a's and b's
+
+Answer:
+
+Base: ε (empty string) is in the set Recursive steps:
+
+If s is in the set, then asb and bsa are in the set
+
+If s and t are in the set, then st is in the set Closure: No other strings are in the set
+
+The arithmetic expressions using only numbers and +
+
+Answer:
+
+Base: Any number is an expression
+
+Recursive step: If E₁ and E₂ are expressions, then (E₁ + E₂) is an expression
+
+Closure: Nothing else is an expression
+
+(50 points) Show that the following questions about an arbitrary recursive deﬁnition are
+
+themselves non-recursive:
+
+Whether a given element belongs to the recursively deﬁned set
+
+Whether a given property holds for all elements of the set
+
+Answer:
+
+Use reduction to the halting problem:
+
+Can encode Turing machine computations as elements Then membership would solve halting problem
+
+Can encode "machine M halts" as property
+
+Then property veriﬁcation would solve halting problem
+
+Both are therefore non-recursive by reduction`
     }
   ]
 };
-
-export function getFullDocumentContent(): string {
-  return bookContent.sections.map(section => `${section.title}\n\n${section.content}`).join('\n\n');
-}
