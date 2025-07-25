@@ -571,7 +571,8 @@ export class DatabaseStorage implements IStorage {
   async createPodcast(insertPodcast: InsertPodcast): Promise<Podcast> {
     const [podcast] = await db.insert(podcasts).values({
       ...insertPodcast,
-      audioUrl: insertPodcast.audioUrl ?? null,
+      audioPath: insertPodcast.audioPath ?? null,
+      hasAudio: insertPodcast.hasAudio ?? false,
       chunkIndex: insertPodcast.chunkIndex ?? null
     }).returning();
     return podcast;
@@ -583,6 +584,14 @@ export class DatabaseStorage implements IStorage {
 
   async getPodcastById(id: number): Promise<Podcast | null> {
     const [podcast] = await db.select().from(podcasts).where(eq(podcasts.id, id));
+    return podcast || null;
+  }
+
+  async updatePodcast(id: number, updates: Partial<Pick<Podcast, 'sourceText' | 'script' | 'audioPath' | 'hasAudio'>>): Promise<Podcast | null> {
+    const [podcast] = await db.update(podcasts)
+      .set(updates)
+      .where(eq(podcasts.id, id))
+      .returning();
     return podcast || null;
   }
 

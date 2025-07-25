@@ -212,6 +212,40 @@ export default function PodcastModal({ isOpen, onClose, sourceText, chunkIndex }
                 </div>
               </div>
               
+              {/* Audio Player */}
+              {currentPodcast.hasAudio && (
+                <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center space-x-2">
+                      <Volume2 className="w-5 h-5 text-green-600" />
+                      <span className="font-medium text-green-800 dark:text-green-200">Audio Available</span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const link = document.createElement('a');
+                        link.href = `/api/podcasts/${currentPodcast.id}/audio`;
+                        link.download = `podcast_${currentPodcast.id}.mp3`;
+                        link.click();
+                      }}
+                      className="flex items-center space-x-1"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>Download MP3</span>
+                    </Button>
+                  </div>
+                  <audio 
+                    controls 
+                    className="w-full"
+                    src={`/api/podcasts/${currentPodcast.id}/audio`}
+                    preload="metadata"
+                  >
+                    Your browser does not support the audio element.
+                  </audio>
+                </div>
+              )}
+
               <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg max-h-96 overflow-y-auto">
                 <div className="whitespace-pre-wrap text-sm font-mono">
                   {currentPodcast.script}
@@ -222,6 +256,18 @@ export default function PodcastModal({ isOpen, onClose, sourceText, chunkIndex }
                 <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md">
                   <p className="text-sm text-yellow-800 dark:text-yellow-200">
                     This is a preview. Register and purchase credits to generate the complete podcast script with audio.
+                  </p>
+                </div>
+              )}
+
+              {!currentPodcast.hasAudio && !currentPodcast.isPreview && (
+                <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md">
+                  <div className="flex items-center space-x-2">
+                    <Volume2 className="w-4 h-4 text-yellow-600" />
+                    <span className="font-medium text-yellow-800 dark:text-yellow-200">Audio synthesis requires Azure Speech Service</span>
+                  </div>
+                  <p className="text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                    Configure AZURE_SPEECH_KEY and AZURE_SPEECH_ENDPOINT to enable audio generation.
                   </p>
                 </div>
               )}

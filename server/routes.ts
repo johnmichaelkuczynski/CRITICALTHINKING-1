@@ -4,7 +4,9 @@ import { createServer, type Server } from "http";
 import session from "express-session";
 import { storage } from "./storage";
 import { generateAIResponse, generateRewrite, generatePassageExplanation, generatePassageDiscussionResponse, generateQuiz, generateStudyGuide, generateStudentTest } from "./services/ai-models";
-import { podcastGenerator } from "./services/podcast-generator";
+import { generatePodcast, generatePreviewScript } from "./services/podcast-generator";
+import { podcasts } from "@shared/schema";
+import { eq } from "drizzle-orm";
 
 import { getFullDocumentContent } from "./services/document-processor";
 
@@ -1226,62 +1228,66 @@ FEEDBACK: [explanation focusing on content accuracy]`;
 
       console.log(`Generating podcast with ${model} for user ${user.username}`);
 
-      // Generate complete podcast
-      const result = await podcastGenerator.generateCompletePodcast({
+      // Create temporary podcast record to get ID for audio generation
+      const tempPodcast = await storage.createPodcast({
+        sourceText: sourceText.substring(0, 1000),
+        script: "Generating...",
+        instructions: instructions || null,
+        model,
+        chunkIndex: chunkIndex || null,
+        audioPath: null,
+        hasAudio: false,
+      });
+
+      // Generate podcast with the actual podcast ID
+      const result = await generatePodcast({
         sourceText,
         instructions,
-        model
+        model,
+        podcastId: tempPodcast.id
       });
 
       // For non-admin users, provide preview
       if (!isAdmin(user)) {
-        const previewScript = podcastGenerator.generatePreviewScript(result.script, 200);
+        const previewScript = generatePreviewScript(result.script, 200);
         
-        // Create podcast record in database
-        const podcast = await storage.createPodcast({
-          sourceText: sourceText.substring(0, 1000), // Store truncated source
+        // Update podcast record with actual data
+        await storage.updatePodcast(tempPodcast.id, {
+          sourceText,
           script: result.script,
-          instructions: instructions || null,
-          model,
-          chunkIndex: chunkIndex || null,
-          audioUrl: null, // No audio file saved for previews
+          audioPath: result.audioPath,
+          hasAudio: result.hasAudio,
         });
+        
+        const podcast = await storage.getPodcastById(tempPodcast.id);
 
         return res.json({
           id: podcast.id,
           script: previewScript,
-          hasAudio: !!result.audioBuffer,
+          hasAudio: result.hasAudio,
           isPreview: true
         });
       }
 
-      // For admin users, provide full access
-      let audioUrl = null;
-      if (result.audioBuffer) {
-        // Save audio file (in production, you'd save to proper storage)
-        audioUrl = `podcast_${Date.now()}.wav`;
-        // TODO: Implement actual file storage
-      }
-
-      // Deduct credits for non-admin users (already checked above)
+      // Deduct credits for non-admin users
       if (!isAdmin(user)) {
         await storage.updateUserCredits(user.id, user.credits - 100);
       }
 
-      // Create podcast record
-      const podcast = await storage.createPodcast({
+      // Update podcast record with full data for admin users
+      await storage.updatePodcast(tempPodcast.id, {
         sourceText,
         script: result.script,
-        instructions: instructions || null,
-        model,
-        chunkIndex: chunkIndex || null,
-        audioUrl,
+        audioPath: result.audioPath,
+        hasAudio: result.hasAudio,
       });
+      
+      const podcast = await storage.getPodcastById(tempPodcast.id);
 
       res.json({
         id: podcast.id,
         script: result.script,
-        hasAudio: !!result.audioBuffer,
+        hasAudio: result.hasAudio,
         isPreview: false
       });
 
@@ -1332,7 +1338,7 @@ FEEDBACK: [explanation focusing on content accuracy]`;
     }
   });
 
-  // Audio download endpoint
+  // Audio serving endpoint
   app.get("/api/podcasts/:id/audio", async (req, res) => {
     try {
       const user = await getCurrentUser(req);
@@ -1343,13 +1349,27 @@ FEEDBACK: [explanation focusing on content accuracy]`;
       const id = parseInt(req.params.id);
       const podcast = await storage.getPodcastById(id);
       
-      if (!podcast || !podcast.audioUrl) {
+      if (!podcast || !podcast.audioPath || !podcast.hasAudio) {
         return res.status(404).json({ error: "Audio not found" });
       }
 
-      // TODO: Implement actual audio file serving
-      // For now, return a placeholder response
-      res.status(501).json({ error: "Audio serving not implemented yet" });
+      // Check if file exists
+      const fs = await import('fs');
+      const path = await import('path');
+      
+      if (!fs.existsSync(podcast.audioPath)) {
+        return res.status(404).json({ error: "Audio file not found on disk" });
+      }
+
+      // Set proper headers for MP3 streaming
+      res.setHeader('Content-Type', 'audio/mpeg');
+      res.setHeader('Accept-Ranges', 'bytes');
+      res.setHeader('Content-Disposition', `inline; filename="podcast_${id}.mp3"`);
+
+      // Stream the audio file
+      const fileStream = fs.createReadStream(podcast.audioPath);
+      fileStream.pipe(res);
+
     } catch (error) {
       console.error("Error serving audio:", error);
       res.status(500).json({ error: "Failed to serve audio" });

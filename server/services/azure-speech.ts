@@ -2,6 +2,63 @@ import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import * as fs from "fs";
 import * as path from "path";
 
+// Create audio directory if it doesn't exist
+const audioDir = path.join(process.cwd(), 'audio');
+if (!fs.existsSync(audioDir)) {
+  fs.mkdirSync(audioDir, { recursive: true });
+}
+
+export async function synthesizeSpeech(text: string, podcastId: number): Promise<{ audioPath: string | null; hasAudio: boolean }> {
+  const speechKey = process.env.AZURE_SPEECH_KEY;
+  const speechEndpoint = process.env.AZURE_SPEECH_ENDPOINT;
+
+  if (!speechKey || !speechEndpoint) {
+    console.log("Azure Speech credentials not configured");
+    return { audioPath: null, hasAudio: false };
+  }
+
+  try {
+    // Extract region from endpoint (e.g., https://eastus.api.cognitive.microsoft.com/sts/v1.0/issuetoken)
+    const region = speechEndpoint.split('.')[0].replace('https://', '');
+    
+    const speechConfig = sdk.SpeechConfig.fromSubscription(speechKey, region);
+    speechConfig.speechSynthesisOutputFormat = sdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3;
+    speechConfig.speechSynthesisVoiceName = "en-US-JennyNeural";
+
+    // Define output file path
+    const audioFileName = `podcast_${podcastId}_${Date.now()}.mp3`;
+    const audioFilePath = path.join(audioDir, audioFileName);
+    
+    const audioConfig = sdk.AudioConfig.fromAudioFileOutput(audioFilePath);
+    const synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
+
+    return new Promise((resolve, reject) => {
+      synthesizer.speakTextAsync(
+        text,
+        (result) => {
+          if (result.reason === sdk.ResultReason.SynthesizingAudioCompleted) {
+            console.log(`Audio synthesis completed: ${audioFilePath}`);
+            synthesizer.close();
+            resolve({ audioPath: audioFilePath, hasAudio: true });
+          } else {
+            console.error("Speech synthesis failed:", result.errorDetails);
+            synthesizer.close();
+            resolve({ audioPath: null, hasAudio: false });
+          }
+        },
+        (error) => {
+          console.error("Speech synthesis error:", error);
+          synthesizer.close();
+          reject(error);
+        }
+      );
+    });
+  } catch (error) {
+    console.error("Azure Speech synthesis error:", error);
+    return { audioPath: null, hasAudio: false };
+  }
+}
+
 export interface SpeechConfig {
   subscriptionKey: string;
   region: string;
