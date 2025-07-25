@@ -197,7 +197,7 @@ export default function LivingBook() {
               <BookOpen className="text-primary text-base sm:text-lg" />
               <div className="flex flex-col">
                 <h1 className="font-inter font-semibold text-sm sm:text-base text-foreground">
-                  Writing 101
+                  NEWSYMBOLICLOGICXYZ
                 </h1>
                 <a 
                   href="mailto:contact@zhisystems.ai"
