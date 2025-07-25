@@ -18,9 +18,14 @@ export async function synthesizeSpeech(text: string, podcastId: number): Promise
   }
 
   try {
-    // Extract region from endpoint (e.g., https://eastus.api.cognitive.microsoft.com/sts/v1.0/issuetoken)
-    const region = speechEndpoint.split('.')[0].replace('https://', '');
+    // Extract region from endpoint format: https://[region].api.cognitive.microsoft.com/
+    let region = 'eastus'; // default fallback
+    const regionMatch = speechEndpoint.match(/https:\/\/([^.]+)\.api\.cognitive\.microsoft\.com/);
+    if (regionMatch) {
+      region = regionMatch[1];
+    }
     
+    console.log(`Using Azure Speech region: ${region}`);
     const speechConfig = sdk.SpeechConfig.fromSubscription(speechKey, region);
     speechConfig.speechSynthesisOutputFormat = sdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3;
     speechConfig.speechSynthesisVoiceName = "en-US-JennyNeural";
@@ -141,8 +146,8 @@ export function createAzureSpeechService(): AzureSpeechService | null {
     return null;
   }
 
-  // Extract region from endpoint URL
-  const region = endpoint.match(/https:\/\/(\w+)\.tts\.speech\.microsoft\.com/)?.[1] || "eastus";
+  // Extract region from endpoint URL format: https://[region].api.cognitive.microsoft.com/
+  const region = endpoint.match(/https:\/\/([^.]+)\.api\.cognitive\.microsoft\.com/)?.[1] || "eastus";
 
   return new AzureSpeechService({
     subscriptionKey,
