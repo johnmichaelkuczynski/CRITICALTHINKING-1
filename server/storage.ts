@@ -3,6 +3,7 @@ import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
+  testConnection(): Promise<boolean>;
   createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
   getChatMessages(): Promise<ChatMessage[]>;
   clearChatMessages(): Promise<void>;
@@ -95,6 +96,11 @@ export class MemStorage implements IStorage {
     this.currentUserId = 1;
     this.currentPurchaseId = 1;
     this.currentPodcastId = 1;
+  }
+
+  async testConnection(): Promise<boolean> {
+    // Memory storage doesn't require a connection test
+    return true;
   }
 
   async createChatMessage(insertMessage: InsertChatMessage): Promise<ChatMessage> {
@@ -365,6 +371,20 @@ export class MemStorage implements IStorage {
 
 // Database Storage Implementation
 export class DatabaseStorage implements IStorage {
+  async testConnection(): Promise<boolean> {
+    try {
+      // Test connection using a simple SELECT from information_schema
+      const result = await db.execute({ 
+        sql: 'SELECT current_database()', 
+        args: [] 
+      });
+      return result.rows.length > 0;
+    } catch (error) {
+      console.error('Database connection test failed:', error);
+      throw error;
+    }
+  }
+
   async createChatMessage(insertMessage: InsertChatMessage): Promise<ChatMessage> {
     const [message] = await db.insert(chatMessages).values({
       ...insertMessage,

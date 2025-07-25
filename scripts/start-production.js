@@ -1,70 +1,111 @@
 #!/usr/bin/env node
 
 /**
- * Production startup script for Cloud Run deployments
- * Ensures proper environment setup and graceful error handling
+ * Production startup script optimized for Cloud Run deployment
  */
 
 import { spawn } from 'child_process';
-import fs from 'fs';
+import { promises as fs } from 'fs';
 import path from 'path';
 
-console.log('🚀 Starting production deployment...');
+console.log('🚀 Starting production server...');
 
-// Environment validation
-const requiredEnvVars = ['DATABASE_URL'];
-const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-
-if (missingVars.length > 0) {
-  console.error('❌ Missing required environment variables:', missingVars);
-  process.exit(1);
-}
-
-// Verify build exists
-const buildPath = path.resolve(process.cwd(), 'dist');
-if (!fs.existsSync(buildPath)) {
-  console.error('❌ Build directory not found. Run "npm run build" first.');
-  process.exit(1);
-}
-
-// Verify main build file exists
-const mainFile = path.join(buildPath, 'index.js');
-if (!fs.existsSync(mainFile)) {
-  console.error('❌ Built server file not found:', mainFile);
-  process.exit(1);
-}
-
-console.log('✅ Environment validation passed');
-console.log('✅ Build files verified');
-
-// Start the application
-console.log('🎯 Starting application server...');
-
-const server = spawn('node', [mainFile], {
-  stdio: 'inherit',
-  env: {
-    ...process.env,
-    NODE_ENV: 'production'
+// Verify production build exists
+const buildExists = async () => {
+  try {
+    await fs.access('dist/index.js');
+    await fs.access('dist/public');
+    return true;
+  } catch {
+    return false;
   }
-});
+};
 
-server.on('error', (error) => {
-  console.error('❌ Failed to start server:', error);
-  process.exit(1);
-});
+// Environment validation for Cloud Run
+const validateEnvironment = () => {
+  const required = [];
+  const optional = ['AZURE_SPEECH_REGION', 'PAYPAL_CLIENT_ID', 'PAYPAL_CLIENT_SECRET'];
+  
+  console.log('📋 Environment validation:');
+  
+  // Check required environment variables
+  let missing = required.filter(key => !process.env[key]);
+  if (missing.length > 0) {
+    console.error('❌ Missing required environment variables:', missing);
+    process.exit(1);
+  }
+  
+  // Report optional environment variables
+  let missingOptional = optional.filter(key => !process.env[key]);
+  if (missingOptional.length > 0) {
+    console.log('⚠️  Optional environment variables not set:', missingOptional);
+  }
+  
+  // Cloud Run specific environment
+  const port = process.env.PORT || '8080';
+  console.log(`✅ Server will bind to port: ${port}`);
+  
+  if (process.env.DATABASE_URL) {
+    console.log('✅ Database URL configured');
+  } else {
+    console.log('⚠️  No database URL - using memory storage');
+  }
+  
+  return true;
+};
 
-server.on('exit', (code) => {
-  console.log(`Server exited with code: ${code}`);
-  process.exit(code || 0);
-});
+const main = async () => {
+  try {
+    // Validate environment first
+    validateEnvironment();
+    
+    // Check if build exists
+    if (!(await buildExists())) {
+      console.error('❌ Production build not found. Run "npm run build" first.');
+      process.exit(1);
+    }
+    
+    console.log('✅ Production build verified');
+    
+    // Set production environment
+    const env = {
+      ...process.env,
+      NODE_ENV: 'production',
+      PORT: process.env.PORT || '8080'
+    };
+    
+    console.log('🎯 Starting Node.js server...');
+    
+    // Start the production server
+    const server = spawn('node', ['dist/index.js'], {
+      stdio: 'inherit',
+      env: env
+    });
+    
+    // Handle server events
+    server.on('error', (error) => {
+      console.error('❌ Server startup error:', error);
+      process.exit(1);
+    });
+    
+    server.on('close', (code) => {
+      console.log(`🛑 Server process exited with code: ${code}`);
+      process.exit(code || 0);
+    });
+    
+    // Handle shutdown signals for Cloud Run
+    const shutdown = () => {
+      console.log('🛑 Received shutdown signal, terminating server...');
+      server.kill('SIGTERM');
+    };
+    
+    process.on('SIGTERM', shutdown);
+    process.on('SIGINT', shutdown);
+    
+  } catch (error) {
+    console.error('❌ Production startup failed:', error);
+    process.exit(1);
+  }
+};
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('📡 Received SIGTERM, shutting down gracefully...');
-  server.kill('SIGTERM');
-});
-
-process.on('SIGINT', () => {
-  console.log('📡 Received SIGINT, shutting down gracefully...');
-  server.kill('SIGINT');
-});
+main();

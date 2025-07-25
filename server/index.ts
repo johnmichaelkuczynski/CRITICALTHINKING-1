@@ -2,6 +2,13 @@ import express, { type Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// ES module compatibility
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -27,7 +34,7 @@ if (process.env.NODE_ENV === 'production') {
   console.log('Production environment detected - performing additional checks...');
   
   // Verify build directory exists in production
-  if (!require('fs').existsSync(require('path').resolve(import.meta.dirname, 'public'))) {
+  if (!fs.existsSync(path.resolve(__dirname, 'public'))) {
     console.error('Production build not found. Run "npm run build" before deployment.');
     process.exit(1);
   }
@@ -90,14 +97,26 @@ app.use((req, res, next) => {
 const initializeDatabase = async () => {
   try {
     console.log('Testing database connection...');
-    const { db } = await import('./db');
-    const result = await db.execute({ sql: 'SELECT 1 as test', args: [] });
-    console.log('Database connection successful:', result.rows[0]);
+    
+    // Only test database connection if DATABASE_URL is provided
+    if (!process.env.DATABASE_URL) {
+      if (process.env.NODE_ENV === 'production') {
+        console.error('DATABASE_URL environment variable is required in production');
+        process.exit(1);
+      }
+      console.warn('No DATABASE_URL provided - using memory storage');
+      return false;
+    }
+    
+    const { storage } = await import('./storage.js');
+    await storage.testConnection();
+    console.log('Database connection successful');
     return true;
   } catch (error) {
     console.error('Database connection failed:', error);
     if (process.env.NODE_ENV === 'production') {
       console.error('Database connection is required in production');
+      console.error('Ensure DATABASE_URL environment variable is set correctly');
       process.exit(1);
     }
     // In development, continue without database if connection fails
