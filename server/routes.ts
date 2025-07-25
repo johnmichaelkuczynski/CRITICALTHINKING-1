@@ -57,7 +57,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true, message: "Database connection working", testUser });
     } catch (error) {
       console.error("Database test failed:", error);
-      res.status(500).json({ success: false, error: error.message });
+      res.status(500).json({ success: false, error: (error as Error).message });
     }
   });
 
@@ -80,7 +80,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       console.error("Admin reset failed:", error);
-      res.status(500).json({ success: false, error: error.message });
+      res.status(500).json({ success: false, error: (error as Error).message });
     }
   });
 
