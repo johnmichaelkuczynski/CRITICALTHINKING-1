@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, Volume2, Download, Play, Pause } from "lucide-react";
@@ -108,6 +108,9 @@ export default function PodcastModal({ isOpen, onClose, sourceText, chunkIndex }
             <Volume2 className="w-5 h-5" />
             <span>Generate Podcast Summary</span>
           </DialogTitle>
+          <DialogDescription>
+            Generate an AI-powered podcast-style summary of your selected text with optional audio synthesis.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">

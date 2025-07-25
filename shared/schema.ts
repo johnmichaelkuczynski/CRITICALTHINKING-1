@@ -286,7 +286,7 @@ export const podcastRequestSchema = z.object({
   sourceText: z.string(),
   instructions: z.string().optional(),
   model: z.enum(["deepseek", "openai", "anthropic", "perplexity"]),
-  chunkIndex: z.number().optional(),
+  chunkIndex: z.number().nullable().optional(),
 });
 
 
