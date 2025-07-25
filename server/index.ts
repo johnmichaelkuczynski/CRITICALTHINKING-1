@@ -4,6 +4,54 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+
+// Environment checking for production deployment
+const requiredEnvVars = ['DATABASE_URL'];
+const optionalEnvVars = ['OPENAI_API_KEY', 'ANTHROPIC_API_KEY', 'AZURE_SPEECH_KEY', 'AZURE_SPEECH_REGION'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+const missingOptionalVars = optionalEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  console.error('Missing required environment variables:', missingEnvVars);
+  if (process.env.NODE_ENV === 'production') {
+    process.exit(1);
+  }
+}
+
+if (missingOptionalVars.length > 0) {
+  console.warn('Missing optional environment variables (some features may be disabled):', missingOptionalVars);
+}
+
+// Production environment validation
+if (process.env.NODE_ENV === 'production') {
+  console.log('Production environment detected - performing additional checks...');
+  
+  // Verify build directory exists in production
+  if (!require('fs').existsSync(require('path').resolve(import.meta.dirname, 'public'))) {
+    console.error('Production build not found. Run "npm run build" before deployment.');
+    process.exit(1);
+  }
+  
+  console.log('Production environment checks passed');
+}
+
+// Health check endpoint for Cloud Run
+app.get('/health', (req: Request, res: Response) => {
+  res.status(200).json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    port: process.env.PORT || 5000
+  });
+});
+
+// Basic readiness check
+app.get('/ready', (req: Request, res: Response) => {
+  res.status(200).json({
+    status: 'ready',
+    timestamp: new Date().toISOString()
+  });
+});
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 app.use(cookieParser());
@@ -38,15 +86,56 @@ app.use((req, res, next) => {
   next();
 });
 
+// Database initialization function
+const initializeDatabase = async () => {
+  try {
+    console.log('Testing database connection...');
+    const { db } = await import('./db');
+    const result = await db.execute({ sql: 'SELECT 1 as test', args: [] });
+    console.log('Database connection successful:', result.rows[0]);
+    return true;
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    if (process.env.NODE_ENV === 'production') {
+      console.error('Database connection is required in production');
+      process.exit(1);
+    }
+    // In development, continue without database if connection fails
+    console.warn('Continuing without database connection in development mode');
+    return false;
+  }
+};
+
 (async () => {
+  // Initialize database connection
+  await initializeDatabase();
+  
   const server = await registerRoutes(app);
 
+  // Enhanced error handling for production deployment
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
-    res.status(status).json({ message });
-    throw err;
+    // Log error details in production for debugging
+    if (process.env.NODE_ENV === 'production') {
+      console.error('Server Error:', {
+        status,
+        message,
+        stack: err.stack,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    res.status(status).json({ 
+      message,
+      ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
+    });
+    
+    // Don't throw error in production to prevent server crash
+    if (process.env.NODE_ENV !== 'production') {
+      throw err;
+    }
   });
 
   // importantly only setup vite in development and after
@@ -58,15 +147,60 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
-})();
+  // Configure port for both development and production
+  // Use PORT environment variable in production (Cloud Run), fallback to 5000
+  const port = parseInt(process.env.PORT || '5000', 10);
+  const host = '0.0.0.0'; // Ensure accessible binding for Cloud Run
+  
+  // Enhanced server initialization with proper error handling
+  const startServer = () => {
+    return new Promise<void>((resolve, reject) => {
+      const serverInstance = server.listen({
+        port,
+        host,
+        reusePort: true,
+      }, () => {
+        log(`Server successfully started on ${host}:${port}`);
+        log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+        resolve();
+      });
+
+      serverInstance.on('error', (error: any) => {
+        console.error('Server failed to start:', error);
+        if (error.code === 'EADDRINUSE') {
+          console.error(`Port ${port} is already in use`);
+        }
+        reject(error);
+      });
+    });
+  };
+
+  // Graceful shutdown handling
+  const gracefulShutdown = (signal: string) => {
+    log(`Received ${signal}, shutting down gracefully`);
+    server.close(() => {
+      log('Server closed');
+      process.exit(0);
+    });
+
+    // Force close after 10 seconds
+    setTimeout(() => {
+      log('Forcing server shutdown');
+      process.exit(1);
+    }, 10000);
+  };
+
+  process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+  process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+  // Start the server with error handling
+  try {
+    await startServer();
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+})().catch((error) => {
+  console.error('Application startup failed:', error);
+  process.exit(1);
+});
