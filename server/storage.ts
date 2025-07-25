@@ -373,12 +373,9 @@ export class MemStorage implements IStorage {
 export class DatabaseStorage implements IStorage {
   async testConnection(): Promise<boolean> {
     try {
-      // Test connection using a simple SELECT from information_schema
-      const result = await db.execute({ 
-        sql: 'SELECT current_database()', 
-        args: [] 
-      });
-      return result.rows.length > 0;
+      // Test connection by attempting to query users table
+      const result = await db.select().from(users).limit(1);
+      return true;
     } catch (error) {
       console.error('Database connection test failed:', error);
       throw error;
