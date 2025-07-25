@@ -99,6 +99,17 @@ export const testResults = pgTable("test_results", {
   completedAt: timestamp("completed_at").defaultNow().notNull(),
 });
 
+export const podcasts = pgTable("podcasts", {
+  id: serial("id").primaryKey(),
+  sourceText: text("source_text").notNull(),
+  instructions: text("instructions"),
+  script: text("script").notNull(),
+  audioUrl: text("audio_url"),
+  model: text("model").notNull(),
+  chunkIndex: integer("chunk_index"),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
 
 
 
@@ -181,6 +192,15 @@ export const insertTestResultSchema = createInsertSchema(testResults).pick({
   correctCount: true,
 });
 
+export const insertPodcastSchema = createInsertSchema(podcasts).pick({
+  sourceText: true,
+  instructions: true,
+  script: true,
+  audioUrl: true,
+  model: true,
+  chunkIndex: true,
+});
+
 
 
 
@@ -206,6 +226,8 @@ export type Purchase = typeof purchases.$inferSelect;
 export type InsertPurchase = z.infer<typeof insertPurchaseSchema>;
 export type TestResult = typeof testResults.$inferSelect;
 export type InsertTestResult = z.infer<typeof insertTestResultSchema>;
+export type Podcast = typeof podcasts.$inferSelect;
+export type InsertPodcast = z.infer<typeof insertPodcastSchema>;
 
 
 
@@ -260,6 +282,13 @@ export const submitTestRequestSchema = z.object({
   questionTypes: z.record(z.enum(["multiple_choice", "short_answer", "long_answer"])).optional(),
 });
 
+export const podcastRequestSchema = z.object({
+  sourceText: z.string(),
+  instructions: z.string().optional(),
+  model: z.enum(["deepseek", "openai", "anthropic", "perplexity"]),
+  chunkIndex: z.number().optional(),
+});
+
 
 
 export const registerRequestSchema = z.object({
@@ -288,6 +317,7 @@ export type RewriteRequest = z.infer<typeof rewriteRequestSchema>;
 export type QuizRequest = z.infer<typeof quizRequestSchema>;
 export type StudyGuideRequest = z.infer<typeof studyGuideRequestSchema>;
 export type StudentTestRequest = z.infer<typeof studentTestRequestSchema>;
+export type PodcastRequest = z.infer<typeof podcastRequestSchema>;
 
 export type RegisterRequest = z.infer<typeof registerRequestSchema>;
 export type LoginRequest = z.infer<typeof loginRequestSchema>;

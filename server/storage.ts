@@ -1,4 +1,4 @@
-import { chatMessages, instructions, rewrites, quizzes, studyGuides, studentTests, users, sessions, purchases, testResults, type ChatMessage, type InsertChatMessage, type Instruction, type InsertInstruction, type Rewrite, type InsertRewrite, type Quiz, type InsertQuiz, type StudyGuide, type InsertStudyGuide, type StudentTest, type InsertStudentTest, type User, type InsertUser, type Session, type InsertSession, type Purchase, type InsertPurchase, type TestResult, type InsertTestResult } from "@shared/schema";
+import { chatMessages, instructions, rewrites, quizzes, studyGuides, studentTests, users, sessions, purchases, testResults, podcasts, type ChatMessage, type InsertChatMessage, type Instruction, type InsertInstruction, type Rewrite, type InsertRewrite, type Quiz, type InsertQuiz, type StudyGuide, type InsertStudyGuide, type StudentTest, type InsertStudentTest, type User, type InsertUser, type Session, type InsertSession, type Purchase, type InsertPurchase, type TestResult, type InsertTestResult, type Podcast, type InsertPodcast } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
@@ -44,6 +44,11 @@ export interface IStorage {
   createTestResult(testResult: InsertTestResult): Promise<TestResult>;
   getTestResultsByUserId(userId: number): Promise<TestResult[]>;
   getTestResultsByStudentTestId(studentTestId: number): Promise<TestResult[]>;
+  
+  // Podcast management
+  createPodcast(podcast: InsertPodcast): Promise<Podcast>;
+  getPodcasts(): Promise<Podcast[]>;
+  getPodcastById(id: number): Promise<Podcast | null>;
 
 }
 
@@ -66,6 +71,8 @@ export class MemStorage implements IStorage {
   private currentStudentTestId: number;
   private currentUserId: number;
   private currentPurchaseId: number;
+  private podcasts: Map<number, Podcast>;
+  private currentPodcastId: number;
 
   constructor() {
     this.chatMessages = new Map();
@@ -73,6 +80,7 @@ export class MemStorage implements IStorage {
     this.rewrites = new Map();
     this.quizzes = new Map();
     this.studyGuides = new Map();
+    this.podcasts = new Map();
     this.studentTests = new Map();
     this.users = new Map();
     this.usersByUsername = new Map();
@@ -86,6 +94,7 @@ export class MemStorage implements IStorage {
     this.currentStudentTestId = 1;
     this.currentUserId = 1;
     this.currentPurchaseId = 1;
+    this.currentPodcastId = 1;
   }
 
   async createChatMessage(insertMessage: InsertChatMessage): Promise<ChatMessage> {
@@ -318,6 +327,40 @@ export class MemStorage implements IStorage {
       this.purchases.set(purchaseId, updatedPurchase);
     }
   }
+
+  // Test results management (not implemented in MemStorage)
+  async createTestResult(testResult: InsertTestResult): Promise<TestResult> {
+    throw new Error("Test results not supported in memory storage");
+  }
+
+  async getTestResultsByUserId(userId: number): Promise<TestResult[]> {
+    return [];
+  }
+
+  async getTestResultsByStudentTestId(studentTestId: number): Promise<TestResult[]> {
+    return [];
+  }
+
+  // Podcast management methods
+  async createPodcast(insertPodcast: InsertPodcast): Promise<Podcast> {
+    const id = this.currentPodcastId++;
+    const podcast: Podcast = {
+      ...insertPodcast,
+      id,
+      timestamp: new Date(),
+    };
+    this.podcasts.set(id, podcast);
+    return podcast;
+  }
+
+  async getPodcasts(): Promise<Podcast[]> {
+    return Array.from(this.podcasts.values())
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+  }
+
+  async getPodcastById(id: number): Promise<Podcast | null> {
+    return this.podcasts.get(id) || null;
+  }
 }
 
 // Database Storage Implementation
@@ -522,6 +565,25 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(testResults)
       .where(eq(testResults.studentTestId, studentTestId))
       .orderBy(desc(testResults.completedAt));
+  }
+
+  // Podcast management methods
+  async createPodcast(insertPodcast: InsertPodcast): Promise<Podcast> {
+    const [podcast] = await db.insert(podcasts).values({
+      ...insertPodcast,
+      audioUrl: insertPodcast.audioUrl ?? null,
+      chunkIndex: insertPodcast.chunkIndex ?? null
+    }).returning();
+    return podcast;
+  }
+
+  async getPodcasts(): Promise<Podcast[]> {
+    return await db.select().from(podcasts).orderBy(desc(podcasts.timestamp));
+  }
+
+  async getPodcastById(id: number): Promise<Podcast | null> {
+    const [podcast] = await db.select().from(podcasts).where(eq(podcasts.id, id));
+    return podcast || null;
   }
 
 }

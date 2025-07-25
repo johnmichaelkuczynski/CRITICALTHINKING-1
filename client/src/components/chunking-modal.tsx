@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, MessageSquare, Edit3, X, BookOpen, FileQuestion, GraduationCap } from "lucide-react";
+import { FileText, MessageSquare, Edit3, X, BookOpen, FileQuestion, GraduationCap, Volume2 } from "lucide-react";
 
 interface ChunkingModalProps {
   isOpen: boolean;
   onClose: () => void;
   text: string;
-  onChunkAction: (chunk: string, chunkIndex: number, action: 'quiz' | 'chat' | 'rewrite' | 'study-guide' | 'student-test') => void;
+  onChunkAction: (chunk: string, chunkIndex: number, action: 'quiz' | 'chat' | 'rewrite' | 'study-guide' | 'student-test' | 'podcast') => void;
 }
 
 export default function ChunkingModal({ isOpen, onClose, text, onChunkAction }: ChunkingModalProps) {
@@ -22,7 +22,7 @@ export default function ChunkingModal({ isOpen, onClose, text, onChunkAction }: 
     chunks.push(words.slice(i, i + chunkSize).join(' '));
   }
 
-  const handleChunkAction = (chunkIndex: number, action: 'quiz' | 'chat' | 'rewrite' | 'study-guide' | 'student-test') => {
+  const handleChunkAction = (chunkIndex: number, action: 'quiz' | 'chat' | 'rewrite' | 'study-guide' | 'student-test' | 'podcast') => {
     onChunkAction(chunks[chunkIndex], chunkIndex, action);
     onClose();
   };
@@ -66,7 +66,7 @@ export default function ChunkingModal({ isOpen, onClose, text, onChunkAction }: 
                     {chunk.substring(0, 200)}...
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-3 gap-2">
                     <Button
                       size="sm"
                       variant="outline"
@@ -115,6 +115,16 @@ export default function ChunkingModal({ isOpen, onClose, text, onChunkAction }: 
                     >
                       <Edit3 className="w-3 h-3 mr-1" />
                       Rewrite
+                    </Button>
+                    
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleChunkAction(index, 'podcast')}
+                      className="text-orange-600 border-orange-200 hover:bg-orange-50"
+                    >
+                      <Volume2 className="w-3 h-3 mr-1" />
+                      Podcast
                     </Button>
                   </div>
                 </CardContent>

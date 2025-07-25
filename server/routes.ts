@@ -4,6 +4,7 @@ import { createServer, type Server } from "http";
 import session from "express-session";
 import { storage } from "./storage";
 import { generateAIResponse, generateRewrite, generatePassageExplanation, generatePassageDiscussionResponse, generateQuiz, generateStudyGuide, generateStudentTest } from "./services/ai-models";
+import { podcastGenerator } from "./services/podcast-generator";
 
 import { getFullDocumentContent } from "./services/document-processor";
 
@@ -11,7 +12,7 @@ import { generatePDF } from "./services/pdf-generator";
 import { transcribeAudio } from "./services/speech-service";
 import { register, login, createSession, getUserFromSession, canAccessFeature, getPreviewResponse, isAdmin, hashPassword } from "./auth";
 import { createPaypalOrder, capturePaypalOrder, loadPaypalDefault, verifyPaypalTransaction } from "./safe-paypal";
-import { chatRequestSchema, instructionRequestSchema, rewriteRequestSchema, quizRequestSchema, studyGuideRequestSchema, studentTestRequestSchema, submitTestRequestSchema, registerRequestSchema, loginRequestSchema, purchaseRequestSchema, type AIModel } from "@shared/schema";
+import { chatRequestSchema, instructionRequestSchema, rewriteRequestSchema, quizRequestSchema, studyGuideRequestSchema, studentTestRequestSchema, submitTestRequestSchema, registerRequestSchema, loginRequestSchema, purchaseRequestSchema, podcastRequestSchema, type AIModel } from "@shared/schema";
 import multer from "multer";
 
 declare module 'express-session' {
@@ -1201,6 +1202,159 @@ FEEDBACK: [explanation focusing on content accuracy]`;
       feedback
     };
   }
+
+  // Podcast generation endpoint
+  app.post("/api/generate-podcast", express.json({ limit: '10mb' }), async (req, res) => {
+    try {
+      const user = await getCurrentUser(req);
+      if (!user) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      // Check feature access for non-admin users
+      if (!isAdmin(user) && !canAccessFeature(user)) {
+        const previewResponse = getPreviewResponse(user, "podcast generation");
+        return res.json({ 
+          script: previewResponse,
+          hasAudio: false,
+          isPreview: true
+        });
+      }
+
+      const validatedData = podcastRequestSchema.parse(req.body);
+      const { sourceText, instructions, model, chunkIndex } = validatedData;
+
+      console.log(`Generating podcast with ${model} for user ${user.username}`);
+
+      // Generate complete podcast
+      const result = await podcastGenerator.generateCompletePodcast({
+        sourceText,
+        instructions,
+        model
+      });
+
+      // For non-admin users, provide preview
+      if (!isAdmin(user)) {
+        const previewScript = podcastGenerator.generatePreviewScript(result.script, 200);
+        
+        // Create podcast record in database
+        const podcast = await storage.createPodcast({
+          sourceText: sourceText.substring(0, 1000), // Store truncated source
+          script: result.script,
+          instructions: instructions || null,
+          model,
+          chunkIndex: chunkIndex || null,
+          audioUrl: null, // No audio file saved for previews
+        });
+
+        return res.json({
+          id: podcast.id,
+          script: previewScript,
+          hasAudio: !!result.audioBuffer,
+          isPreview: true
+        });
+      }
+
+      // For admin users, provide full access
+      let audioUrl = null;
+      if (result.audioBuffer) {
+        // Save audio file (in production, you'd save to proper storage)
+        audioUrl = `podcast_${Date.now()}.wav`;
+        // TODO: Implement actual file storage
+      }
+
+      // Deduct credits for non-admin users (already checked above)
+      if (!isAdmin(user)) {
+        await storage.updateUserCredits(user.id, user.credits - 100);
+      }
+
+      // Create podcast record
+      const podcast = await storage.createPodcast({
+        sourceText,
+        script: result.script,
+        instructions: instructions || null,
+        model,
+        chunkIndex: chunkIndex || null,
+        audioUrl,
+      });
+
+      res.json({
+        id: podcast.id,
+        script: result.script,
+        hasAudio: !!result.audioBuffer,
+        isPreview: false
+      });
+
+    } catch (error) {
+      console.error("Error generating podcast:", error);
+      res.status(500).json({ 
+        error: "Failed to generate podcast",
+        details: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
+
+  // Get podcasts endpoint
+  app.get("/api/podcasts", async (req, res) => {
+    try {
+      const user = await getCurrentUser(req);
+      if (!user) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const podcasts = await storage.getPodcasts();
+      res.json(podcasts);
+    } catch (error) {
+      console.error("Error fetching podcasts:", error);
+      res.status(500).json({ error: "Failed to fetch podcasts" });
+    }
+  });
+
+  // Get specific podcast endpoint
+  app.get("/api/podcasts/:id", async (req, res) => {
+    try {
+      const user = await getCurrentUser(req);
+      if (!user) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const id = parseInt(req.params.id);
+      const podcast = await storage.getPodcastById(id);
+      
+      if (!podcast) {
+        return res.status(404).json({ error: "Podcast not found" });
+      }
+
+      res.json(podcast);
+    } catch (error) {
+      console.error("Error fetching podcast:", error);
+      res.status(500).json({ error: "Failed to fetch podcast" });
+    }
+  });
+
+  // Audio download endpoint
+  app.get("/api/podcasts/:id/audio", async (req, res) => {
+    try {
+      const user = await getCurrentUser(req);
+      if (!user) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const id = parseInt(req.params.id);
+      const podcast = await storage.getPodcastById(id);
+      
+      if (!podcast || !podcast.audioUrl) {
+        return res.status(404).json({ error: "Audio not found" });
+      }
+
+      // TODO: Implement actual audio file serving
+      // For now, return a placeholder response
+      res.status(501).json({ error: "Audio serving not implemented yet" });
+    } catch (error) {
+      console.error("Error serving audio:", error);
+      res.status(500).json({ error: "Failed to serve audio" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
