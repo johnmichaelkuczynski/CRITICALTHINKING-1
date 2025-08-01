@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, FileText, Clock, ExternalLink, Play, ToggleLeft, ToggleRight } from "lucide-react";
+import { BookOpen, FileText, Clock, ExternalLink, Play, ToggleLeft, ToggleRight, RefreshCw, GraduationCap } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 interface ModulesProps {
@@ -305,6 +305,26 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
           {/* Special modules */}
           <Card 
             className={`cursor-pointer transition-colors hover:bg-muted/50 mt-4 ${
+              selectedModule === 6.5 ? 'border-primary bg-primary/5' : ''
+            }`}
+            onClick={() => {
+              setSelectedModule(6.5);
+              onWeekChange?.(6.5);
+            }}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium text-sm">Practice Midterm</h3>
+                  <p className="text-xs text-muted-foreground">Unlimited practice exams</p>
+                </div>
+                <Badge variant="default" className="bg-green-100 text-green-800">🎯 Practice</Badge>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card 
+            className={`cursor-pointer transition-colors hover:bg-muted/50 ${
               selectedModule === 7 ? 'border-primary bg-primary/5' : ''
             }`}
             onClick={() => {
@@ -319,6 +339,26 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                   <p className="text-xs text-muted-foreground">Comprehensive midterm</p>
                 </div>
                 <Badge variant="default">📝 Available</Badge>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card 
+            className={`cursor-pointer transition-colors hover:bg-muted/50 ${
+              selectedModule === 7.5 ? 'border-primary bg-primary/5' : ''
+            }`}
+            onClick={() => {
+              setSelectedModule(7.5);
+              onWeekChange?.(7.5);
+            }}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-medium text-sm">Practice Final</h3>
+                  <p className="text-xs text-muted-foreground">Unlimited practice exams</p>
+                </div>
+                <Badge variant="default" className="bg-green-100 text-green-800">🎯 Practice</Badge>
               </div>
             </CardContent>
           </Card>
@@ -347,7 +387,53 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
 
       {/* Module Content */}
       <div className="flex-1 p-6">
-        {selectedModule === 7 ? (
+        {selectedModule === 6.5 ? (
+          // Practice Midterm Module
+          <div className="max-w-4xl">
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold mb-2">Practice Midterm Exam</h1>
+              <div className="flex items-center space-x-4">
+                <Badge variant="default" className="bg-green-100 text-green-800">🎯 Practice Mode</Badge>
+                <Badge variant="outline">100 points</Badge>
+              </div>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Practice Midterm Examination</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <p className="text-muted-foreground">
+                    Practice for your midterm exam with unlimited attempts. These exams cover material from Weeks 1-4.
+                  </p>
+                  
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-green-800 mb-2">✅ Practice Benefits</h4>
+                    <ul className="text-sm text-green-700 space-y-1">
+                      <li>• Take as many practice exams as you want</li>
+                      <li>• No time pressure - learn at your own pace</li>
+                      <li>• No grades recorded - purely for learning</li>
+                      <li>• Get immediate feedback on answers</li>
+                      <li>• Similar format to the actual midterm</li>
+                    </ul>
+                  </div>
+
+                  <div className="flex space-x-4">
+                    <Button size="lg" className="flex items-center space-x-2">
+                      <Play className="w-4 h-4" />
+                      <span>Start Practice Midterm</span>
+                    </Button>
+                    <Button variant="outline" size="lg" className="flex items-center space-x-2">
+                      <RefreshCw className="w-4 h-4" />
+                      <span>Generate New Practice Exam</span>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : selectedModule === 7 ? (
           // Midterm Exam Module
           <div className="max-w-4xl">
             <div className="mb-6">
@@ -383,6 +469,52 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                     <Button size="lg" className="flex items-center space-x-2">
                       <Play className="w-4 h-4" />
                       <span>Start Midterm Exam</span>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : selectedModule === 7.5 ? (
+          // Practice Final Exam Module
+          <div className="max-w-4xl">
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold mb-2">Practice Final Exam</h1>
+              <div className="flex items-center space-x-4">
+                <Badge variant="default" className="bg-green-100 text-green-800">🎯 Practice Mode</Badge>
+                <Badge variant="outline">200 points</Badge>
+              </div>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Practice Final Examination</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <p className="text-muted-foreground">
+                    Practice for your final exam with unlimited attempts. This comprehensive exam covers all course material from Weeks 1-6.
+                  </p>
+                  
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-green-800 mb-2">✅ Practice Benefits</h4>
+                    <ul className="text-sm text-green-700 space-y-1">
+                      <li>• Take as many practice exams as you want</li>
+                      <li>• No time pressure - learn at your own pace</li>
+                      <li>• No grades recorded - purely for learning</li>
+                      <li>• Get immediate feedback on answers</li>
+                      <li>• Same format as the actual final exam</li>
+                    </ul>
+                  </div>
+
+                  <div className="flex space-x-4">
+                    <Button size="lg" className="flex items-center space-x-2">
+                      <Play className="w-4 h-4" />
+                      <span>Start Practice Final</span>
+                    </Button>
+                    <Button variant="outline" size="lg" className="flex items-center space-x-2">
+                      <RefreshCw className="w-4 h-4" />
+                      <span>Generate New Practice Final</span>
                     </Button>
                   </div>
                 </div>
@@ -454,9 +586,11 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
             </div>
 
             <Tabs defaultValue="lecture" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="lecture">Lecture Summary</TabsTrigger>
+                <TabsTrigger value="practice-homework">Practice Homework</TabsTrigger>
                 <TabsTrigger value="homework">Homework</TabsTrigger>
+                <TabsTrigger value="practice-quiz">Practice Quiz/Test</TabsTrigger>
                 <TabsTrigger value="quiz">Quiz/Test</TabsTrigger>
               </TabsList>
 
@@ -497,6 +631,49 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         <p>Lecture content would appear here after generation.</p>
                       </div>
                     )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="practice-homework" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <FileText className="w-5 h-5" />
+                        <span>Practice Homework</span>
+                      </div>
+                      <Badge variant="default" className="bg-green-100 text-green-800">🎯 Practice Mode</Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <p className="text-muted-foreground">
+                        Practice homework problems for Week {selectedModuleData.week} with unlimited attempts. No grades recorded.
+                      </p>
+                      
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h4 className="font-semibold text-green-800 mb-2">✅ Practice Benefits</h4>
+                        <ul className="text-sm text-green-700 space-y-1">
+                          <li>• Take as many practice assignments as you want</li>
+                          <li>• Learn without grade pressure</li>
+                          <li>• Get immediate feedback on answers</li>
+                          <li>• Similar format to graded homework</li>
+                          <li>• Master concepts before taking graded version</li>
+                        </ul>
+                      </div>
+
+                      <div className="flex space-x-4">
+                        <Button className="flex items-center space-x-2">
+                          <Play className="w-4 h-4" />
+                          <span>Start Practice Homework</span>
+                        </Button>
+                        <Button variant="outline" className="flex items-center space-x-2">
+                          <RefreshCw className="w-4 h-4" />
+                          <span>Generate New Practice Problems</span>
+                        </Button>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -953,6 +1130,49 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                           </div>
                         </div>
                       )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="practice-quiz" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <GraduationCap className="w-5 h-5" />
+                        <span>Practice Quiz/Test</span>
+                      </div>
+                      <Badge variant="default" className="bg-green-100 text-green-800">🎯 Practice Mode</Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <p className="text-muted-foreground">
+                        Practice quiz questions for Week {selectedModuleData.week} with unlimited attempts. No grades recorded.
+                      </p>
+                      
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h4 className="font-semibold text-green-800 mb-2">✅ Practice Benefits</h4>
+                        <ul className="text-sm text-green-700 space-y-1">
+                          <li>• Take as many practice quizzes as you want</li>
+                          <li>• Learn without grade pressure</li>
+                          <li>• Get immediate feedback on answers</li>
+                          <li>• Same format as graded quiz</li>
+                          <li>• Build confidence before taking graded version</li>
+                        </ul>
+                      </div>
+
+                      <div className="flex space-x-4">
+                        <Button className="flex items-center space-x-2">
+                          <Play className="w-4 h-4" />
+                          <span>Start Practice Quiz</span>
+                        </Button>
+                        <Button variant="outline" className="flex items-center space-x-2">
+                          <RefreshCw className="w-4 h-4" />
+                          <span>Generate New Practice Quiz</span>
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
