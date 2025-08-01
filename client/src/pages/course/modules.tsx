@@ -3,7 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, FileText, Clock, ExternalLink, Play } from "lucide-react";
+import { BookOpen, FileText, Clock, ExternalLink, Play, Keyboard } from "lucide-react";
+import LogicKeyboard from "@/components/logic-keyboard";
 import { useAuth } from "@/hooks/use-auth";
 
 interface ModulesProps {
@@ -30,6 +31,8 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [generatedHomework, setGeneratedHomework] = useState<{[key: number]: string}>({});
   const [selectedAIModel, setSelectedAIModel] = useState<'openai' | 'anthropic' | 'perplexity'>('openai');
+  const [logicKeyboardOpen, setLogicKeyboardOpen] = useState(false);
+  const [activeTextarea, setActiveTextarea] = useState<string | null>(null);
 
   // Update selected module when selectedWeek prop changes
   useEffect(() => {
@@ -141,6 +144,16 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
       alert('Error generating homework. Please try again.');
     } finally {
       setGeneratingHomework(false);
+    }
+  };
+
+  const handleSymbolInsert = (symbol: string) => {
+    if (activeTextarea) {
+      const currentValue = homeworkAnswers[activeTextarea] || '';
+      setHomeworkAnswers(prev => ({
+        ...prev,
+        [activeTextarea]: currentValue + symbol
+      }));
     }
   };
 
@@ -467,9 +480,93 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         
                         <div className="bg-white border rounded-lg p-6">
                           <div className="prose max-w-none">
-                            <div dangerouslySetInnerHTML={{ 
-                              __html: generatedHomework[selectedModuleData.week].replace(/\n/g, '<br/>') 
-                            }} />
+                            {(() => {
+                              try {
+                                // Parse the homework JSON from the API response
+                                const homeworkText = generatedHomework[selectedModuleData.week];
+                                const jsonMatch = homeworkText.match(/```json\n([\s\S]*?)\n```/);
+                                if (jsonMatch) {
+                                  const homeworkData = JSON.parse(jsonMatch[1]);
+                                  return (
+                                    <div className="space-y-6">
+                                      <div>
+                                        <h2 className="text-2xl font-bold text-gray-900 mb-2">{homeworkData.title}</h2>
+                                        <p className="text-gray-700 mb-4">{homeworkData.instructions}</p>
+                                        <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-4">
+                                          <p className="text-sm text-blue-800">
+                                            <strong>Total Points:</strong> {homeworkData.totalPoints} | <strong>Due:</strong> {homeworkData.dueInfo}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      
+                                      {homeworkData.parts.map((part: any, partIndex: number) => (
+                                        <div key={partIndex} className="border rounded-lg p-4 bg-gray-50">
+                                          <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                                            {part.title} ({part.points} points)
+                                          </h3>
+                                          <div className="space-y-4">
+                                            {part.questions.map((question: any, qIndex: number) => (
+                                              <div key={qIndex} className="bg-white rounded border p-4">
+                                                <div className="flex justify-between items-start mb-2">
+                                                  <h4 className="font-medium text-gray-900">Question {qIndex + 1}</h4>
+                                                  <span className="text-sm bg-green-100 text-green-800 px-2 py-1 rounded">
+                                                    {question.points} pts
+                                                  </span>
+                                                </div>
+                                                <p className="text-gray-700 whitespace-pre-wrap">{question.question}</p>
+                                                <div className="mt-3 border-t pt-3">
+                                                  <div className="flex items-center justify-between mb-2">
+                                                    <label className="block text-sm font-medium text-gray-700">
+                                                      Your Answer:
+                                                    </label>
+                                                    <Button
+                                                      type="button"
+                                                      variant="outline"
+                                                      size="sm"
+                                                      onClick={() => {
+                                                        setActiveTextarea(`${selectedModuleData.week}_${question.id}`);
+                                                        setLogicKeyboardOpen(true);
+                                                      }}
+                                                      className="flex items-center space-x-1"
+                                                    >
+                                                      <Keyboard className="w-4 h-4" />
+                                                      <span>Logic Symbols</span>
+                                                    </Button>
+                                                  </div>
+                                                  <textarea 
+                                                    className="w-full p-3 border rounded-lg min-h-[100px] font-mono text-sm"
+                                                    placeholder="Enter your answer using symbolic logic notation..."
+                                                    value={homeworkAnswers[`${selectedModuleData.week}_${question.id}`] || ''}
+                                                    onChange={(e) => setHomeworkAnswers(prev => ({
+                                                      ...prev,
+                                                      [`${selectedModuleData.week}_${question.id}`]: e.target.value
+                                                    }))}
+                                                    onFocus={() => setActiveTextarea(`${selectedModuleData.week}_${question.id}`)}
+                                                  />
+                                                  <div className="text-xs text-gray-500 mt-1">
+                                                    Use the Logic Symbols button to insert ∀, ∃, →, ∧, ∨, ¬ and other symbolic logic notation
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  );
+                                } else {
+                                  // Fallback for non-JSON format
+                                  return <div dangerouslySetInnerHTML={{ 
+                                    __html: homeworkText.replace(/\n/g, '<br/>') 
+                                  }} />;
+                                }
+                              } catch (error) {
+                                // Fallback for parsing errors
+                                return <div dangerouslySetInnerHTML={{ 
+                                  __html: generatedHomework[selectedModuleData.week].replace(/\n/g, '<br/>') 
+                                }} />;
+                              }
+                            })()}
                           </div>
                         </div>
 
@@ -660,13 +757,32 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                 <div className="space-y-4">
                                   {[1, 2, 3, 4].map(num => (
                                     <div key={num} className="space-y-2">
-                                      <label className="text-sm font-medium">Question {num} Answer:</label>
+                                      <div className="flex items-center justify-between">
+                                        <label className="text-sm font-medium">Question {num} Answer:</label>
+                                        <Button
+                                          type="button"
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => {
+                                            setActiveTextarea(`w${selectedModuleData.week}_p1_q${num}`);
+                                            setLogicKeyboardOpen(true);
+                                          }}
+                                          className="flex items-center space-x-1"
+                                        >
+                                          <Keyboard className="w-4 h-4" />
+                                          <span>Logic Symbols</span>
+                                        </Button>
+                                      </div>
                                       <textarea
-                                        className="w-full border rounded-lg p-3 min-h-[100px]"
+                                        className="w-full border rounded-lg p-3 min-h-[100px] font-mono"
                                         placeholder="Enter your symbolic logic translation here..."
                                         value={homeworkAnswers[`w${selectedModuleData.week}_p1_q${num}`] || ''}
                                         onChange={(e) => updateAnswer(`w${selectedModuleData.week}_p1_q${num}`, e.target.value)}
+                                        onFocus={() => setActiveTextarea(`w${selectedModuleData.week}_p1_q${num}`)}
                                       />
+                                      <div className="text-xs text-gray-500">
+                                        Use the Logic Symbols button to insert ∀, ∃, →, ∧, ∨, ¬ and other notation
+                                      </div>
                                     </div>
                                   ))}
                                 </div>
@@ -765,6 +881,12 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
           </div>
         )}
       </div>
+
+      <LogicKeyboard 
+        isOpen={logicKeyboardOpen}
+        onClose={() => setLogicKeyboardOpen(false)}
+        onSymbolInsert={handleSymbolInsert}
+      />
     </div>
   );
 }
