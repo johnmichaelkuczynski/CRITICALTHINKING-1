@@ -48,6 +48,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     return await storage.getUserById(req.session.userId);
   };
 
+  // Middleware to require authentication
+  const requireAuth = async (req: any, res: any, next: any) => {
+    const user = await getCurrentUser(req);
+    if (!user) {
+      return res.status(401).json({ error: "Authentication required" });
+    }
+    req.user = user;
+    next();
+  };
+
+  // Generate homework endpoint
+  app.post('/api/homework/generate', requireAuth, async (req, res) => {
+    try {
+      const { weekNumber, topic, courseMaterial } = req.body;
+      
+      if (!process.env.OPENAI_API_KEY) {
+        return res.status(500).json({ error: 'OpenAI API key not configured' });
+      }
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [
+            {
+              role: 'system',
+              content: `You are a professor creating homework for a symbolic logic course. Create challenging, academic-level homework assignments that test both practical skills and theoretical understanding. 
+
+Course Context: This is Week ${weekNumber} covering "${topic}". 
+
+Generate a homework assignment with:
+1. Translation problems (symbolic logic notation)
+2. Proof/derivation exercises 
+3. Analysis questions requiring written explanations
+4. Appropriate difficulty for university-level logic course
+
+Format as JSON with structure:
+{
+  "title": "Homework ${weekNumber}: ${topic}",
+  "instructions": "General instructions",
+  "parts": [
+    {
+      "title": "Part 1: Translation",
+      "points": 30,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Question text",
+          "points": 10,
+          "type": "translation"
+        }
+      ]
+    }
+  ],
+  "totalPoints": 50,
+  "dueInfo": "Important submission guidelines"
+}`
+            },
+            {
+              role: 'user',
+              content: `Create homework for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}`
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 2000
+        })
+      });
+
+      const openaiData = await openaiResponse.json();
+      
+      if (!openaiResponse.ok) {
+        throw new Error(`OpenAI API error: ${openaiData.error?.message || 'Unknown error'}`);
+      }
+
+      const homeworkContent = openaiData.choices[0].message.content;
+      
+      res.json({ 
+        success: true, 
+        homework: homeworkContent,
+        weekNumber 
+      });
+
+    } catch (error) {
+      console.error('Homework generation error:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate homework',
+        details: error.message 
+      });
+    }
+  });
+
   // Test database connection endpoint
   app.get("/api/test-db", async (req, res) => {
     try {

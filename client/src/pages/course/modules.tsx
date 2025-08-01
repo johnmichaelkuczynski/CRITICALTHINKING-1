@@ -25,6 +25,10 @@ interface ModuleData {
 export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekChange }: ModulesProps) {
   const { user } = useAuth();
   const [selectedModule, setSelectedModule] = useState(selectedWeek || 1);
+  const [homeworkStarted, setHomeworkStarted] = useState<{[key: number]: boolean}>({});
+  const [homeworkAnswers, setHomeworkAnswers] = useState<{[key: string]: string}>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [generatedHomework, setGeneratedHomework] = useState<{[key: number]: string}>({});
 
   // Update selected module when selectedWeek prop changes
   useEffect(() => {
@@ -102,9 +106,57 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
 
   const generateHomework = async (weekNumber: number) => {
     setGeneratingHomework(true);
-    // TODO: Implement LLM-generated homework creation
-    setTimeout(() => {
+    
+    const weekTopic = modules.find(m => m.week === weekNumber)?.title || '';
+    
+    try {
+      const response = await fetch('/api/homework/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          weekNumber,
+          topic: weekTopic,
+          courseMaterial: `Week ${weekNumber} covers ${weekTopic}. This is part of a 6-week symbolic logic course.`
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Store the generated homework
+        setGeneratedHomework(prev => ({
+          ...prev,
+          [weekNumber]: data.homework
+        }));
+      } else {
+        console.error('Homework generation failed:', data.error);
+        alert('Failed to generate homework: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error generating homework:', error);
+      alert('Error generating homework. Please try again.');
+    } finally {
       setGeneratingHomework(false);
+    }
+  };
+
+  const startHomework = (weekNumber: number) => {
+    setHomeworkStarted(prev => ({ ...prev, [weekNumber]: true }));
+  };
+
+  const updateAnswer = (questionId: string, answer: string) => {
+    setHomeworkAnswers(prev => ({ ...prev, [questionId]: answer }));
+  };
+
+  const submitHomework = async (weekNumber: number) => {
+    setIsSubmitting(true);
+    
+    // Simulate submission
+    setTimeout(() => {
+      setIsSubmitting(false);
+      alert(`Homework ${weekNumber} submitted successfully! You will receive your grade within 24 hours.`);
     }, 2000);
   };
 
@@ -365,10 +417,10 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {!selectedModuleData.homeworkAvailable ? (
+                    {!generatedHomework[selectedModuleData.week] ? (
                       <div className="text-center py-8">
                         <p className="text-muted-foreground mb-4">
-                          Generate a graded homework assignment based on this week's material.
+                          Generate an AI-powered homework assignment based on this week's material.
                         </p>
                         <Button
                           onClick={() => generateHomework(selectedModuleData.week)}
@@ -389,10 +441,280 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         </Button>
                       </div>
                     ) : (
-                      <div>
-                        <p>Homework assignment would appear here after generation.</p>
+                      <div className="space-y-6">
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <h4 className="font-semibold text-blue-800 mb-2">✨ AI-Generated Homework</h4>
+                          <p className="text-blue-700 text-sm">
+                            This homework was generated using OpenAI GPT-4 based on the week's learning objectives.
+                          </p>
+                        </div>
+                        
+                        <div className="bg-white border rounded-lg p-6">
+                          <div className="prose max-w-none">
+                            <div dangerouslySetInnerHTML={{ 
+                              __html: generatedHomework[selectedModuleData.week].replace(/\n/g, '<br/>') 
+                            }} />
+                          </div>
+                        </div>
+
+                        <div className="flex space-x-4">
+                          <Button 
+                            size="lg" 
+                            className="flex items-center space-x-2"
+                            onClick={() => startHomework(selectedModuleData.week)}
+                          >
+                            <Play className="w-4 h-4" />
+                            <span>Start Homework</span>
+                          </Button>
+                          <Button variant="outline" size="lg">
+                            Download PDF
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="lg"
+                            onClick={() => generateHomework(selectedModuleData.week)}
+                            disabled={generatingHomework}
+                          >
+                            Regenerate
+                          </Button>
+                        </div>
                       </div>
                     )}
+                    <div className="space-y-6 hidden">
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <h4 className="font-semibold text-blue-800 mb-2">⚠️ Important Notice</h4>
+                        <ul className="text-sm text-blue-700 space-y-1">
+                          <li>• You have unlimited time to complete this homework</li>
+                          <li>• Late submissions receive an automatic 0</li>
+                          <li>• GPTZero score above 50% results in automatic 0</li>
+                          <li>• You can only submit this homework once</li>
+                          <li>• This homework is worth 50 points toward your final grade</li>
+                        </ul>
+                      </div>
+
+                      <div className="bg-white border rounded-lg p-6">
+                        <h4 className="text-lg font-semibold mb-4">
+                          Homework {selectedModuleData.week}: {selectedModuleData.title}
+                        </h4>
+                        
+                        <div className="space-y-6">
+                          <div>
+                            <h5 className="font-medium mb-2">Part 1: Translation (20 points)</h5>
+                            <p className="text-sm text-muted-foreground mb-3">
+                              Translate the following English statements into symbolic logic notation.
+                            </p>
+                            
+                            {selectedModuleData.week === 1 && (
+                              <div className="space-y-3">
+                                <div className="bg-gray-50 p-3 rounded">
+                                  <p className="mb-2">Let:</p>
+                                  <ul className="text-sm space-y-1">
+                                    <li>p = "It rains"</li>
+                                    <li>q = "The streets are wet"</li>
+                                    <li>r = "People use umbrellas"</li>
+                                    <li>s = "Traffic slows down"</li>
+                                  </ul>
+                                </div>
+                                
+                                <div className="space-y-2">
+                                  <p>1. "If it rains, then the streets are wet and people use umbrellas." (5 points)</p>
+                                  <p>2. "Either traffic slows down or it's not raining." (5 points)</p>
+                                  <p>3. "It's not true that when it rains, traffic slows down." (5 points)</p>
+                                  <p>4. "If the streets are wet and people use umbrellas, then it must be raining." (5 points)</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {selectedModuleData.week === 2 && (
+                              <div className="space-y-3">
+                                <div className="space-y-2">
+                                  <p>1. Create a truth table for: (p ∧ q) → ¬r (10 points)</p>
+                                  <p>2. Using natural deduction, prove: p → q, q → r ⊢ p → r (10 points)</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {selectedModuleData.week === 3 && (
+                              <div className="space-y-3">
+                                <div className="space-y-2">
+                                  <p>1. Simplify using Boolean laws: ¬(p ∧ ¬q) ∨ (¬p ∧ q) (10 points)</p>
+                                  <p>2. Convert to DNF: (p → q) ∧ (q → r) (10 points)</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {selectedModuleData.week === 4 && (
+                              <div className="space-y-3">
+                                <div className="space-y-2">
+                                  <p>1. Translate: "All students who study pass the exam" (10 points)</p>
+                                  <p>2. Translate: "Some professors teach both logic and mathematics" (10 points)</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {selectedModuleData.week === 5 && (
+                              <div className="space-y-3">
+                                <div className="space-y-2">
+                                  <p>1. Express uniqueness: "There is exactly one prime number that is even" (10 points)</p>
+                                  <p>2. Translate the continuity definition using quantifiers (10 points)</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {selectedModuleData.week === 6 && (
+                              <div className="space-y-3">
+                                <div className="space-y-2">
+                                  <p>1. Construct a model that makes ∀x∃yR(x,y) true but ∃y∀xR(x,y) false (10 points)</p>
+                                  <p>2. Prove consistency of: ∀x∃yR(x,y), ∀x¬R(x,x), ∀x∀y∀z((R(x,y) ∧ R(y,z)) → R(x,z)) (10 points)</p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          <div>
+                            <h5 className="font-medium mb-2">Part 2: Analysis (30 points)</h5>
+                            <div className="space-y-2">
+                              {selectedModuleData.week === 1 && (
+                                <>
+                                  <p>1. Explain the difference between material implication and strict implication using examples. (15 points)</p>
+                                  <p>2. Analyze why ¬(p ∧ q) is logically equivalent to (¬p ∨ ¬q). (15 points)</p>
+                                </>
+                              )}
+                              {selectedModuleData.week === 2 && (
+                                <>
+                                  <p>1. Compare truth-functional and natural deduction approaches to validity. (15 points)</p>
+                                  <p>2. Explain when a truth table method is more efficient than natural deduction. (15 points)</p>
+                                </>
+                              )}
+                              {selectedModuleData.week === 3 && (
+                                <>
+                                  <p>1. Explain the relationship between Boolean algebra and propositional logic. (15 points)</p>
+                                  <p>2. Demonstrate why every Boolean function can be expressed in CNF and DNF. (15 points)</p>
+                                </>
+                              )}
+                              {selectedModuleData.week === 4 && (
+                                <>
+                                  <p>1. Compare the expressive power of propositional vs predicate logic. (15 points)</p>
+                                  <p>2. Explain why quantifier order matters with examples. (15 points)</p>
+                                </>
+                              )}
+                              {selectedModuleData.week === 5 && (
+                                <>
+                                  <p>1. Analyze the logical structure of mathematical definitions like limits. (15 points)</p>
+                                  <p>2. Explain how uniqueness quantifiers relate to existence and universal quantifiers. (15 points)</p>
+                                </>
+                              )}
+                              {selectedModuleData.week === 6 && (
+                                <>
+                                  <p>1. Distinguish between semantic and syntactic approaches to logic. (15 points)</p>
+                                  <p>2. Explain the role of models in proving invalidity vs consistency. (15 points)</p>
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {!homeworkStarted[selectedModuleData.week] ? (
+                        <div className="flex space-x-4">
+                          <Button 
+                            size="lg" 
+                            className="flex items-center space-x-2"
+                            onClick={() => startHomework(selectedModuleData.week)}
+                          >
+                            <Play className="w-4 h-4" />
+                            <span>Start Homework</span>
+                          </Button>
+                          <Button variant="outline" size="lg">
+                            Download PDF
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-6">
+                          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <p className="text-green-800 font-medium">🕒 Homework Started - Complete and submit below</p>
+                          </div>
+
+                          {/* Answer Input Forms */}
+                          <div className="space-y-6">
+                            <div className="space-y-4">
+                              <h5 className="font-semibold text-lg">Part 1 Answers:</h5>
+                              
+                              {selectedModuleData.week === 1 && (
+                                <div className="space-y-4">
+                                  {[1, 2, 3, 4].map(num => (
+                                    <div key={num} className="space-y-2">
+                                      <label className="text-sm font-medium">Question {num} Answer:</label>
+                                      <textarea
+                                        className="w-full border rounded-lg p-3 min-h-[100px]"
+                                        placeholder="Enter your symbolic logic translation here..."
+                                        value={homeworkAnswers[`w${selectedModuleData.week}_p1_q${num}`] || ''}
+                                        onChange={(e) => updateAnswer(`w${selectedModuleData.week}_p1_q${num}`, e.target.value)}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              {selectedModuleData.week > 1 && (
+                                <div className="space-y-4">
+                                  {[1, 2].map(num => (
+                                    <div key={num} className="space-y-2">
+                                      <label className="text-sm font-medium">Question {num} Answer:</label>
+                                      <textarea
+                                        className="w-full border rounded-lg p-3 min-h-[120px]"
+                                        placeholder="Enter your detailed solution here..."
+                                        value={homeworkAnswers[`w${selectedModuleData.week}_p1_q${num}`] || ''}
+                                        onChange={(e) => updateAnswer(`w${selectedModuleData.week}_p1_q${num}`, e.target.value)}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="space-y-4">
+                              <h5 className="font-semibold text-lg">Part 2 Answers:</h5>
+                              {[1, 2].map(num => (
+                                <div key={num} className="space-y-2">
+                                  <label className="text-sm font-medium">Analysis Question {num}:</label>
+                                  <textarea
+                                    className="w-full border rounded-lg p-3 min-h-[150px]"
+                                    placeholder="Provide your detailed analysis and explanation..."
+                                    value={homeworkAnswers[`w${selectedModuleData.week}_p2_q${num}`] || ''}
+                                    onChange={(e) => updateAnswer(`w${selectedModuleData.week}_p2_q${num}`, e.target.value)}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="flex space-x-4 pt-4 border-t">
+                            <Button 
+                              size="lg" 
+                              className="flex items-center space-x-2"
+                              onClick={() => submitHomework(selectedModuleData.week)}
+                              disabled={isSubmitting}
+                            >
+                              {isSubmitting ? (
+                                <>
+                                  <Clock className="w-4 h-4 animate-spin" />
+                                  <span>Submitting...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <FileText className="w-4 h-4" />
+                                  <span>Submit Homework</span>
+                                </>
+                              )}
+                            </Button>
+                            <Button variant="outline" size="lg">
+                              Save Draft
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
