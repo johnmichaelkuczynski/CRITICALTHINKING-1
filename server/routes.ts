@@ -2,6 +2,7 @@ import type { Express } from "express";
 import express from "express";
 import { createServer, type Server } from "http";
 import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
 import { storage } from "./storage";
 import { generateAIResponse, generateRewrite, generatePassageExplanation, generatePassageDiscussionResponse, generateQuiz, generateStudyGuide, generateStudentTest } from "./services/ai-models";
 import { generatePodcast, generatePreviewScript } from "./services/podcast-generator";
@@ -24,17 +25,39 @@ declare module 'express-session' {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Session configuration
-  app.use(session({
+  // Session configuration with PostgreSQL store for production
+  const sessionConfig: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || 'living-book-secret-key',
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, // Set to true in production with HTTPS
+      secure: process.env.NODE_ENV === 'production', // Enable secure cookies in production
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     },
-  }));
+  };
+
+  // Use PostgreSQL session store for production, memory store for development
+  if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
+    try {
+      const PgSession = connectPgSimple(session);
+      sessionConfig.store = new PgSession({
+        conString: process.env.DATABASE_URL,
+        tableName: 'session',
+        createTableIfMissing: true,
+        pruneSessionInterval: 60 * 15, // 15 minutes
+        errorLog: console.error
+      });
+      console.log('Using PostgreSQL session store for production');
+    } catch (error) {
+      console.error('Failed to initialize PostgreSQL session store, falling back to memory store:', error);
+      console.log('Using memory session store as fallback');
+    }
+  } else {
+    console.log('Using memory session store for development');
+  }
+
+  app.use(session(sessionConfig));
 
   // Configure multer for audio file uploads
   const upload = multer({ 

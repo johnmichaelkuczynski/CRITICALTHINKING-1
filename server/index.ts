@@ -42,17 +42,42 @@ if (process.env.NODE_ENV === 'production') {
   console.log('Production environment checks passed');
 }
 
-// Health check endpoint for Cloud Run
-app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    port: process.env.PORT || 5000
-  });
+// Health check endpoint for deployment platforms
+app.get('/health', async (req: Request, res: Response) => {
+  try {
+    // Quick health status response
+    const healthStatus = {
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      port: process.env.PORT || 5000,
+      version: '1.0.0'
+    };
+
+    // Optionally test database connection if in production
+    if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
+      try {
+        const { storage } = await import('./storage.js');
+        await storage.testConnection();
+        healthStatus.database = 'connected';
+      } catch (error) {
+        healthStatus.database = 'disconnected';
+        console.warn('Health check: Database connection failed', error);
+      }
+    }
+
+    res.status(200).json(healthStatus);
+  } catch (error) {
+    console.error('Health check failed:', error);
+    res.status(503).json({
+      status: 'unhealthy',
+      timestamp: new Date().toISOString(),
+      error: 'Service unavailable'
+    });
+  }
 });
 
-// Basic readiness check
+// Basic readiness check - simple and fast
 app.get('/ready', (req: Request, res: Response) => {
   res.status(200).json({
     status: 'ready',
@@ -173,6 +198,10 @@ const initializeDatabase = async () => {
   
   // Enhanced server initialization with proper error handling
   const startServer = () => {
+    console.log(`Starting server in ${process.env.NODE_ENV || 'development'} mode...`);
+    console.log(`Port: ${port}, Host: ${host}`);
+    console.log(`Database URL configured: ${!!process.env.DATABASE_URL}`);
+    console.log(`Session secret configured: ${!!process.env.SESSION_SECRET}`);
     return new Promise<void>((resolve, reject) => {
       const serverInstance = server.listen({
         port,
