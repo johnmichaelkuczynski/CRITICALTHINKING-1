@@ -292,14 +292,15 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
       const data = await response.json();
       
       if (data.success) {
+        console.log('Practice homework generated successfully:', data.homework);
         setGeneratedPracticeHomework(prev => ({
           ...prev,
           [weekNumber]: data.homework
         }));
+        setPracticeHomeworkStarted(prev => ({ ...prev, [weekNumber]: true }));
       } else {
         throw new Error(data.error || 'Failed to generate practice homework');
       }
-      setPracticeHomeworkStarted(prev => ({ ...prev, [weekNumber]: true }));
       
     } catch (error) {
       console.error('Error generating practice homework:', error);
@@ -783,7 +784,10 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                       <div className="flex space-x-4">
                         <Button 
                           className="flex items-center space-x-2"
-                          onClick={() => generatePracticeHomework(selectedModuleData.week)}
+                          onClick={() => {
+                            console.log('Practice homework button clicked for week:', selectedModuleData.week);
+                            generatePracticeHomework(selectedModuleData.week);
+                          }}
                           disabled={generatingPracticeHomework}
                         >
                           {generatingPracticeHomework ? (
@@ -812,6 +816,74 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                           <span>Generate New Practice Problems</span>
                         </Button>
                       </div>
+
+                      {practiceHomeworkStarted[selectedModuleData.week] && generatedPracticeHomework[selectedModuleData.week] && (
+                        <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-6">
+                          <h4 className="font-semibold text-green-800 mb-4">🎯 Practice Homework Content</h4>
+                          <div className="bg-white border rounded-lg p-4">
+                            <div className="prose max-w-none">
+                              {(() => {
+                                try {
+                                  const homeworkText = generatedPracticeHomework[selectedModuleData.week];
+                                  const jsonMatch = homeworkText.match(/```json\n([\s\S]*?)\n```/);
+                                  if (jsonMatch) {
+                                    const homeworkData = JSON.parse(jsonMatch[1]);
+                                    return (
+                                      <div className="space-y-4">
+                                        <div>
+                                          <h3 className="text-lg font-bold text-gray-900 mb-2">{homeworkData.title}</h3>
+                                          <p className="text-gray-700 mb-3">{homeworkData.instructions}</p>
+                                          <div className="bg-green-100 border border-green-300 rounded p-2 mb-3">
+                                            <p className="text-sm text-green-800">
+                                              <strong>Practice Mode:</strong> Total Points: {homeworkData.totalPoints} (Not graded)
+                                            </p>
+                                          </div>
+                                        </div>
+                                        
+                                        {homeworkData.parts.map((part: any, partIndex: number) => (
+                                          <div key={partIndex} className="border rounded-lg p-3 bg-gray-50">
+                                            <h4 className="font-medium text-gray-900 mb-2">
+                                              {part.title} ({part.points} points)
+                                            </h4>
+                                            <div className="space-y-3">
+                                              {part.questions.map((question: any, qIndex: number) => (
+                                                <div key={qIndex} className="bg-white rounded border p-3">
+                                                  <div className="flex justify-between items-start mb-2">
+                                                    <h5 className="font-medium text-gray-900">Question {qIndex + 1}</h5>
+                                                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                                                      {question.points} pts
+                                                    </span>
+                                                  </div>
+                                                  <p className="text-gray-700 whitespace-pre-wrap text-sm">{question.question}</p>
+                                                  <div className="mt-2 border-t pt-2">
+                                                    <textarea 
+                                                      placeholder="Type your practice answer here..."
+                                                      className="w-full p-2 border rounded text-sm h-20"
+                                                      value={practiceAnswers[`practice-${selectedModuleData.week}-${qIndex}`] || ''}
+                                                      onChange={(e) => setPracticeAnswers(prev => ({
+                                                        ...prev,
+                                                        [`practice-${selectedModuleData.week}-${qIndex}`]: e.target.value
+                                                      }))}
+                                                    />
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    );
+                                  } else {
+                                    return <div className="text-sm text-gray-700 whitespace-pre-wrap">{homeworkText}</div>;
+                                  }
+                                } catch (error) {
+                                  return <div className="text-sm text-gray-700 whitespace-pre-wrap">{generatedPracticeHomework[selectedModuleData.week]}</div>;
+                                }
+                              })()}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
