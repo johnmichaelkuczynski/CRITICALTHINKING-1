@@ -24,7 +24,11 @@ import { bookContent, getFullDocumentContent } from "@shared/book-content";
 import { useAuth } from "@/hooks/use-auth";
 import type { AIModel } from "@shared/schema";
 
-export default function LivingBook() {
+interface LivingBookProps {
+  openSection?: string | null;
+}
+
+export default function LivingBook({ openSection }: LivingBookProps = {}) {
   const { user, logout, isAuthenticated } = useAuth();
   const [selectedModel, setSelectedModel] = useState<AIModel>("openai");
   const [mathMode, setMathMode] = useState<boolean>(true);

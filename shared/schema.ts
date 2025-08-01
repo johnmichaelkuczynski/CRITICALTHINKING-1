@@ -111,6 +111,54 @@ export const podcasts = pgTable("podcasts", {
   timestamp: timestamp("timestamp").defaultNow().notNull(),
 });
 
+// Course-specific tables
+export const assignments = pgTable("assignments", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  weekNumber: integer("week_number").notNull(),
+  assignmentType: text("assignment_type").notNull(), // "homework", "quiz", "midterm", "final"
+  title: text("title").notNull(),
+  content: text("content").notNull(), // LLM-generated content
+  questions: jsonb("questions").notNull(), // Array of questions with answers
+  maxPoints: integer("max_points").notNull(),
+  dueDate: timestamp("due_date").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const submissions = pgTable("submissions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  assignmentId: integer("assignment_id").notNull(),
+  content: text("content").notNull(), // Student's submission text
+  gptZeroScore: integer("gpt_zero_score"), // GPTZero AI detection score (0-100)
+  grade: integer("grade"), // Points awarded
+  feedback: text("feedback"), // LLM-generated feedback
+  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+  gradedAt: timestamp("graded_at"),
+  isLate: boolean("is_late").default(false).notNull(),
+});
+
+export const practiceAttempts = pgTable("practice_attempts", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  practiceType: text("practice_type").notNull(), // "homework", "test", "midterm", "final"
+  weekNumber: integer("week_number"),
+  content: text("content").notNull(),
+  questions: jsonb("questions").notNull(),
+  userAnswers: jsonb("user_answers"),
+  score: integer("score"),
+  completedAt: timestamp("completed_at").defaultNow().notNull(),
+});
+
+export const lectures = pgTable("lectures", {
+  id: serial("id").primaryKey(),
+  weekNumber: integer("week_number").notNull(),
+  title: text("title").notNull(),
+  content: text("content").notNull(), // LLM-generated lecture summary
+  linkedSection: text("linked_section"), // Living Book section ID
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 
 
 
@@ -121,6 +169,27 @@ export const insertChatMessageSchema = createInsertSchema(chatMessages).pick({
   response: true,
   model: true,
   context: true,
+});
+
+export const insertAssignmentSchema = createInsertSchema(assignments).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSubmissionSchema = createInsertSchema(submissions).omit({
+  id: true,
+  submittedAt: true,
+  gradedAt: true,
+});
+
+export const insertPracticeAttemptSchema = createInsertSchema(practiceAttempts).omit({
+  id: true,
+  completedAt: true,
+});
+
+export const insertLectureSchema = createInsertSchema(lectures).omit({
+  id: true,
+  createdAt: true,
 });
 
 export const insertInstructionSchema = createInsertSchema(instructions).pick({
