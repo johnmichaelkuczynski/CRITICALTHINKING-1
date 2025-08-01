@@ -3,9 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, FileText, Clock, ExternalLink, Play, Keyboard, Wand2 } from "lucide-react";
-import LogicKeyboard from "@/components/logic-keyboard";
-import { convertShortcutsToSymbols, hasShortcuts } from "@/utils/logic-shortcuts";
+import { BookOpen, FileText, Clock, ExternalLink, Play, ToggleLeft, ToggleRight } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 interface ModulesProps {
@@ -32,8 +30,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [generatedHomework, setGeneratedHomework] = useState<{[key: number]: string}>({});
   const [selectedAIModel, setSelectedAIModel] = useState<'openai' | 'anthropic' | 'perplexity'>('openai');
-  const [logicKeyboardOpen, setLogicKeyboardOpen] = useState(false);
-  const [activeTextarea, setActiveTextarea] = useState<string | null>(null);
+  const [logicSymbolMode, setLogicSymbolMode] = useState(false);
 
   // Update selected module when selectedWeek prop changes
   useEffect(() => {
@@ -148,15 +145,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     }
   };
 
-  const handleSymbolInsert = (symbol: string) => {
-    if (activeTextarea) {
-      const currentValue = homeworkAnswers[activeTextarea] || '';
-      setHomeworkAnswers(prev => ({
-        ...prev,
-        [activeTextarea]: currentValue + symbol
-      }));
-    }
-  };
+  // Symbol conversion now handled by LLM only
 
   const handleTextareaChange = (fieldId: string, value: string) => {
     setHomeworkAnswers(prev => ({
@@ -165,14 +154,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     }));
   };
 
-  const convertShortcuts = (fieldId: string) => {
-    const currentValue = homeworkAnswers[fieldId] || '';
-    const convertedValue = convertShortcutsToSymbols(currentValue);
-    setHomeworkAnswers(prev => ({
-      ...prev,
-      [fieldId]: convertedValue
-    }));
-  };
+  // Logic conversion now handled by LLM only
 
   const startHomework = (weekNumber: number) => {
     setHomeworkStarted(prev => ({ ...prev, [weekNumber]: true }));
@@ -537,42 +519,26 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                                       Your Answer:
                                                     </label>
                                                     <div className="flex space-x-2">
-                                                      {hasShortcuts(homeworkAnswers[`${selectedModuleData.week}_${question.id}`] || '') && (
-                                                        <Button
-                                                          type="button"
-                                                          variant="outline"
-                                                          size="sm"
-                                                          onClick={() => convertShortcuts(`${selectedModuleData.week}_${question.id}`)}
-                                                          className="flex items-center space-x-1 text-blue-600"
-                                                        >
-                                                          <Wand2 className="w-4 h-4" />
-                                                          <span>Convert</span>
-                                                        </Button>
-                                                      )}
                                                       <Button
                                                         type="button"
                                                         variant="outline"
                                                         size="sm"
-                                                        onClick={() => {
-                                                          setActiveTextarea(`${selectedModuleData.week}_${question.id}`);
-                                                          setLogicKeyboardOpen(true);
-                                                        }}
-                                                        className="flex items-center space-x-1"
+                                                        onClick={() => setLogicSymbolMode(!logicSymbolMode)}
+                                                        className={`flex items-center space-x-1 text-xs ${logicSymbolMode ? 'bg-blue-100 text-blue-700' : ''}`}
                                                       >
-                                                        <Keyboard className="w-4 h-4" />
+                                                        {logicSymbolMode ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
                                                         <span>Logic Symbols</span>
                                                       </Button>
                                                     </div>
                                                   </div>
                                                   <textarea 
-                                                    className="w-full p-3 border rounded-lg min-h-[100px] font-mono text-sm"
-                                                    placeholder="Type shortcuts like -> forall exists or use Logic Symbols button..."
+                                                    className="w-full p-3 border rounded-lg min-h-[100px] text-sm"
+                                                    placeholder={logicSymbolMode ? "Type naturally: 'For all x if Px then Qx'" : "Type your answer..."}
                                                     value={homeworkAnswers[`${selectedModuleData.week}_${question.id}`] || ''}
                                                     onChange={(e) => handleTextareaChange(`${selectedModuleData.week}_${question.id}`, e.target.value)}
-                                                    onFocus={() => setActiveTextarea(`${selectedModuleData.week}_${question.id}`)}
                                                   />
                                                   <div className="text-xs text-gray-500 mt-1">
-                                                    Type shortcuts (→ ↔ ∧ ∨ ¬ ∀ ∃) or click Logic Symbols. {hasShortcuts(homeworkAnswers[`${selectedModuleData.week}_${question.id}`] || '') && 'Click "Convert" to transform shortcuts.'}
+                                                    {logicSymbolMode ? "Logic Symbol Mode: ON - Type naturally and AI will convert to proper symbols" : "Normal Mode: Type answers normally"}
                                                   </div>
                                                 </div>
                                               </div>
@@ -788,42 +754,26 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                       <div className="flex items-center justify-between">
                                         <label className="text-sm font-medium">Question {num} Answer:</label>
                                         <div className="flex space-x-2">
-                                          {hasShortcuts(homeworkAnswers[`w${selectedModuleData.week}_p1_q${num}`] || '') && (
-                                            <Button
-                                              type="button"
-                                              variant="outline"
-                                              size="sm"
-                                              onClick={() => convertShortcuts(`w${selectedModuleData.week}_p1_q${num}`)}
-                                              className="flex items-center space-x-1 text-blue-600"
-                                            >
-                                              <Wand2 className="w-4 h-4" />
-                                              <span>Convert</span>
-                                            </Button>
-                                          )}
                                           <Button
                                             type="button"
                                             variant="outline"
                                             size="sm"
-                                            onClick={() => {
-                                              setActiveTextarea(`w${selectedModuleData.week}_p1_q${num}`);
-                                              setLogicKeyboardOpen(true);
-                                            }}
-                                            className="flex items-center space-x-1"
+                                            onClick={() => setLogicSymbolMode(!logicSymbolMode)}
+                                            className={`flex items-center space-x-1 text-xs ${logicSymbolMode ? 'bg-blue-100 text-blue-700' : ''}`}
                                           >
-                                            <Keyboard className="w-4 h-4" />
+                                            {logicSymbolMode ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
                                             <span>Logic Symbols</span>
                                           </Button>
                                         </div>
                                       </div>
                                       <textarea
-                                        className="w-full border rounded-lg p-3 min-h-[100px] font-mono"
-                                        placeholder="Type shortcuts like -> forall exists or use Logic Symbols button..."
+                                        className="w-full border rounded-lg p-3 min-h-[100px] text-sm"
+                                        placeholder={logicSymbolMode ? "Type naturally: 'For all x if Px then Qx'" : "Type your answer..."}
                                         value={homeworkAnswers[`w${selectedModuleData.week}_p1_q${num}`] || ''}
                                         onChange={(e) => handleTextareaChange(`w${selectedModuleData.week}_p1_q${num}`, e.target.value)}
-                                        onFocus={() => setActiveTextarea(`w${selectedModuleData.week}_p1_q${num}`)}
                                       />
                                       <div className="text-xs text-gray-500">
-                                        Type shortcuts (→ ↔ ∧ ∨ ¬ ∀ ∃) or click Logic Symbols. {hasShortcuts(homeworkAnswers[`w${selectedModuleData.week}_p1_q${num}`] || '') && 'Click "Convert" to transform shortcuts.'}
+                                        {logicSymbolMode ? "Logic Symbol Mode: ON - Type naturally and AI will convert to proper symbols" : "Normal Mode: Type answers normally"}
                                       </div>
                                     </div>
                                   ))}
@@ -924,11 +874,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
         )}
       </div>
 
-      <LogicKeyboard 
-        isOpen={logicKeyboardOpen}
-        onClose={() => setLogicKeyboardOpen(false)}
-        onSymbolInsert={handleSymbolInsert}
-      />
+      {/* Logic symbol conversion now handled by LLM only */}
     </div>
   );
 }

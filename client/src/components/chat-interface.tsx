@@ -4,9 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { MessageCircle, Send, Bot, User, Download, Mail, Copy, Printer, Lock, Trash2, Keyboard, Wand2 } from "lucide-react";
-import LogicKeyboard from "@/components/logic-keyboard";
-import { convertShortcutsToSymbols, hasShortcuts } from "@/utils/logic-shortcuts";
+import { MessageCircle, Send, Bot, User, Download, Mail, Copy, Printer, Lock, Trash2, ToggleLeft, ToggleRight } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -28,18 +26,49 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [emailAddress, setEmailAddress] = useState("");
   const [contentToEmail, setContentToEmail] = useState("");
-  const [logicKeyboardOpen, setLogicKeyboardOpen] = useState(false);
+  const [logicSymbolMode, setLogicSymbolMode] = useState(false);
+  const [convertedMessage, setConvertedMessage] = useState("");
+  const [isConverting, setIsConverting] = useState(false);
   const { toast } = useToast();
 
-  const handleSymbolInsert = (symbol: string) => {
-    setMessage(prev => prev + symbol);
+  // Convert natural language to symbolic logic using LLM
+  const convertToSymbolicLogic = async (text: string) => {
+    if (!text.trim() || !logicSymbolMode) return;
+    
+    setIsConverting(true);
+    try {
+      const response = await fetch('/api/chat/convert-logic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          text,
+          aiModel: 'anthropic' // Use Anthropic for symbolic logic conversion
+        })
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        setConvertedMessage(data.converted);
+      }
+    } catch (error) {
+      console.error('Logic conversion error:', error);
+    } finally {
+      setIsConverting(false);
+    }
   };
 
-  const convertShortcuts = () => {
-    const convertedMessage = convertShortcutsToSymbols(message);
-    setMessage(convertedMessage);
-  };
-
+  // Convert message when user types and logic mode is on
+  useEffect(() => {
+    if (logicSymbolMode && message.trim()) {
+      const timeoutId = setTimeout(() => {
+        convertToSymbolicLogic(message);
+      }, 500); // Debounce to avoid too many API calls
+      
+      return () => clearTimeout(timeoutId);
+    } else {
+      setConvertedMessage("");
+    }
+  }, [message, logicSymbolMode]);
 
   const { data: chatHistory = [], refetch } = useQuery({
     queryKey: ["/api/chat/history"],
@@ -413,27 +442,15 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-medium text-gray-700">Your Message:</label>
-                <div className="flex space-x-2">
-                  {hasShortcuts(message) && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={convertShortcuts}
-                      className="flex items-center space-x-1 text-blue-600 text-xs"
-                    >
-                      <Wand2 className="w-3 h-3" />
-                      <span>Convert</span>
-                    </Button>
-                  )}
+                <div className="flex items-center space-x-2">
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => setLogicKeyboardOpen(true)}
-                    className="flex items-center space-x-1 text-xs"
+                    onClick={() => setLogicSymbolMode(!logicSymbolMode)}
+                    className={`flex items-center space-x-1 text-xs ${logicSymbolMode ? 'bg-blue-100 text-blue-700' : ''}`}
                   >
-                    <Keyboard className="w-3 h-3" />
+                    {logicSymbolMode ? <ToggleRight className="w-3 h-3" /> : <ToggleLeft className="w-3 h-3" />}
                     <span>Logic Symbols</span>
                   </Button>
                 </div>
@@ -441,8 +458,8 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
               <Textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder={selectedText ? "Ask about the selected text... Type shortcuts like -> forall exists" : "Ask about symbolic logic... Type shortcuts like -> forall exists"}
-                className="min-h-[80px] resize-none text-sm font-mono"
+                placeholder={selectedText ? "Ask about the selected text..." : logicSymbolMode ? "Type naturally: 'For all x if Px then Qx'" : "Ask a question about the document..."}
+                className="min-h-[80px] resize-none text-sm"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -450,8 +467,22 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
                   }
                 }}
               />
+              {logicSymbolMode && message.trim() && (
+                <div className="p-2 bg-blue-50 border border-blue-200 rounded text-sm">
+                  <div className="text-xs text-blue-600 mb-1">Logic Symbol Preview:</div>
+                  <div className="font-mono text-blue-800">
+                    {isConverting ? (
+                      <span className="text-gray-500">Converting to symbols...</span>
+                    ) : convertedMessage ? (
+                      convertedMessage
+                    ) : (
+                      <span className="text-gray-400">Type your logic statement above...</span>
+                    )}
+                  </div>
+                </div>
+              )}
               <div className="text-xs text-gray-500">
-                Type shortcuts (→ ↔ ∧ ∨ ¬ ∀ ∃) or click Logic Symbols. {hasShortcuts(message) && 'Click "Convert" to transform shortcuts.'}
+                {logicSymbolMode ? "Logic Symbol Mode: ON - Type naturally and AI will convert to proper symbols" : "Normal Mode: Type questions normally"}
               </div>
             </div>
             <div className="flex justify-end">
@@ -513,11 +544,7 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
         </DialogContent>
       </Dialog>
 
-      <LogicKeyboard 
-        isOpen={logicKeyboardOpen}
-        onClose={() => setLogicKeyboardOpen(false)}
-        onSymbolInsert={handleSymbolInsert}
-      />
+
     </aside>
   );
 }

@@ -270,6 +270,69 @@ Format as JSON with structure:
     }
   });
 
+  // Logic conversion endpoint - converts natural language to symbolic logic
+  app.post('/api/chat/convert-logic', async (req, res) => {
+    try {
+      const { text, aiModel = 'anthropic' } = req.body;
+      
+      if (!text || typeof text !== 'string') {
+        return res.status(400).json({ error: 'Text is required' });
+      }
+
+      let convertedLogic;
+
+      if (aiModel === 'anthropic') {
+        if (!process.env.ANTHROPIC_API_KEY) {
+          return res.status(500).json({ error: 'Anthropic API key not configured' });
+        }
+
+        const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': process.env.ANTHROPIC_API_KEY,
+            'content-type': 'application/json',
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1000,
+            messages: [{
+              role: 'user',
+              content: `Convert this natural language statement to proper symbolic logic notation ONLY. Use standard symbols: ∀ ∃ ∧ ∨ ¬ → ↔ ⊤ ⊥. Return ONLY the symbolic notation, no explanations or extra text.
+
+Examples:
+"For all x, if x is P then x is Q" → "∀x (Px → Qx)"
+"There exists an x such that x is both P and Q" → "∃x (Px ∧ Qx)"
+"If P then Q" → "P → Q"
+"P or Q but not both" → "(P ∨ Q) ∧ ¬(P ∧ Q)"
+
+Convert: "${text}"`
+            }]
+          })
+        });
+
+        const anthropicData = await anthropicResponse.json();
+        if (!anthropicResponse.ok) {
+          throw new Error(`Anthropic API error: ${anthropicData.error?.message || 'Unknown error'}`);
+        }
+        convertedLogic = anthropicData.content[0].text.trim();
+      }
+      
+      res.json({ 
+        success: true, 
+        converted: convertedLogic,
+        original: text
+      });
+
+    } catch (error) {
+      console.error('Logic conversion error:', error);
+      res.status(500).json({ 
+        error: 'Failed to convert logic statement',
+        details: error.message 
+      });
+    }
+  });
+
   // Test database connection endpoint
   app.get("/api/test-db", async (req, res) => {
     try {
