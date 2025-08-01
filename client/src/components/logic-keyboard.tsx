@@ -9,38 +9,40 @@ interface LogicKeyboardProps {
 }
 
 const LOGIC_SYMBOLS = [
-  { symbol: "∀", name: "Universal Quantifier", description: "For all" },
-  { symbol: "∃", name: "Existential Quantifier", description: "There exists" },
-  { symbol: "¬", name: "Negation", description: "Not" },
-  { symbol: "∧", name: "Conjunction", description: "And" },
-  { symbol: "∨", name: "Disjunction", description: "Or" },
-  { symbol: "→", name: "Implication", description: "If...then" },
-  { symbol: "↔", name: "Biconditional", description: "If and only if" },
-  { symbol: "⊃", name: "Material Conditional", description: "Material implication" },
-  { symbol: "≡", name: "Logical Equivalence", description: "Logically equivalent" },
-  { symbol: "⊤", name: "Tautology", description: "Always true" },
-  { symbol: "⊥", name: "Contradiction", description: "Always false" },
-  { symbol: "⊢", name: "Entailment", description: "Proves/entails" },
-  { symbol: "⊨", name: "Semantic Entailment", description: "Semantically entails" },
-  { symbol: "□", name: "Necessity", description: "Necessarily" },
-  { symbol: "◇", name: "Possibility", description: "Possibly" },
-  { symbol: "∴", name: "Therefore", description: "Therefore/conclusion" },
-  { symbol: "∵", name: "Because", description: "Because/reason" },
-  { symbol: "∈", name: "Element of", description: "Is an element of" },
-  { symbol: "∉", name: "Not element of", description: "Is not an element of" },
-  { symbol: "⊆", name: "Subset", description: "Is a subset of" },
-  { symbol: "⊈", name: "Not subset", description: "Is not a subset of" },
-  { symbol: "∩", name: "Intersection", description: "Intersection" },
-  { symbol: "∪", name: "Union", description: "Union" },
-  { symbol: "∅", name: "Empty set", description: "Empty set" },
-  { symbol: "λ", name: "Lambda", description: "Lambda abstraction" },
-  { symbol: "α", name: "Alpha", description: "Alpha" },
-  { symbol: "β", name: "Beta", description: "Beta" },
-  { symbol: "γ", name: "Gamma", description: "Gamma" },
-  { symbol: "δ", name: "Delta", description: "Delta" },
-  { symbol: "φ", name: "Phi", description: "Phi" },
-  { symbol: "ψ", name: "Psi", description: "Psi" },
-  { symbol: "ω", name: "Omega", description: "Omega" },
+  { symbol: "¬", name: "Negation", description: "Not", shortcuts: ["~", "!"] },
+  { symbol: "∧", name: "Conjunction", description: "And", shortcuts: ["^", "&"] },
+  { symbol: "∨", name: "Disjunction", description: "Or", shortcuts: ["v", "|"] },
+  { symbol: "→", name: "Conditional", description: "If...then", shortcuts: ["->"] },
+  { symbol: "↔", name: "Biconditional", description: "If and only if", shortcuts: ["<->"] },
+  { symbol: "⊤", name: "Tautology", description: "Always true", shortcuts: ["T"] },
+  { symbol: "⊥", name: "Contradiction", description: "Always false", shortcuts: ["F"] },
+  { symbol: "∀", name: "Universal Quantifier", description: "For all", shortcuts: ["forall"] },
+  { symbol: "∃", name: "Existential Quantifier", description: "There exists", shortcuts: ["exists"] },
+  { symbol: "=", name: "Identity", description: "Equal", shortcuts: ["="] },
+  { symbol: "≠", name: "Not Equal", description: "Not equal", shortcuts: ["!="] },
+  { symbol: "∈", name: "Element of", description: "Is an element of", shortcuts: ["in"] },
+  { symbol: "∉", name: "Not element of", description: "Is not an element of", shortcuts: ["!in"] },
+  { symbol: "∅", name: "Empty set", description: "Empty set", shortcuts: ["empty"] },
+  { symbol: "⊃", name: "Material Conditional", description: "Material implication", shortcuts: [] },
+  { symbol: "≡", name: "Logical Equivalence", description: "Logically equivalent", shortcuts: [] },
+  { symbol: "⊢", name: "Entailment", description: "Proves/entails", shortcuts: [] },
+  { symbol: "⊨", name: "Semantic Entailment", description: "Semantically entails", shortcuts: [] },
+  { symbol: "□", name: "Necessity", description: "Necessarily", shortcuts: [] },
+  { symbol: "◇", name: "Possibility", description: "Possibly", shortcuts: [] },
+  { symbol: "∴", name: "Therefore", description: "Therefore/conclusion", shortcuts: [] },
+  { symbol: "∵", name: "Because", description: "Because/reason", shortcuts: [] },
+  { symbol: "⊆", name: "Subset", description: "Is a subset of", shortcuts: [] },
+  { symbol: "⊈", name: "Not subset", description: "Is not a subset of", shortcuts: [] },
+  { symbol: "∩", name: "Intersection", description: "Intersection", shortcuts: [] },
+  { symbol: "∪", name: "Union", description: "Union", shortcuts: [] },
+  { symbol: "λ", name: "Lambda", description: "Lambda abstraction", shortcuts: [] },
+  { symbol: "α", name: "Alpha", description: "Alpha", shortcuts: [] },
+  { symbol: "β", name: "Beta", description: "Beta", shortcuts: [] },
+  { symbol: "γ", name: "Gamma", description: "Gamma", shortcuts: [] },
+  { symbol: "δ", name: "Delta", description: "Delta", shortcuts: [] },
+  { symbol: "φ", name: "Phi", description: "Phi", shortcuts: [] },
+  { symbol: "ψ", name: "Psi", description: "Psi", shortcuts: [] },
+  { symbol: "ω", name: "Omega", description: "Omega", shortcuts: [] },
 ];
 
 export default function LogicKeyboard({ isOpen, onClose, onSymbolInsert }: LogicKeyboardProps) {
@@ -48,9 +50,9 @@ export default function LogicKeyboard({ isOpen, onClose, onSymbolInsert }: Logic
 
   if (!isOpen) return null;
 
-  const basicSymbols = LOGIC_SYMBOLS.slice(0, 12);
-  const advancedSymbols = LOGIC_SYMBOLS.slice(12, 24);
-  const greekSymbols = LOGIC_SYMBOLS.slice(24);
+  const basicSymbols = LOGIC_SYMBOLS.slice(0, 14);
+  const advancedSymbols = LOGIC_SYMBOLS.slice(14, 26);
+  const greekSymbols = LOGIC_SYMBOLS.slice(26);
 
   const getSymbolsByCategory = () => {
     switch (selectedCategory) {
@@ -128,6 +130,11 @@ export default function LogicKeyboard({ isOpen, onClose, onSymbolInsert }: Logic
               </button>
               <div className="text-xs text-gray-500 mt-1 px-1 truncate" title={item.description}>
                 {item.description}
+                {item.shortcuts.length > 0 && (
+                  <div className="text-xs text-blue-600 mt-1">
+                    {item.shortcuts.join(", ")}
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -135,14 +142,29 @@ export default function LogicKeyboard({ isOpen, onClose, onSymbolInsert }: Logic
 
         {/* Quick Instructions */}
         <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h3 className="font-medium text-gray-900 mb-2">Quick Instructions:</h3>
-          <ul className="text-sm text-gray-700 space-y-1">
-            <li>• Click any symbol to insert it into your answer</li>
-            <li>• Use parentheses ( ) to group expressions</li>
-            <li>• Variables are typically uppercase letters: P, Q, R</li>
-            <li>• Individual constants are lowercase: a, b, c</li>
-            <li>• Predicates are uppercase with arguments: Px, Rxy</li>
-          </ul>
+          <h3 className="font-medium text-gray-900 mb-2">Input Methods:</h3>
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-700">
+            <div>
+              <h4 className="font-medium mb-2">Method 1: Click symbols above</h4>
+              <ul className="space-y-1">
+                <li>• Click any symbol to insert it</li>
+                <li>• Organized by category</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-2">Method 2: Type shortcuts</h4>
+              <ul className="space-y-1">
+                <li>• <code>{"->"}</code> becomes →</li>
+                <li>• <code>{"<->"}</code> becomes ↔</li>
+                <li>• <code>^</code> or <code>&amp;</code> becomes ∧</li>
+                <li>• <code>v</code> or <code>|</code> becomes ∨</li>
+                <li>• <code>~</code> or <code>!</code> becomes ¬</li>
+                <li>• <code>forall</code> becomes ∀</li>
+                <li>• <code>exists</code> becomes ∃</li>
+                <li>• <code>{"!="}</code> becomes ≠</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
