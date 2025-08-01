@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { X, Keyboard } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { X, Keyboard, Move, Minus, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface LogicKeyboardProps {
@@ -47,6 +47,14 @@ const LOGIC_SYMBOLS = [
 
 export default function LogicKeyboard({ isOpen, onClose, onSymbolInsert }: LogicKeyboardProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("basic");
+  const [position, setPosition] = useState({ x: 100, y: 100 });
+  const [size, setSize] = useState({ width: 480, height: 320 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [isMinimized, setIsMinimized] = useState(false);
+  
+  const keyboardRef = useRef<HTMLDivElement>(null);
 
   if (!isOpen) return null;
 
@@ -63,21 +71,87 @@ export default function LogicKeyboard({ isOpen, onClose, onSymbolInsert }: Logic
     }
   };
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('.resize-handle')) return;
+    setIsDragging(true);
+    setDragStart({
+      x: e.clientX - position.x,
+      y: e.clientY - position.y,
+    });
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (isDragging) {
+      setPosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y,
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, dragStart]);
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between mb-6">
+    <div className="fixed inset-0 z-50 pointer-events-none">
+      <div 
+        ref={keyboardRef}
+        className="absolute bg-white rounded-lg shadow-2xl border-2 border-gray-300 overflow-hidden pointer-events-auto"
+        style={{
+          left: position.x,
+          top: position.y,
+          width: size.width,
+          height: isMinimized ? 40 : size.height,
+          minWidth: 320,
+          minHeight: isMinimized ? 40 : 240,
+        }}
+      >
+        {/* Header with drag handle and controls */}
+        <div 
+          className="flex items-center justify-between p-2 bg-gray-100 border-b cursor-move select-none"
+          onMouseDown={handleMouseDown}
+        >
           <div className="flex items-center space-x-2">
-            <Keyboard className="w-6 h-6 text-blue-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Logic Symbol Keyboard</h2>
+            <Move className="w-4 h-4 text-gray-600" />
+            <Keyboard className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-medium text-gray-900">Logic Symbols</span>
           </div>
-          <Button variant="outline" size="sm" onClick={onClose}>
-            <X className="w-4 h-4" />
-          </Button>
+          <div className="flex items-center space-x-1">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-6 w-6 p-0"
+              onClick={() => setIsMinimized(!isMinimized)}
+            >
+              {isMinimized ? <Square className="w-3 h-3" /> : <Minus className="w-3 h-3" />}
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-6 w-6 p-0"
+              onClick={onClose}
+            >
+              <X className="w-3 h-3" />
+            </Button>
+          </div>
         </div>
 
-        {/* Category Tabs */}
-        <div className="flex space-x-4 mb-6 border-b">
+        {!isMinimized && (
+          <div className="p-3 overflow-y-auto" style={{ height: size.height - 40 }}>
+            {/* Category Tabs */}
+            <div className="flex space-x-4 mb-6 border-b">
           <button
             onClick={() => setSelectedCategory("basic")}
             className={`pb-2 px-4 font-medium ${
@@ -165,7 +239,15 @@ export default function LogicKeyboard({ isOpen, onClose, onSymbolInsert }: Logic
               </ul>
             </div>
           </div>
-        </div>
+            </div>
+          </div>
+        )}
+
+        {/* Resize handle */}
+        <div 
+          className="resize-handle absolute bottom-0 right-0 w-4 h-4 cursor-nw-resize bg-gray-400 hover:bg-gray-600"
+          style={{ clipPath: 'polygon(100% 0, 0 100%, 100% 100%)' }}
+        />
       </div>
     </div>
   );

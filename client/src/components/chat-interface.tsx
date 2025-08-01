@@ -4,7 +4,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { MessageCircle, Send, Bot, User, Download, Mail, Copy, Printer, Lock, Trash2 } from "lucide-react";
+import { MessageCircle, Send, Bot, User, Download, Mail, Copy, Printer, Lock, Trash2, Keyboard, Wand2 } from "lucide-react";
+import LogicKeyboard from "@/components/logic-keyboard";
+import { convertShortcutsToSymbols, hasShortcuts } from "@/utils/logic-shortcuts";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -26,7 +28,17 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [emailAddress, setEmailAddress] = useState("");
   const [contentToEmail, setContentToEmail] = useState("");
+  const [logicKeyboardOpen, setLogicKeyboardOpen] = useState(false);
   const { toast } = useToast();
+
+  const handleSymbolInsert = (symbol: string) => {
+    setMessage(prev => prev + symbol);
+  };
+
+  const convertShortcuts = () => {
+    const convertedMessage = convertShortcutsToSymbols(message);
+    setMessage(convertedMessage);
+  };
 
 
   const { data: chatHistory = [], refetch } = useQuery({
@@ -398,18 +410,50 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
           )}
           
           <form onSubmit={handleSubmit} className="space-y-3">
-            <Textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder={selectedText ? "Ask about the selected text..." : "Ask a question about the document..."}
-              className="min-h-[80px] resize-none text-sm"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit(e);
-                }
-              }}
-            />
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-medium text-gray-700">Your Message:</label>
+                <div className="flex space-x-2">
+                  {hasShortcuts(message) && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={convertShortcuts}
+                      className="flex items-center space-x-1 text-blue-600 text-xs"
+                    >
+                      <Wand2 className="w-3 h-3" />
+                      <span>Convert</span>
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setLogicKeyboardOpen(true)}
+                    className="flex items-center space-x-1 text-xs"
+                  >
+                    <Keyboard className="w-3 h-3" />
+                    <span>Logic Symbols</span>
+                  </Button>
+                </div>
+              </div>
+              <Textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder={selectedText ? "Ask about the selected text... Type shortcuts like -> forall exists" : "Ask about symbolic logic... Type shortcuts like -> forall exists"}
+                className="min-h-[80px] resize-none text-sm font-mono"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit(e);
+                  }
+                }}
+              />
+              <div className="text-xs text-gray-500">
+                Type shortcuts (→ ↔ ∧ ∨ ¬ ∀ ∃) or click Logic Symbols. {hasShortcuts(message) && 'Click "Convert" to transform shortcuts.'}
+              </div>
+            </div>
             <div className="flex justify-end">
               <Button 
                 type="submit" 
@@ -468,6 +512,12 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
           </div>
         </DialogContent>
       </Dialog>
+
+      <LogicKeyboard 
+        isOpen={logicKeyboardOpen}
+        onClose={() => setLogicKeyboardOpen(false)}
+        onSymbolInsert={handleSymbolInsert}
+      />
     </aside>
   );
 }
