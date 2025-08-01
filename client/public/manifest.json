@@ -1,6 +1,6 @@
 {
-  "name": "NEWSYMBOLICLOGICXYZ",
-  "short_name": "NEWSYMBOLICLOGICXYZ",
+  "name": "Logic 101",
+  "short_name": "Logic 101",
   "description": "Interactive AI-augmented academic learning platform",
   "start_url": "/",
   "display": "standalone",

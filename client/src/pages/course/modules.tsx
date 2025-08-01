@@ -29,6 +29,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   const [homeworkAnswers, setHomeworkAnswers] = useState<{[key: string]: string}>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [generatedHomework, setGeneratedHomework] = useState<{[key: number]: string}>({});
+  const [selectedAIModel, setSelectedAIModel] = useState<'openai' | 'anthropic' | 'perplexity'>('openai');
 
   // Update selected module when selectedWeek prop changes
   useEffect(() => {
@@ -118,7 +119,8 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
         body: JSON.stringify({
           weekNumber,
           topic: weekTopic,
-          courseMaterial: `Week ${weekNumber} covers ${weekTopic}. This is part of a 6-week symbolic logic course.`
+          courseMaterial: `Week ${weekNumber} covers ${weekTopic}. This is part of a 6-week symbolic logic course.`,
+          aiModel: selectedAIModel
         }),
       });
 
@@ -422,6 +424,20 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         <p className="text-muted-foreground mb-4">
                           Generate an AI-powered homework assignment based on this week's material.
                         </p>
+                        
+                        <div className="mb-4">
+                          <label className="block text-sm font-medium mb-2">Select AI Model:</label>
+                          <select 
+                            value={selectedAIModel} 
+                            onChange={(e) => setSelectedAIModel(e.target.value as 'openai' | 'anthropic' | 'perplexity')}
+                            className="w-full p-2 border rounded"
+                          >
+                            <option value="openai">OpenAI GPT-4o</option>
+                            <option value="anthropic">Anthropic Claude</option>
+                            <option value="perplexity">Perplexity AI</option>
+                          </select>
+                        </div>
+                        
                         <Button
                           onClick={() => generateHomework(selectedModuleData.week)}
                           disabled={generatingHomework}

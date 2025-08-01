@@ -228,7 +228,7 @@ export default function LivingBook({ openSection }: LivingBookProps = {}) {
               <BookOpen className="text-primary text-base sm:text-lg" />
               <div className="flex flex-col">
                 <h1 className="font-inter font-semibold text-sm sm:text-base text-foreground">
-                  NEWSYMBOLICLOGICXYZ
+                  Logic 101
                 </h1>
                 <a 
                   href="mailto:contact@zhisystems.ai"

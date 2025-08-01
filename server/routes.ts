@@ -59,25 +59,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   };
 
   // Generate homework endpoint
-  app.post('/api/homework/generate', requireAuth, async (req, res) => {
+  app.post('/api/homework/generate', async (req, res) => {
     try {
-      const { weekNumber, topic, courseMaterial } = req.body;
+      const { weekNumber, topic, courseMaterial, aiModel = 'openai' } = req.body;
       
-      if (!process.env.OPENAI_API_KEY) {
-        return res.status(500).json({ error: 'OpenAI API key not configured' });
-      }
+      let homeworkContent;
 
-      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o',
-          messages: [
-            {
-              role: 'system',
+      // Generate homework using the selected AI model
+      if (aiModel === 'anthropic') {
+        if (!process.env.ANTHROPIC_API_KEY) {
+          return res.status(500).json({ error: 'Anthropic API key not configured' });
+        }
+
+        const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': process.env.ANTHROPIC_API_KEY,
+            'Content-Type': 'application/json',
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 2000,
+            messages: [{
+              role: 'user',
               content: `You are a professor creating homework for a symbolic logic course. Create challenging, academic-level homework assignments that test both practical skills and theoretical understanding. 
 
 Course Context: This is Week ${weekNumber} covering "${topic}". 
@@ -108,30 +113,152 @@ Format as JSON with structure:
   ],
   "totalPoints": 50,
   "dueInfo": "Important submission guidelines"
-}`
-            },
-            {
+}
+
+Create homework for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}`
+            }]
+          })
+        });
+
+        const anthropicData = await anthropicResponse.json();
+        if (!anthropicResponse.ok) {
+          throw new Error(`Anthropic API error: ${anthropicData.error?.message || 'Unknown error'}`);
+        }
+        homeworkContent = anthropicData.content[0].text;
+
+      } else if (aiModel === 'perplexity') {
+        if (!process.env.PERPLEXITY_API_KEY) {
+          return res.status(500).json({ error: 'Perplexity API key not configured' });
+        }
+
+        const perplexityResponse = await fetch('https://api.perplexity.ai/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'llama-3.1-sonar-small-128k-online',
+            messages: [{
               role: 'user',
-              content: `Create homework for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}`
-            }
-          ],
-          temperature: 0.7,
-          max_tokens: 2000
-        })
-      });
+              content: `You are a professor creating homework for a symbolic logic course. Create challenging, academic-level homework assignments that test both practical skills and theoretical understanding. 
 
-      const openaiData = await openaiResponse.json();
-      
-      if (!openaiResponse.ok) {
-        throw new Error(`OpenAI API error: ${openaiData.error?.message || 'Unknown error'}`);
+Course Context: This is Week ${weekNumber} covering "${topic}". 
+
+Generate a homework assignment with:
+1. Translation problems (symbolic logic notation)
+2. Proof/derivation exercises 
+3. Analysis questions requiring written explanations
+4. Appropriate difficulty for university-level logic course
+
+Format as JSON with structure:
+{
+  "title": "Homework ${weekNumber}: ${topic}",
+  "instructions": "General instructions",
+  "parts": [
+    {
+      "title": "Part 1: Translation",
+      "points": 30,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Question text",
+          "points": 10,
+          "type": "translation"
+        }
+      ]
+    }
+  ],
+  "totalPoints": 50,
+  "dueInfo": "Important submission guidelines"
+}
+
+Create homework for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}`
+            }],
+            temperature: 0.7,
+            max_tokens: 2000
+          })
+        });
+
+        const perplexityData = await perplexityResponse.json();
+        if (!perplexityResponse.ok) {
+          throw new Error(`Perplexity API error: ${perplexityData.error?.message || 'Unknown error'}`);
+        }
+        homeworkContent = perplexityData.choices[0].message.content;
+
+      } else {
+        // Default to OpenAI
+        if (!process.env.OPENAI_API_KEY) {
+          return res.status(500).json({ error: 'OpenAI API key not configured' });
+        }
+
+        const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o',
+            messages: [
+              {
+                role: 'system',
+                content: `You are a professor creating homework for a symbolic logic course. Create challenging, academic-level homework assignments that test both practical skills and theoretical understanding. 
+
+Course Context: This is Week ${weekNumber} covering "${topic}". 
+
+Generate a homework assignment with:
+1. Translation problems (symbolic logic notation)
+2. Proof/derivation exercises 
+3. Analysis questions requiring written explanations
+4. Appropriate difficulty for university-level logic course
+
+Format as JSON with structure:
+{
+  "title": "Homework ${weekNumber}: ${topic}",
+  "instructions": "General instructions",
+  "parts": [
+    {
+      "title": "Part 1: Translation",
+      "points": 30,
+      "questions": [
+        {
+          "id": "q1",
+          "question": "Question text",
+          "points": 10,
+          "type": "translation"
+        }
+      ]
+    }
+  ],
+  "totalPoints": 50,
+  "dueInfo": "Important submission guidelines"
+}`
+              },
+              {
+                role: 'user',
+                content: `Create homework for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}`
+              }
+            ],
+            temperature: 0.7,
+            max_tokens: 2000
+          })
+        });
+
+        const openaiData = await openaiResponse.json();
+        
+        if (!openaiResponse.ok) {
+          throw new Error(`OpenAI API error: ${openaiData.error?.message || 'Unknown error'}`);
+        }
+
+        homeworkContent = openaiData.choices[0].message.content;
       }
-
-      const homeworkContent = openaiData.choices[0].message.content;
       
       res.json({ 
         success: true, 
         homework: homeworkContent,
-        weekNumber 
+        weekNumber,
+        aiModel 
       });
 
     } catch (error) {
