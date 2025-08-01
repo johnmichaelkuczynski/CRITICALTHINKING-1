@@ -33,6 +33,15 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   const [logicSymbolMode, setLogicSymbolMode] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
   const [abbreviationGuides, setAbbreviationGuides] = useState<{[key: string]: string}>({});
+  const [practiceHomeworkStarted, setPracticeHomeworkStarted] = useState<{[key: number]: boolean}>({});
+  const [practiceQuizStarted, setPracticeQuizStarted] = useState<{[key: number]: boolean}>({});
+  const [practiceMidtermStarted, setPracticeMidtermStarted] = useState(false);
+  const [practiceFinalStarted, setPracticeFinalStarted] = useState(false);
+  const [practiceAnswers, setPracticeAnswers] = useState<{[key: string]: string}>({});
+  const [generatedPracticeHomework, setGeneratedPracticeHomework] = useState<{[key: number]: string}>({});
+  const [generatedPracticeQuiz, setGeneratedPracticeQuiz] = useState<{[key: number]: string}>({});
+  const [generatingPracticeHomework, setGeneratingPracticeHomework] = useState(false);
+  const [generatingPracticeQuiz, setGeneratingPracticeQuiz] = useState(false);
 
   // Update selected module when selectedWeek prop changes
   useEffect(() => {
@@ -256,6 +265,114 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     }, 2000);
   };
 
+  const generatePracticeHomework = async (weekNumber: number) => {
+    if (!user) return;
+    
+    setGeneratingPracticeHomework(true);
+    
+    try {
+      const response = await fetch('/api/homework/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          weekNumber: weekNumber,
+          topic: modules.find(m => m.week === weekNumber)?.title || '',
+          courseMaterial: `Week ${weekNumber} Practice Session. This is part of a 6-week symbolic logic course.`,
+          aiModel: selectedAIModel,
+          isPractice: true
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate practice homework');
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setGeneratedPracticeHomework(prev => ({
+          ...prev,
+          [weekNumber]: data.homework
+        }));
+      } else {
+        throw new Error(data.error || 'Failed to generate practice homework');
+      }
+      setPracticeHomeworkStarted(prev => ({ ...prev, [weekNumber]: true }));
+      
+    } catch (error) {
+      console.error('Error generating practice homework:', error);
+      alert('Failed to generate practice homework. Please try again.');
+    } finally {
+      setGeneratingPracticeHomework(false);
+    }
+  };
+
+  const generatePracticeQuiz = async (weekNumber: number) => {
+    if (!user) return;
+    
+    setGeneratingPracticeQuiz(true);
+    
+    try {
+      const response = await fetch('/api/generate-quiz', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sourceText: `Week ${weekNumber}: ${modules.find(m => m.week === weekNumber)?.title || ''}. This is part of a 6-week symbolic logic course.`,
+          instructions: 'Generate a practice quiz with symbolic logic problems and conceptual questions.',
+          model: selectedAIModel,
+          isPractice: true
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate practice quiz');
+      }
+
+      const data = await response.json();
+      
+      if (data.quiz) {
+        setGeneratedPracticeQuiz(prev => ({
+          ...prev,
+          [weekNumber]: data.quiz.testContent
+        }));
+      } else {
+        throw new Error('Failed to generate practice quiz');
+      }
+      setPracticeQuizStarted(prev => ({ ...prev, [weekNumber]: true }));
+      
+    } catch (error) {
+      console.error('Error generating practice quiz:', error);
+      alert('Failed to generate practice quiz. Please try again.');
+    } finally {
+      setGeneratingPracticeQuiz(false);
+    }
+  };
+
+  const startPracticeMidterm = () => {
+    setPracticeMidtermStarted(true);
+    alert('Practice Midterm started! This is for practice only - no grades will be recorded.');
+  };
+
+  const startPracticeFinal = () => {
+    setPracticeFinalStarted(true);
+    alert('Practice Final started! This is for practice only - no grades will be recorded.');
+  };
+
+  const generateNewPracticeExam = (examType: 'midterm' | 'final') => {
+    if (examType === 'midterm') {
+      setPracticeMidtermStarted(false);
+      setTimeout(() => startPracticeMidterm(), 100);
+    } else {
+      setPracticeFinalStarted(false);
+      setTimeout(() => startPracticeFinal(), 100);
+    }
+    alert(`Generated new practice ${examType} exam!`);
+  };
+
   const getStatusBadge = (status: ModuleData["status"]) => {
     switch (status) {
       case "available":
@@ -420,11 +537,11 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                   </div>
 
                   <div className="flex space-x-4">
-                    <Button size="lg" className="flex items-center space-x-2">
+                    <Button size="lg" className="flex items-center space-x-2" onClick={startPracticeMidterm}>
                       <Play className="w-4 h-4" />
                       <span>Start Practice Midterm</span>
                     </Button>
-                    <Button variant="outline" size="lg" className="flex items-center space-x-2">
+                    <Button variant="outline" size="lg" className="flex items-center space-x-2" onClick={() => generateNewPracticeExam('midterm')}>
                       <RefreshCw className="w-4 h-4" />
                       <span>Generate New Practice Exam</span>
                     </Button>
@@ -508,11 +625,11 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                   </div>
 
                   <div className="flex space-x-4">
-                    <Button size="lg" className="flex items-center space-x-2">
+                    <Button size="lg" className="flex items-center space-x-2" onClick={startPracticeFinal}>
                       <Play className="w-4 h-4" />
                       <span>Start Practice Final</span>
                     </Button>
-                    <Button variant="outline" size="lg" className="flex items-center space-x-2">
+                    <Button variant="outline" size="lg" className="flex items-center space-x-2" onClick={() => generateNewPracticeExam('final')}>
                       <RefreshCw className="w-4 h-4" />
                       <span>Generate New Practice Final</span>
                     </Button>
@@ -664,11 +781,33 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                       </div>
 
                       <div className="flex space-x-4">
-                        <Button className="flex items-center space-x-2">
-                          <Play className="w-4 h-4" />
-                          <span>Start Practice Homework</span>
+                        <Button 
+                          className="flex items-center space-x-2"
+                          onClick={() => generatePracticeHomework(selectedModuleData.week)}
+                          disabled={generatingPracticeHomework}
+                        >
+                          {generatingPracticeHomework ? (
+                            <>
+                              <Clock className="w-4 h-4 animate-spin" />
+                              <span>Generating...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Play className="w-4 h-4" />
+                              <span>Start Practice Homework</span>
+                            </>
+                          )}
                         </Button>
-                        <Button variant="outline" className="flex items-center space-x-2">
+                        <Button 
+                          variant="outline" 
+                          className="flex items-center space-x-2"
+                          onClick={() => {
+                            setGeneratedPracticeHomework(prev => ({ ...prev, [selectedModuleData.week]: '' }));
+                            setPracticeHomeworkStarted(prev => ({ ...prev, [selectedModuleData.week]: false }));
+                            generatePracticeHomework(selectedModuleData.week);
+                          }}
+                          disabled={generatingPracticeHomework}
+                        >
                           <RefreshCw className="w-4 h-4" />
                           <span>Generate New Practice Problems</span>
                         </Button>
@@ -1164,11 +1303,33 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                       </div>
 
                       <div className="flex space-x-4">
-                        <Button className="flex items-center space-x-2">
-                          <Play className="w-4 h-4" />
-                          <span>Start Practice Quiz</span>
+                        <Button 
+                          className="flex items-center space-x-2"
+                          onClick={() => generatePracticeQuiz(selectedModuleData.week)}
+                          disabled={generatingPracticeQuiz}
+                        >
+                          {generatingPracticeQuiz ? (
+                            <>
+                              <Clock className="w-4 h-4 animate-spin" />
+                              <span>Generating...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Play className="w-4 h-4" />
+                              <span>Start Practice Quiz</span>
+                            </>
+                          )}
                         </Button>
-                        <Button variant="outline" className="flex items-center space-x-2">
+                        <Button 
+                          variant="outline" 
+                          className="flex items-center space-x-2"
+                          onClick={() => {
+                            setGeneratedPracticeQuiz(prev => ({ ...prev, [selectedModuleData.week]: '' }));
+                            setPracticeQuizStarted(prev => ({ ...prev, [selectedModuleData.week]: false }));
+                            generatePracticeQuiz(selectedModuleData.week);
+                          }}
+                          disabled={generatingPracticeQuiz}
+                        >
                           <RefreshCw className="w-4 h-4" />
                           <span>Generate New Practice Quiz</span>
                         </Button>
