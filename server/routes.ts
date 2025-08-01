@@ -329,6 +329,71 @@ Sentence: ${text}`
     }
   });
 
+  // Generate abbreviation guide for symbolic logic translation
+  app.post('/api/chat/generate-abbreviations', async (req, res) => {
+    try {
+      const { questionText, aiModel = 'anthropic' } = req.body;
+      
+      if (!questionText) {
+        return res.status(400).json({ 
+          success: false, 
+          error: 'Question text is required' 
+        });
+      }
+
+      if (aiModel === 'anthropic') {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': process.env.ANTHROPIC_API_KEY!,
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 300,
+            messages: [{
+              role: 'user',
+              content: `Extract the key concepts from this symbolic logic question and create a concise abbreviation guide.
+
+Question: "${questionText}"
+
+Generate abbreviations in this format:
+- For unary predicates: P(x): x is a philosopher
+- For constants: s: Socrates  
+- For binary relations: L(x, y): x loves y
+
+Output only the abbreviation list, one per line. Be concise and use single capital letters for predicates.`
+            }]
+          })
+        });
+
+        const data = await response.json();
+        
+        if (data.content?.[0]?.text) {
+          res.json({ 
+            success: true, 
+            abbreviations: data.content[0].text.trim()
+          });
+        } else {
+          throw new Error('Invalid response from Anthropic API');
+        }
+      } else {
+        res.status(500).json({ 
+          success: false, 
+          error: 'Unsupported AI model for abbreviation generation' 
+        });
+      }
+    } catch (error) {
+      console.error('Abbreviation generation error:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to generate abbreviations',
+        details: error.message
+      });
+    }
+  });
+
   // Test database connection endpoint
   app.get("/api/test-db", async (req, res) => {
     try {

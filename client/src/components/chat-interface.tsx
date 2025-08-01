@@ -59,15 +59,33 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
     }
   };
 
+  // Check if input is ready for conversion
+  const isInputReadyForConversion = (text: string): boolean => {
+    if (!text.trim()) return false;
+    
+    // Check minimum word count (at least 5 words)
+    const wordCount = text.trim().split(/\s+/).length;
+    if (wordCount < 5) return false;
+    
+    // Check parentheses balance
+    const openParens = (text.match(/\(/g) || []).length;
+    const closeParens = (text.match(/\)/g) || []).length;
+    if (openParens !== closeParens) return false;
+    
+    // Check if already symbolic logic
+    if (text.includes('∀') || text.includes('∃') || text.includes('∧') || text.includes('∨') || text.includes('→')) return false;
+    
+    return true;
+  };
+
   // Auto-convert after user stops typing when logic mode is on
   useEffect(() => {
     if (logicSymbolMode && message.trim() && !isConverting) {
       const timeoutId = setTimeout(() => {
-        // Only convert if the message doesn't already look like symbolic logic
-        if (!message.includes('∀') && !message.includes('∃') && !message.includes('∧') && !message.includes('∨') && !message.includes('→')) {
+        if (isInputReadyForConversion(message)) {
           convertToSymbolicLogic(message);
         }
-      }, 1500); // Wait longer to ensure user has finished typing
+      }, 1500); // Wait for user to finish typing
       
       return () => clearTimeout(timeoutId);
     }

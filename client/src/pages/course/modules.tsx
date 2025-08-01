@@ -32,6 +32,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   const [selectedAIModel, setSelectedAIModel] = useState<'openai' | 'anthropic' | 'perplexity'>('openai');
   const [logicSymbolMode, setLogicSymbolMode] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
+  const [abbreviationGuides, setAbbreviationGuides] = useState<{[key: string]: string}>({});
 
   // Update selected module when selectedWeek prop changes
   useEffect(() => {
@@ -146,6 +147,51 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     }
   };
 
+  // Check if input is ready for conversion
+  const isInputReadyForConversion = (text: string): boolean => {
+    if (!text.trim()) return false;
+    
+    // Check minimum word count (at least 5 words)
+    const wordCount = text.trim().split(/\s+/).length;
+    if (wordCount < 5) return false;
+    
+    // Check parentheses balance
+    const openParens = (text.match(/\(/g) || []).length;
+    const closeParens = (text.match(/\)/g) || []).length;
+    if (openParens !== closeParens) return false;
+    
+    // Check if already symbolic logic
+    if (text.includes('∀') || text.includes('∃') || text.includes('∧') || text.includes('∨') || text.includes('→')) return false;
+    
+    return true;
+  };
+
+  // Generate abbreviation guide for translation questions
+  const generateAbbreviationGuide = async (questionText: string, fieldId: string) => {
+    if (abbreviationGuides[fieldId]) return; // Already generated
+    
+    try {
+      const response = await fetch('/api/chat/generate-abbreviations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          questionText,
+          aiModel: 'anthropic'
+        })
+      });
+      
+      const data = await response.json();
+      if (data.success && data.abbreviations) {
+        setAbbreviationGuides(prev => ({
+          ...prev,
+          [fieldId]: data.abbreviations
+        }));
+      }
+    } catch (error) {
+      console.error('Abbreviation generation error:', error);
+    }
+  };
+
   // Convert natural language to symbolic logic and replace textarea content
   const convertToSymbolicLogic = async (fieldId: string, text: string) => {
     if (!text.trim() || !logicSymbolMode) return;
@@ -185,8 +231,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     // Auto-convert after user stops typing when logic mode is on
     if (logicSymbolMode && value.trim() && !isConverting) {
       setTimeout(() => {
-        // Only convert if the text doesn't already look like symbolic logic
-        if (!value.includes('∀') && !value.includes('∃') && !value.includes('∧') && !value.includes('∨') && !value.includes('→')) {
+        if (isInputReadyForConversion(value)) {
           convertToSymbolicLogic(fieldId, value);
         }
       }, 1500);
@@ -568,6 +613,27 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                                       </Button>
                                                     </div>
                                                   </div>
+                                                  
+                                                  {/* Auto-generate abbreviation guide for translation questions */}
+                                                  {question.question.toLowerCase().includes('translate') && logicSymbolMode && (() => {
+                                                    const fieldId = `${selectedModuleData.week}_${question.id}`;
+                                                    // Generate guide on first render
+                                                    if (!abbreviationGuides[fieldId]) {
+                                                      generateAbbreviationGuide(question.question, fieldId);
+                                                    }
+                                                    return null;
+                                                  })()}
+                                                  
+                                                  {/* Show abbreviation guide if available */}
+                                                  {abbreviationGuides[`${selectedModuleData.week}_${question.id}`] && (
+                                                    <div className="p-3 bg-blue-50 border border-blue-200 rounded-md mb-3">
+                                                      <div className="text-xs font-medium text-blue-800 mb-2">Suggested Abbreviations:</div>
+                                                      <div className="text-xs text-blue-700 whitespace-pre-wrap font-mono">
+                                                        {abbreviationGuides[`${selectedModuleData.week}_${question.id}`]}
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                  
                                                   <textarea 
                                                     className="w-full p-3 border rounded-lg min-h-[100px] text-sm"
                                                     placeholder={logicSymbolMode ? "Type naturally: 'For all x if Px then Qx'" : "Type your answer..."}
