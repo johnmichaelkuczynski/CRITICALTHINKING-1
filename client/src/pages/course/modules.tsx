@@ -111,10 +111,42 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
 
   const generateLecture = async (weekNumber: number) => {
     setGeneratingLecture(true);
-    // TODO: Implement LLM-generated lecture creation
-    setTimeout(() => {
+    
+    const weekTopic = modules.find(m => m.week === weekNumber)?.title || '';
+    
+    try {
+      const response = await fetch('/api/lecture/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          weekNumber,
+          topic: weekTopic,
+          courseMaterial: `Week ${weekNumber} covers ${weekTopic}. This is part of a 6-week symbolic logic course.`,
+          aiModel: selectedAIModel
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Mark lecture as generated for this week
+        const updatedModules = modules.map(m => 
+          m.week === weekNumber ? { ...m, lectureGenerated: true } : m
+        );
+        console.log('Lecture generated successfully for week', weekNumber);
+        alert(`Lecture summary generated successfully for Week ${weekNumber}!`);
+      } else {
+        console.error('Lecture generation failed:', data.error);
+        alert('Failed to generate lecture: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Error generating lecture:', error);
+      alert('Error generating lecture. Please try again.');
+    } finally {
       setGeneratingLecture(false);
-    }, 2000);
+    }
   };
 
   const generateHomework = async (weekNumber: number) => {

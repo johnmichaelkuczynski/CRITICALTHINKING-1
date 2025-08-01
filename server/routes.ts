@@ -58,6 +58,165 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   };
 
+  // Generate lecture endpoint
+  app.post('/api/lecture/generate', async (req, res) => {
+    try {
+      const { weekNumber, topic, courseMaterial, aiModel = 'openai' } = req.body;
+      
+      let lectureContent;
+
+      // Generate lecture using the selected AI model
+      if (aiModel === 'anthropic') {
+        if (!process.env.ANTHROPIC_API_KEY) {
+          return res.status(500).json({ error: 'Anthropic API key not configured' });
+        }
+
+        const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': process.env.ANTHROPIC_API_KEY,
+            'Content-Type': 'application/json',
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-3-sonnet-20240229',
+            max_tokens: 3000,
+            messages: [{
+              role: 'user',
+              content: `You are a professor creating a comprehensive lecture summary for a symbolic logic course. Create an engaging, educational summary that covers key concepts, examples, and learning objectives.
+
+Course Context: This is Week ${weekNumber} covering "${topic}".
+
+Create a lecture summary that includes:
+1. Learning objectives for the week
+2. Key concepts and definitions
+3. Practical examples with explanations
+4. Important theorems or principles
+5. Common mistakes to avoid
+6. Connections to previous weeks
+7. Preview of next week's topics
+
+Format as structured content with clear headings and bullet points. Make it comprehensive but accessible for university students.
+
+Create lecture summary for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}`
+            }]
+          })
+        });
+
+        const anthropicData = await anthropicResponse.json();
+        if (!anthropicResponse.ok) {
+          throw new Error(`Anthropic API error: ${anthropicData.error?.message || 'Unknown error'}`);
+        }
+        lectureContent = anthropicData.content[0].text;
+
+      } else if (aiModel === 'perplexity') {
+        if (!process.env.PERPLEXITY_API_KEY) {
+          return res.status(500).json({ error: 'Perplexity API key not configured' });
+        }
+
+        const perplexityResponse = await fetch('https://api.perplexity.ai/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'llama-3.1-sonar-small-128k-online',
+            messages: [{
+              role: 'user',
+              content: `You are a professor creating a comprehensive lecture summary for a symbolic logic course. Create an engaging, educational summary that covers key concepts, examples, and learning objectives.
+
+Course Context: This is Week ${weekNumber} covering "${topic}".
+
+Create a lecture summary that includes:
+1. Learning objectives for the week
+2. Key concepts and definitions
+3. Practical examples with explanations
+4. Important theorems or principles
+5. Common mistakes to avoid
+6. Connections to previous weeks
+7. Preview of next week's topics
+
+Format as structured content with clear headings and bullet points. Make it comprehensive but accessible for university students.
+
+Create lecture summary for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}`
+            }],
+            temperature: 0.7,
+            max_tokens: 3000
+          })
+        });
+
+        const perplexityData = await perplexityResponse.json();
+        if (!perplexityResponse.ok) {
+          throw new Error(`Perplexity API error: ${perplexityData.error?.message || 'Unknown error'}`);
+        }
+        lectureContent = perplexityData.choices[0].message.content;
+
+      } else {
+        // Default to OpenAI
+        if (!process.env.OPENAI_API_KEY) {
+          return res.status(500).json({ error: 'OpenAI API key not configured' });
+        }
+
+        const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a professor creating comprehensive lecture summaries for a symbolic logic course. Create engaging, educational content that covers key concepts, examples, and learning objectives.'
+              },
+              {
+                role: 'user',
+                content: `Create a lecture summary for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}
+
+Create a lecture summary that includes:
+1. Learning objectives for the week
+2. Key concepts and definitions
+3. Practical examples with explanations
+4. Important theorems or principles
+5. Common mistakes to avoid
+6. Connections to previous weeks
+7. Preview of next week's topics
+
+Format as structured content with clear headings and bullet points. Make it comprehensive but accessible for university students.`
+              }
+            ],
+            temperature: 0.7,
+            max_tokens: 3000
+          })
+        });
+
+        const openaiData = await openaiResponse.json();
+        
+        if (!openaiResponse.ok) {
+          throw new Error(`OpenAI API error: ${openaiData.error?.message || 'Unknown error'}`);
+        }
+
+        lectureContent = openaiData.choices[0].message.content;
+      }
+      
+      res.json({ 
+        success: true, 
+        lecture: lectureContent,
+        weekNumber,
+        aiModel 
+      });
+
+    } catch (error) {
+      console.error('Lecture generation error:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate lecture',
+        details: error.message 
+      });
+    }
+  });
+
   // Generate homework endpoint
   app.post('/api/homework/generate', async (req, res) => {
     try {
