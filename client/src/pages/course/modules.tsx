@@ -52,6 +52,9 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   }, [selectedWeek]);
   const [generatingLecture, setGeneratingLecture] = useState(false);
   const [generatingHomework, setGeneratingHomework] = useState(false);
+  const [showLogicKeyboard, setShowLogicKeyboard] = useState(false);
+  const [keyboardPosition, setKeyboardPosition] = useState({ x: 100, y: 100 });
+  const [keyboardSize, setKeyboardSize] = useState({ width: 300, height: 200 });
 
   const modules: ModuleData[] = [
     {
@@ -109,6 +112,83 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
       status: "available"
     }
   ];
+
+  const convertSelectedText = async (textareaId: string) => {
+    const textarea = document.getElementById(textareaId) as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    
+    if (!selectedText.trim()) {
+      alert('Please select text to convert to logic notation.');
+      return;
+    }
+
+    setIsConverting(true);
+    
+    try {
+      const response = await fetch('/api/chat/convert-logic', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          text: selectedText,
+          model: selectedAIModel
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Replace selected text with conversion
+        const newValue = textarea.value.substring(0, start) + data.converted + textarea.value.substring(end);
+        setPracticeAnswers(prev => ({
+          ...prev,
+          [textareaId]: newValue
+        }));
+        
+        // Update textarea value
+        textarea.value = newValue;
+        
+        // Position cursor after converted text
+        setTimeout(() => {
+          textarea.focus();
+          textarea.setSelectionRange(start + data.converted.length, start + data.converted.length);
+        }, 0);
+      } else {
+        alert('Conversion failed: ' + data.error);
+      }
+    } catch (error) {
+      console.error('Logic conversion error:', error);
+      alert('Error converting text. Please try again.');
+    } finally {
+      setIsConverting(false);
+    }
+  };
+
+  const insertLogicSymbol = (symbol: string, textareaId: string) => {
+    const textarea = document.getElementById(textareaId) as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const currentValue = practiceAnswers[textareaId] || '';
+    
+    const newValue = currentValue.substring(0, start) + symbol + currentValue.substring(end);
+    setPracticeAnswers(prev => ({
+      ...prev,
+      [textareaId]: newValue
+    }));
+    
+    // Update textarea and focus
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + symbol.length, start + symbol.length);
+    }, 0);
+  };
 
   const generateLecture = async (weekNumber: number) => {
     setGeneratingLecture(true);
@@ -890,27 +970,34 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                                   <p className="text-gray-700 whitespace-pre-wrap text-sm">{question.question}</p>
                                                   <div className="mt-2 border-t pt-2">
                                                     <div className="mb-2 flex items-center space-x-2">
-                                                      <Switch
-                                                        id={`logic-mode-practice-${selectedModuleData.week}-${qIndex}`}
-                                                        checked={logicSymbolMode}
-                                                        onCheckedChange={setLogicSymbolMode}
-                                                      />
-                                                      <label htmlFor={`logic-mode-practice-${selectedModuleData.week}-${qIndex}`} 
-                                                             className="text-xs text-green-700 font-medium">
-                                                        Logic Symbol Mode
-                                                      </label>
-                                                      {isConverting && (
-                                                        <div className="flex items-center space-x-1 text-xs text-blue-600">
-                                                          <Clock className="w-3 h-3 animate-spin" />
-                                                          <span>Converting...</span>
-                                                        </div>
-                                                      )}
+                                                      <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="text-xs"
+                                                        onClick={() => convertSelectedText(`practice-${selectedModuleData.week}-${qIndex}`)}
+                                                        disabled={isConverting}
+                                                      >
+                                                        {isConverting ? (
+                                                          <>
+                                                            <Clock className="w-3 h-3 animate-spin mr-1" />
+                                                            Converting...
+                                                          </>
+                                                        ) : (
+                                                          'Convert to Logic'
+                                                        )}
+                                                      </Button>
+                                                      <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="text-xs"
+                                                        onClick={() => setShowLogicKeyboard(!showLogicKeyboard)}
+                                                      >
+                                                        Logic Symbols
+                                                      </Button>
                                                     </div>
                                                     <textarea 
-                                                      placeholder={logicSymbolMode ? 
-                                                        "Type naturally (e.g., 'for all x, if x is a person then x is logical') and it will convert to symbols..." : 
-                                                        "Type your practice answer here..."
-                                                      }
+                                                      id={`practice-${selectedModuleData.week}-${qIndex}`}
+                                                      placeholder="Type your practice answer here. Select text and click 'Convert to Logic' for symbolic notation."
                                                       className="w-full p-2 border rounded text-sm h-20"
                                                       value={practiceAnswers[`practice-${selectedModuleData.week}-${qIndex}`] || ''}
                                                       onChange={(e) => {
@@ -919,22 +1006,8 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                                           ...prev,
                                                           [fieldId]: e.target.value
                                                         }));
-                                                        
-                                                        // Auto-convert after user stops typing when logic mode is on
-                                                        if (logicSymbolMode && e.target.value.trim() && !isConverting) {
-                                                          setTimeout(() => {
-                                                            if (isInputReadyForConversion(e.target.value)) {
-                                                              convertToSymbolicLogic(fieldId, e.target.value);
-                                                            }
-                                                          }, 1500);
-                                                        }
                                                       }}
                                                     />
-                                                    {logicSymbolMode && (
-                                                      <div className="mt-1 text-xs text-green-600">
-                                                        💡 Type naturally - AI will convert to proper logic symbols
-                                                      </div>
-                                                    )}
                                                   </div>
                                                 </div>
                                               ))}
@@ -1512,7 +1585,97 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
         )}
       </div>
 
-      {/* Logic symbol conversion now handled by LLM only */}
+      {/* Draggable Logic Keyboard */}
+      {showLogicKeyboard && (
+        <div
+          className="fixed bg-white border-2 border-gray-300 rounded-lg shadow-lg z-50 p-4"
+          style={{
+            left: keyboardPosition.x,
+            top: keyboardPosition.y,
+            width: keyboardSize.width,
+            height: keyboardSize.height,
+            resize: 'both',
+            overflow: 'auto'
+          }}
+        >
+          <div
+            className="cursor-move bg-gray-100 -m-4 mb-2 p-2 rounded-t-lg flex justify-between items-center"
+            onMouseDown={(e) => {
+              const startX = e.clientX - keyboardPosition.x;
+              const startY = e.clientY - keyboardPosition.y;
+              
+              const handleMouseMove = (e: MouseEvent) => {
+                setKeyboardPosition({
+                  x: e.clientX - startX,
+                  y: e.clientY - startY
+                });
+              };
+              
+              const handleMouseUp = () => {
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', handleMouseUp);
+              };
+              
+              document.addEventListener('mousemove', handleMouseMove);
+              document.addEventListener('mouseup', handleMouseUp);
+            }}
+          >
+            <span className="font-medium text-sm">Logic Symbols</span>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setShowLogicKeyboard(false)}
+              className="h-6 w-6 p-0"
+            >
+              ×
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-4 gap-2 text-sm">
+            {/* Logic symbols with proper hover descriptions */}
+            {[
+              { symbol: '∀', name: 'For all' },
+              { symbol: '∃', name: 'There exists' },
+              { symbol: '¬', name: 'Not' },
+              { symbol: '∧', name: 'And' },
+              { symbol: '∨', name: 'Or' },
+              { symbol: '→', name: 'Implies' },
+              { symbol: '↔', name: 'If and only if' },
+              { symbol: '⊤', name: 'True' },
+              { symbol: '⊥', name: 'False' },
+              { symbol: '∴', name: 'Therefore' },
+              { symbol: '⊢', name: 'Proves' },
+              { symbol: '⊨', name: 'Entails' },
+              { symbol: '∈', name: 'Element of' },
+              { symbol: '∅', name: 'Empty set' },
+              { symbol: '∪', name: 'Union' },
+              { symbol: '∩', name: 'Intersection' }
+            ].map((item, index) => (
+              <Button
+                key={index}
+                variant="outline"
+                size="sm"
+                className="h-8 text-lg font-mono"
+                title={item.name}
+                onClick={() => {
+                  // Insert into the currently focused textarea or last used one
+                  const textareas = document.querySelectorAll('textarea[id^="practice-"]');
+                  const focused = document.activeElement as HTMLTextAreaElement;
+                  
+                  if (focused && focused.tagName === 'TEXTAREA' && focused.id.startsWith('practice-')) {
+                    insertLogicSymbol(item.symbol, focused.id);
+                  } else if (textareas.length > 0) {
+                    const lastTextarea = textareas[textareas.length - 1] as HTMLTextAreaElement;
+                    insertLogicSymbol(item.symbol, lastTextarea.id);
+                  }
+                }}
+              >
+                {item.symbol}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
