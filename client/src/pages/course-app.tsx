@@ -9,12 +9,26 @@ import MyGrades from "./course/my-grades";
 export default function CourseApp() {
   const [activeTab, setActiveTab] = useState("living-book");
   const [openLivingBookSection, setOpenLivingBookSection] = useState<string | null>(null);
+  const [selectedWeek, setSelectedWeek] = useState<number>(1);
 
   // Handle navigation to Living Book from other tabs
   const handleNavigateToLivingBook = (sectionId?: string) => {
     setActiveTab("living-book");
     if (sectionId) {
       setOpenLivingBookSection(sectionId);
+    }
+  };
+
+  // Handle navigation to homework/assignments
+  const handleNavigateToHomework = (weekNumber: number, assignmentType: string) => {
+    setActiveTab("modules");
+    // If it's midterm or final, navigate to special modules
+    if (assignmentType === "midterm") {
+      setSelectedWeek(7); // Midterm module
+    } else if (assignmentType === "final") {
+      setSelectedWeek(8); // Final module
+    } else {
+      setSelectedWeek(weekNumber); // Navigate to specific week module
     }
   };
 
@@ -59,11 +73,18 @@ export default function CourseApp() {
         </TabsContent>
 
         <TabsContent value="syllabus" className="h-full m-0 p-0">
-          <Syllabus onNavigateToLivingBook={handleNavigateToLivingBook} />
+          <Syllabus 
+            onNavigateToLivingBook={handleNavigateToLivingBook} 
+            onNavigateToHomework={handleNavigateToHomework}
+          />
         </TabsContent>
 
         <TabsContent value="modules" className="h-full m-0 p-0">
-          <Modules onNavigateToLivingBook={handleNavigateToLivingBook} />
+          <Modules 
+            onNavigateToLivingBook={handleNavigateToLivingBook}
+            selectedWeek={selectedWeek}
+            onWeekChange={setSelectedWeek}
+          />
         </TabsContent>
 
         <TabsContent value="practice" className="h-full m-0 p-0">

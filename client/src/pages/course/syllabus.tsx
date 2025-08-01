@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 interface SyllabusProps {
   onNavigateToLivingBook: (sectionId?: string) => void;
+  onNavigateToHomework?: (weekNumber: number, assignmentType: string) => void;
 }
 
 interface WeeklyTopic {
@@ -24,7 +25,7 @@ interface Assignment {
   status: "completed" | "overdue" | "not-due";
 }
 
-export default function Syllabus({ onNavigateToLivingBook }: SyllabusProps) {
+export default function Syllabus({ onNavigateToLivingBook, onNavigateToHomework }: SyllabusProps) {
   const { user } = useAuth();
   const [weeklyTopics, setWeeklyTopics] = useState<WeeklyTopic[]>([]);
 
@@ -193,9 +194,21 @@ export default function Syllabus({ onNavigateToLivingBook }: SyllabusProps) {
               <div className="space-y-3">
                 <h4 className="font-semibold text-sm text-muted-foreground">ASSIGNMENTS DUE THIS WEEK:</h4>
                 {topic.assignments.map((assignment, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div 
+                    key={index} 
+                    className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
+                    onClick={() => {
+                      if (assignment.type === "homework" && onNavigateToHomework) {
+                        onNavigateToHomework(topic.week, assignment.type);
+                      } else if (assignment.type === "midterm" && onNavigateToHomework) {
+                        onNavigateToHomework(0, "midterm");
+                      } else if (assignment.type === "final" && onNavigateToHomework) {
+                        onNavigateToHomework(0, "final");
+                      }
+                    }}
+                  >
                     <div className="flex-1">
-                      <h5 className="font-medium">{assignment.title}</h5>
+                      <h5 className="font-medium text-blue-600 hover:text-blue-800">{assignment.title}</h5>
                       <p className="text-sm text-muted-foreground">
                         Due: {assignment.dueDate.toLocaleDateString()} at 11:59 PM
                       </p>

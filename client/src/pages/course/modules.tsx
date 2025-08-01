@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,8 @@ import { useAuth } from "@/hooks/use-auth";
 
 interface ModulesProps {
   onNavigateToLivingBook: (sectionId?: string) => void;
+  selectedWeek?: number;
+  onWeekChange?: (week: number) => void;
 }
 
 interface ModuleData {
@@ -20,9 +22,16 @@ interface ModuleData {
   status: "available" | "completed";
 }
 
-export default function Modules({ onNavigateToLivingBook }: ModulesProps) {
+export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekChange }: ModulesProps) {
   const { user } = useAuth();
-  const [selectedModule, setSelectedModule] = useState(1);
+  const [selectedModule, setSelectedModule] = useState(selectedWeek || 1);
+
+  // Update selected module when selectedWeek prop changes
+  useEffect(() => {
+    if (selectedWeek) {
+      setSelectedModule(selectedWeek);
+    }
+  }, [selectedWeek]);
   const [generatingLecture, setGeneratingLecture] = useState(false);
   const [generatingHomework, setGeneratingHomework] = useState(false);
 
@@ -124,7 +133,10 @@ export default function Modules({ onNavigateToLivingBook }: ModulesProps) {
                   ? 'border-primary bg-primary/5' 
                   : 'hover:bg-muted/50'
               }`}
-              onClick={() => setSelectedModule(module.week)}
+              onClick={() => {
+                setSelectedModule(module.week);
+                onWeekChange?.(module.week);
+              }}
             >
               <CardContent className="p-4">
                 <div className="flex items-start justify-between">
@@ -147,7 +159,10 @@ export default function Modules({ onNavigateToLivingBook }: ModulesProps) {
             className={`cursor-pointer transition-colors hover:bg-muted/50 mt-4 ${
               selectedModule === 7 ? 'border-primary bg-primary/5' : ''
             }`}
-            onClick={() => setSelectedModule(7)}
+            onClick={() => {
+              setSelectedModule(7);
+              onWeekChange?.(7);
+            }}
           >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -164,7 +179,10 @@ export default function Modules({ onNavigateToLivingBook }: ModulesProps) {
             className={`cursor-pointer transition-colors hover:bg-muted/50 ${
               selectedModule === 8 ? 'border-primary bg-primary/5' : ''
             }`}
-            onClick={() => setSelectedModule(8)}
+            onClick={() => {
+              setSelectedModule(8);
+              onWeekChange?.(8);
+            }}
           >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
