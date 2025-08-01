@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { BookOpen, FileText, Clock, ExternalLink, Play, ToggleLeft, ToggleRight, RefreshCw, GraduationCap } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -888,15 +889,52 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                                   </div>
                                                   <p className="text-gray-700 whitespace-pre-wrap text-sm">{question.question}</p>
                                                   <div className="mt-2 border-t pt-2">
+                                                    <div className="mb-2 flex items-center space-x-2">
+                                                      <Switch
+                                                        id={`logic-mode-practice-${selectedModuleData.week}-${qIndex}`}
+                                                        checked={logicSymbolMode}
+                                                        onCheckedChange={setLogicSymbolMode}
+                                                      />
+                                                      <label htmlFor={`logic-mode-practice-${selectedModuleData.week}-${qIndex}`} 
+                                                             className="text-xs text-green-700 font-medium">
+                                                        Logic Symbol Mode
+                                                      </label>
+                                                      {isConverting && (
+                                                        <div className="flex items-center space-x-1 text-xs text-blue-600">
+                                                          <Clock className="w-3 h-3 animate-spin" />
+                                                          <span>Converting...</span>
+                                                        </div>
+                                                      )}
+                                                    </div>
                                                     <textarea 
-                                                      placeholder="Type your practice answer here..."
+                                                      placeholder={logicSymbolMode ? 
+                                                        "Type naturally (e.g., 'for all x, if x is a person then x is logical') and it will convert to symbols..." : 
+                                                        "Type your practice answer here..."
+                                                      }
                                                       className="w-full p-2 border rounded text-sm h-20"
                                                       value={practiceAnswers[`practice-${selectedModuleData.week}-${qIndex}`] || ''}
-                                                      onChange={(e) => setPracticeAnswers(prev => ({
-                                                        ...prev,
-                                                        [`practice-${selectedModuleData.week}-${qIndex}`]: e.target.value
-                                                      }))}
+                                                      onChange={(e) => {
+                                                        const fieldId = `practice-${selectedModuleData.week}-${qIndex}`;
+                                                        setPracticeAnswers(prev => ({
+                                                          ...prev,
+                                                          [fieldId]: e.target.value
+                                                        }));
+                                                        
+                                                        // Auto-convert after user stops typing when logic mode is on
+                                                        if (logicSymbolMode && e.target.value.trim() && !isConverting) {
+                                                          setTimeout(() => {
+                                                            if (isInputReadyForConversion(e.target.value)) {
+                                                              convertToSymbolicLogic(fieldId, e.target.value);
+                                                            }
+                                                          }, 1500);
+                                                        }
+                                                      }}
                                                     />
+                                                    {logicSymbolMode && (
+                                                      <div className="mt-1 text-xs text-green-600">
+                                                        💡 Type naturally - AI will convert to proper logic symbols
+                                                      </div>
+                                                    )}
                                                   </div>
                                                 </div>
                                               ))}
