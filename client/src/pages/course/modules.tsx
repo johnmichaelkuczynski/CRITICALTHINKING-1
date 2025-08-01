@@ -31,6 +31,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   const [generatedHomework, setGeneratedHomework] = useState<{[key: number]: string}>({});
   const [selectedAIModel, setSelectedAIModel] = useState<'openai' | 'anthropic' | 'perplexity'>('openai');
   const [logicSymbolMode, setLogicSymbolMode] = useState(false);
+  const [isConverting, setIsConverting] = useState(false);
 
   // Update selected module when selectedWeek prop changes
   useEffect(() => {
@@ -145,16 +146,52 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     }
   };
 
-  // Symbol conversion now handled by LLM only
+  // Convert natural language to symbolic logic and replace textarea content
+  const convertToSymbolicLogic = async (fieldId: string, text: string) => {
+    if (!text.trim() || !logicSymbolMode) return;
+    
+    setIsConverting(true);
+    try {
+      const response = await fetch('/api/chat/convert-logic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          text,
+          aiModel: 'anthropic'
+        })
+      });
+      
+      const data = await response.json();
+      if (data.success && data.converted) {
+        // Replace the textarea content with converted symbolic logic
+        setHomeworkAnswers(prev => ({
+          ...prev,
+          [fieldId]: data.converted
+        }));
+      }
+    } catch (error) {
+      console.error('Logic conversion error:', error);
+    } finally {
+      setIsConverting(false);
+    }
+  };
 
   const handleTextareaChange = (fieldId: string, value: string) => {
     setHomeworkAnswers(prev => ({
       ...prev,
       [fieldId]: value
     }));
-  };
 
-  // Logic conversion now handled by LLM only
+    // Auto-convert after user stops typing when logic mode is on
+    if (logicSymbolMode && value.trim() && !isConverting) {
+      setTimeout(() => {
+        // Only convert if the text doesn't already look like symbolic logic
+        if (!value.includes('∀') && !value.includes('∃') && !value.includes('∧') && !value.includes('∨') && !value.includes('→')) {
+          convertToSymbolicLogic(fieldId, value);
+        }
+      }, 1500);
+    }
+  };
 
   const startHomework = (weekNumber: number) => {
     setHomeworkStarted(prev => ({ ...prev, [weekNumber]: true }));
@@ -538,7 +575,13 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                                     onChange={(e) => handleTextareaChange(`${selectedModuleData.week}_${question.id}`, e.target.value)}
                                                   />
                                                   <div className="text-xs text-gray-500 mt-1">
-                                                    {logicSymbolMode ? "Logic Symbol Mode: ON - Type naturally and AI will convert to proper symbols" : "Normal Mode: Type answers normally"}
+                                                    {isConverting ? (
+                                                      <span className="text-blue-600">Converting to symbolic logic...</span>
+                                                    ) : logicSymbolMode ? (
+                                                      "Logic Symbol Mode: ON - Type naturally and AI will convert to proper symbols"
+                                                    ) : (
+                                                      "Normal Mode: Type answers normally"
+                                                    )}
                                                   </div>
                                                 </div>
                                               </div>
@@ -773,7 +816,13 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                         onChange={(e) => handleTextareaChange(`w${selectedModuleData.week}_p1_q${num}`, e.target.value)}
                                       />
                                       <div className="text-xs text-gray-500">
-                                        {logicSymbolMode ? "Logic Symbol Mode: ON - Type naturally and AI will convert to proper symbols" : "Normal Mode: Type answers normally"}
+                                        {isConverting ? (
+                                          <span className="text-blue-600">Converting to symbolic logic...</span>
+                                        ) : logicSymbolMode ? (
+                                          "Logic Symbol Mode: ON - Type naturally and AI will convert to proper symbols"
+                                        ) : (
+                                          "Normal Mode: Type answers normally"
+                                        )}
                                       </div>
                                     </div>
                                   ))}

@@ -298,15 +298,11 @@ Format as JSON with structure:
             max_tokens: 1000,
             messages: [{
               role: 'user',
-              content: `Convert this natural language statement to proper symbolic logic notation ONLY. Use standard symbols: ∀ ∃ ∧ ∨ ¬ → ↔ ⊤ ⊥. Return ONLY the symbolic notation, no explanations or extra text.
+              content: `Translate the following English sentence into symbolic logic using standard notation: ¬, ∧, ∨, →, ↔, ∀, ∃, etc.
 
-Examples:
-"For all x, if x is P then x is Q" → "∀x (Px → Qx)"
-"There exists an x such that x is both P and Q" → "∃x (Px ∧ Qx)"
-"If P then Q" → "P → Q"
-"P or Q but not both" → "(P ∨ Q) ∧ ¬(P ∧ Q)"
+Output only the symbolic expression. Do not explain or include English.
 
-Convert: "${text}"`
+Sentence: ${text}`
             }]
           })
         });

@@ -31,7 +31,7 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
   const [isConverting, setIsConverting] = useState(false);
   const { toast } = useToast();
 
-  // Convert natural language to symbolic logic using LLM
+  // Convert natural language to symbolic logic using LLM and replace input
   const convertToSymbolicLogic = async (text: string) => {
     if (!text.trim() || !logicSymbolMode) return;
     
@@ -42,12 +42,14 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           text,
-          aiModel: 'anthropic' // Use Anthropic for symbolic logic conversion
+          aiModel: 'anthropic'
         })
       });
       
       const data = await response.json();
-      if (data.success) {
+      if (data.success && data.converted) {
+        // Replace the message content with converted symbolic logic
+        setMessage(data.converted);
         setConvertedMessage(data.converted);
       }
     } catch (error) {
@@ -57,18 +59,19 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
     }
   };
 
-  // Convert message when user types and logic mode is on
+  // Auto-convert after user stops typing when logic mode is on
   useEffect(() => {
-    if (logicSymbolMode && message.trim()) {
+    if (logicSymbolMode && message.trim() && !isConverting) {
       const timeoutId = setTimeout(() => {
-        convertToSymbolicLogic(message);
-      }, 500); // Debounce to avoid too many API calls
+        // Only convert if the message doesn't already look like symbolic logic
+        if (!message.includes('∀') && !message.includes('∃') && !message.includes('∧') && !message.includes('∨') && !message.includes('→')) {
+          convertToSymbolicLogic(message);
+        }
+      }, 1500); // Wait longer to ensure user has finished typing
       
       return () => clearTimeout(timeoutId);
-    } else {
-      setConvertedMessage("");
     }
-  }, [message, logicSymbolMode]);
+  }, [message, logicSymbolMode, isConverting]);
 
   const { data: chatHistory = [], refetch } = useQuery({
     queryKey: ["/api/chat/history"],
@@ -467,18 +470,16 @@ export default function ChatInterface({ selectedModel, mathMode = true, selected
                   }
                 }}
               />
-              {logicSymbolMode && message.trim() && (
+              {logicSymbolMode && (
                 <div className="p-2 bg-blue-50 border border-blue-200 rounded text-sm">
-                  <div className="text-xs text-blue-600 mb-1">Logic Symbol Preview:</div>
-                  <div className="font-mono text-blue-800">
-                    {isConverting ? (
-                      <span className="text-gray-500">Converting to symbols...</span>
-                    ) : convertedMessage ? (
-                      convertedMessage
-                    ) : (
-                      <span className="text-gray-400">Type your logic statement above...</span>
-                    )}
+                  <div className="text-xs text-blue-600 mb-1">
+                    {isConverting ? "Converting to symbolic logic..." : "Logic Symbol Mode: ON - AI will convert your natural language"}
                   </div>
+                  {isConverting && (
+                    <div className="text-xs text-gray-600">
+                      Please wait while AI converts your input to proper symbolic notation...
+                    </div>
+                  )}
                 </div>
               )}
               <div className="text-xs text-gray-500">
