@@ -907,9 +907,26 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                     {showingLecture[selectedModuleData.week] || generatedLectures[selectedModuleData.week] ? (
                       <div className="space-y-4">
                         <div className="prose max-w-none">
-                          <div dangerouslySetInnerHTML={{ 
-                            __html: generatedLectures[selectedModuleData.week] || ''
-                          }} />
+                          <div className="text-sm leading-relaxed text-gray-700 dark:text-gray-300 whitespace-pre-line">
+                            {(() => {
+                              const content = generatedLectures[selectedModuleData.week] || '';
+                              // Clean up the content by removing markup and formatting properly
+                              return content
+                                .replace(/#{1,6}\s*/g, '') // Remove markdown headers
+                                .replace(/\*\*([^*]+)\*\*/g, '$1') // Remove bold markdown
+                                .replace(/\*([^*]+)\*/g, '$1') // Remove italic markdown
+                                .replace(/###+/g, '') // Remove extra hash symbols
+                                .replace(/\s*-\s*Form:/g, '\n\nForm:') // Clean up form sections
+                                .replace(/\s*-\s*Example:/g, '\n\nExample:') // Clean up example sections
+                                .replace(/\s*###\s*/g, '\n\n') // Replace section dividers
+                                .replace(/\s{3,}/g, ' ') // Remove excessive spaces
+                                .replace(/^\s+|\s+$/g, '') // Trim whitespace
+                                .split('\n')
+                                .map(line => line.trim())
+                                .filter(line => line.length > 0)
+                                .join('\n\n');
+                            })()}
+                          </div>
                         </div>
                         <div className="flex space-x-4 pt-4 border-t">
                           <Button
