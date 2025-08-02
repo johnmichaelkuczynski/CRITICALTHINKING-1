@@ -13,6 +13,20 @@ Preferred communication style: Simple, everyday language.
 - AI responses should be very short (3-4 sentences maximum) unless user specifically asks for elaboration
 - Enter key should send messages (Shift+Enter for new lines)
 
+## Recent Progress (August 2025)
+
+### Show Solutions Feature Implementation ✅
+- Added "Show Solutions" button to all practice homework, quizzes, and tests
+- Students can instantly view answers and explanations without completing assignments
+- Solutions appear alongside submit button, allowing students to study then still complete practice
+- Enhanced practice content structure with proper answers and explanations for interactive learning
+
+### HTML Rendering Fix ✅  
+- Fixed lecture summary display showing raw HTML markup instead of formatted content
+- Implemented proper HTML rendering with dangerouslySetInnerHTML for preset content
+- Added dark mode support and prose styling for lecture summaries
+- Enhanced content processing to handle both preset HTML and AI-generated markdown
+
 ## System Architecture
 
 ### Frontend Architecture
@@ -37,8 +51,9 @@ Preferred communication style: Simple, everyday language.
 
 ### Key Capabilities
 - **Document Processing**: Pre-loaded academic content with structured sections, auto-generated navigation, and mathematical notation rendering.
-- **AI Integration**: Multi-model support (DeepSeek, OpenAI GPT-4, Claude 3, Perplexity) with full document context for chat Q&A and content modification.
+- **AI Integration**: Multi-model support (DeepSeek, OpenAI GPT-4, Claude 4, Perplexity) with full document context for chat Q&A and content modification.
 - **Interactive Features**: Text highlighting and selection with context-aware "Discuss" functionality, rewrite capabilities (full document or selected chunks), quiz/test creation, study guide generation, and podcast script summarization.
+- **Practice System**: Complete interactive practice homework, quizzes, and tests with instant "Show Solutions" functionality, symbolic logic keyboard, and performance tracking.
 - **User Interface**: Responsive design with a navigation sidebar, AI model selector, chat interface, and instruction box. Export features include PDF generation and text copying.
 - **Freemium Model**: Provides real AI-generated previews for unregistered users, with full functionality enabled by credit purchases.
 - **Security**: Secure payment verification system.
