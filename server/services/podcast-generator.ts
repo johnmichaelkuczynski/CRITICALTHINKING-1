@@ -1,5 +1,5 @@
 import { generateAIResponse } from "./ai-models.js";
-import { synthesizeSpeech } from "./azure-speech.js";
+import { synthesizeSpeech } from "./openai-tts.js";
 import type { AIModel } from "@shared/schema";
 
 interface PodcastRequest {
@@ -39,7 +39,7 @@ Format as a complete podcast script ready for text-to-speech synthesis. Do not i
     // Generate the podcast script using AI
     const script = await generateAIResponse(model, prompt, true);
     
-    // Try to synthesize speech with Azure TTS
+    // Try to synthesize speech with OpenAI TTS
     let hasAudio = false;
     let audioPath: string | null = null;
     
