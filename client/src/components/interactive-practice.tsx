@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Clock, Calculator } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Calculator, ToggleLeft, ToggleRight, Keyboard } from 'lucide-react';
 
 interface Question {
   id: string;
@@ -53,12 +53,64 @@ export function InteractivePractice({
   const [startTime] = useState(Date.now());
   const [submitted, setSubmitted] = useState(false);
   const [currentProblem, setCurrentProblem] = useState(0);
+  const [logicSymbolMode, setLogicSymbolMode] = useState<Record<string, boolean>>({});
+  const [showLogicKeyboard, setShowLogicKeyboard] = useState<Record<string, boolean>>({});
+  const [activeTextarea, setActiveTextarea] = useState<string | null>(null);
+  const textareaRefs = useRef<Record<string, HTMLTextAreaElement | null>>({});
 
   const updateAnswer = (questionId: string, answer: any) => {
     setAnswers(prev => ({
       ...prev,
       [questionId]: answer
     }));
+  };
+
+  const logicSymbols = [
+    { symbol: '¬', label: 'NOT', desc: 'Negation' },
+    { symbol: '∧', label: 'AND', desc: 'Conjunction' },
+    { symbol: '∨', label: 'OR', desc: 'Disjunction' },
+    { symbol: '→', label: 'IF-THEN', desc: 'Conditional' },
+    { symbol: '↔', label: 'IFF', desc: 'Biconditional' },
+    { symbol: '∀', label: 'FOR ALL', desc: 'Universal quantifier' },
+    { symbol: '∃', label: 'EXISTS', desc: 'Existential quantifier' },
+    { symbol: '⊃', label: 'IMPLIES', desc: 'Material conditional' },
+    { symbol: '≡', label: 'EQUIV', desc: 'Material equivalence' },
+    { symbol: '⊥', label: 'CONTRADICTION', desc: 'Contradiction' },
+    { symbol: '⊤', label: 'TAUTOLOGY', desc: 'Tautology' },
+    { symbol: '∴', label: 'THEREFORE', desc: 'Therefore' }
+  ];
+
+  const insertSymbol = (questionId: string, symbol: string) => {
+    const textarea = textareaRefs.current[questionId];
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const currentValue = answers[questionId] || '';
+      const newValue = currentValue.slice(0, start) + symbol + currentValue.slice(end);
+      
+      updateAnswer(questionId, newValue);
+      
+      // Set cursor position after the inserted symbol
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + symbol.length, start + symbol.length);
+      }, 0);
+    }
+  };
+
+  const toggleLogicMode = (questionId: string) => {
+    setLogicSymbolMode(prev => ({
+      ...prev,
+      [questionId]: !prev[questionId]
+    }));
+  };
+
+  const toggleKeyboard = (questionId: string) => {
+    setShowLogicKeyboard(prev => ({
+      ...prev,
+      [questionId]: !prev[questionId]
+    }));
+    setActiveTextarea(questionId);
   };
 
   const calculateScore = () => {
@@ -144,13 +196,80 @@ export function InteractivePractice({
         return (
           <div key={questionKey} className="space-y-3">
             <div className="font-medium">{index + 1}. {question.question}</div>
+            
+            {/* Logic symbols toggle and keyboard controls */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => toggleLogicMode(questionKey)}
+                  className={`flex items-center space-x-1 text-xs ${logicSymbolMode[questionKey] ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' : ''}`}
+                  disabled={submitted}
+                >
+                  {logicSymbolMode[questionKey] ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
+                  <span>Logic Symbols</span>
+                </Button>
+                
+                {logicSymbolMode[questionKey] && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => toggleKeyboard(questionKey)}
+                    className={`flex items-center space-x-1 text-xs ${showLogicKeyboard[questionKey] ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' : ''}`}
+                    disabled={submitted}
+                  >
+                    <Keyboard className="w-4 h-4" />
+                    <span>Keyboard</span>
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Logic symbols keyboard */}
+            {logicSymbolMode[questionKey] && showLogicKeyboard[questionKey] && (
+              <div className="border rounded-lg p-4 bg-gray-50 dark:bg-gray-900">
+                <div className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Click symbols to insert:</div>
+                <div className="grid grid-cols-4 gap-2">
+                  {logicSymbols.map((sym) => (
+                    <Button
+                      key={sym.symbol}
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => insertSymbol(questionKey, sym.symbol)}
+                      className="flex flex-col items-center h-auto py-2 text-xs"
+                      disabled={submitted}
+                      title={sym.desc}
+                    >
+                      <span className="text-lg font-bold">{sym.symbol}</span>
+                      <span className="text-xs text-gray-500">{sym.label}</span>
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+            
             <Textarea
+              ref={(el) => {
+                textareaRefs.current[questionKey] = el;
+              }}
               value={answers[questionKey] || ''}
               onChange={(e) => updateAnswer(questionKey, e.target.value)}
-              placeholder="Enter your answer..."
+              placeholder={logicSymbolMode[questionKey] ? "Type naturally or use symbols from keyboard above..." : "Enter your answer..."}
               disabled={submitted}
               className="min-h-[80px]"
+              onFocus={() => setActiveTextarea(questionKey)}
             />
+            
+            {logicSymbolMode[questionKey] && (
+              <div className="text-xs text-blue-600 dark:text-blue-400">
+                Logic Symbol Mode: ON - Use the keyboard above or type naturally
+              </div>
+            )}
+            
             {showResults && (
               <div className="space-y-2">
                 <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
