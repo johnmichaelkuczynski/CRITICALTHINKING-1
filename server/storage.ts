@@ -1,4 +1,5 @@
-import { chatMessages, instructions, rewrites, quizzes, studyGuides, studentTests, users, sessions, purchases, testResults, podcasts, type ChatMessage, type InsertChatMessage, type Instruction, type InsertInstruction, type Rewrite, type InsertRewrite, type Quiz, type InsertQuiz, type StudyGuide, type InsertStudyGuide, type StudentTest, type InsertStudentTest, type User, type InsertUser, type Session, type InsertSession, type Purchase, type InsertPurchase, type TestResult, type InsertTestResult, type Podcast, type InsertPodcast } from "@shared/schema";
+import { chatMessages, instructions, rewrites, quizzes, studyGuides, studentTests, users, sessions, purchases, testResults, podcasts, practiceAttempts } from "@shared/schema";
+import type { ChatMessage, InsertChatMessage, Instruction, InsertInstruction, Rewrite, InsertRewrite, Quiz, InsertQuiz, StudyGuide, InsertStudyGuide, StudentTest, InsertStudentTest, User, InsertUser, Session, InsertSession, Purchase, InsertPurchase, TestResult, InsertTestResult, Podcast, InsertPodcast } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
@@ -50,6 +51,10 @@ export interface IStorage {
   createPodcast(podcast: InsertPodcast): Promise<Podcast>;
   getPodcasts(): Promise<Podcast[]>;
   getPodcastById(id: number): Promise<Podcast | null>;
+
+  // Practice attempts management
+  createPracticeAttempt(attempt: any): Promise<any>;
+  getPracticeAttemptsByUserId(userId: number): Promise<any[]>;
 
 }
 
@@ -367,6 +372,15 @@ export class MemStorage implements IStorage {
   async getPodcastById(id: number): Promise<Podcast | null> {
     return this.podcasts.get(id) || null;
   }
+
+  // Practice attempts management (not implemented in MemStorage)
+  async createPracticeAttempt(attempt: any): Promise<any> {
+    throw new Error("Practice attempts not supported in memory storage");
+  }
+
+  async getPracticeAttemptsByUserId(userId: number): Promise<any[]> {
+    return [];
+  }
 }
 
 // Database Storage Implementation
@@ -610,6 +624,18 @@ export class DatabaseStorage implements IStorage {
       .where(eq(podcasts.id, id))
       .returning();
     return podcast || null;
+  }
+
+  // Practice attempts management methods
+  async createPracticeAttempt(insertAttempt: any): Promise<any> {
+    const [attempt] = await db.insert(practiceAttempts).values(insertAttempt).returning();
+    return attempt;
+  }
+
+  async getPracticeAttemptsByUserId(userId: number): Promise<any[]> {
+    return await db.select().from(practiceAttempts)
+      .where(eq(practiceAttempts.userId, userId))
+      .orderBy(desc(practiceAttempts.completedAt));
   }
 
 }

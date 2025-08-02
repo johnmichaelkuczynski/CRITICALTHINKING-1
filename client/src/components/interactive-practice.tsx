@@ -113,6 +113,67 @@ export function InteractivePractice({
     setActiveTextarea(questionId);
   };
 
+  const normalizeLogicExpression = (expr: string): string => {
+    return expr
+      .toLowerCase()
+      .replace(/\s+/g, '') // Remove all spaces
+      .replace(/and/g, '∧')
+      .replace(/or/g, '∨')
+      .replace(/not/g, '¬')
+      .replace(/implies/g, '→')
+      .replace(/iff/g, '↔')
+      .replace(/forall/g, '∀')
+      .replace(/exists/g, '∃')
+      .replace(/therefore/g, '∴')
+      .replace(/contradiction/g, '⊥')
+      .replace(/tautology/g, '⊤')
+      // Handle variations in notation
+      .replace(/&/g, '∧')
+      .replace(/\|/g, '∨')
+      .replace(/~/g, '¬')
+      .replace(/->/g, '→')
+      .replace(/<->/g, '↔')
+      // Remove extra parentheses spacing
+      .replace(/\(\s*/g, '(')
+      .replace(/\s*\)/g, ')')
+      .trim();
+  };
+
+  const areLogicallyEquivalent = (expr1: string, expr2: string): boolean => {
+    // Basic equivalence patterns for symbolic logic
+    const equivalencies = [
+      // Double negation
+      [/¬¬(.+)/, '$1'],
+      [/~~(.+)/, '$1'],
+      // De Morgan's laws
+      [/¬\((.+)∧(.+)\)/, '¬$1∨¬$2'],
+      [/¬\((.+)∨(.+)\)/, '¬$1∧¬$2'],
+      // Commutative properties
+      [/(.+)∧(.+)/, '$2∧$1'],
+      [/(.+)∨(.+)/, '$2∨$1'],
+      [/(.+)↔(.+)/, '$2↔$1'],
+      // Conditional equivalences
+      [/(.+)→(.+)/, '¬$1∨$2'],
+      [/(.+)↔(.+)/, '($1→$2)∧($2→$1)'],
+    ];
+
+    // Try applying equivalencies to see if expressions match
+    for (const [pattern, replacement] of equivalencies) {
+      const transformed1 = expr1.replace(pattern as RegExp, replacement as string);
+      const transformed2 = expr2.replace(pattern as RegExp, replacement as string);
+      
+      if (transformed1 === expr2 || transformed2 === expr1 || transformed1 === transformed2) {
+        return true;
+      }
+    }
+
+    // Check for simple reorderings and parentheses variations
+    const simplified1 = expr1.replace(/[()]/g, '').split(/[∧∨]/).sort().join('');
+    const simplified2 = expr2.replace(/[()]/g, '').split(/[∧∨]/).sort().join('');
+    
+    return simplified1 === simplified2;
+  };
+
   const calculateScore = () => {
     let totalCorrect = 0;
     let totalQuestions = 0;
@@ -128,11 +189,18 @@ export function InteractivePractice({
           }
         } else if (problem.type === 'text_input' || problem.type === 'calculation') {
           if (userAnswer && question.answer) {
-            // Normalize answers for comparison
-            const normalizedUser = userAnswer.toLowerCase().replace(/\s+/g, '');
-            const normalizedCorrect = question.answer.toLowerCase().replace(/\s+/g, '');
+            // Enhanced logic comparison for symbolic logic
+            const normalizedUser = normalizeLogicExpression(userAnswer);
+            const normalizedCorrect = normalizeLogicExpression(question.answer);
+            
+            // Check for exact match first
             if (normalizedUser === normalizedCorrect) {
               totalCorrect++;
+            } else {
+              // Check for logically equivalent expressions
+              if (areLogicallyEquivalent(normalizedUser, normalizedCorrect)) {
+                totalCorrect++;
+              }
             }
           }
         }
@@ -272,28 +340,44 @@ export function InteractivePractice({
             
             {showResults && (
               <div className="space-y-2">
-                <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                  <div className="text-sm font-medium text-green-700 dark:text-green-300">Correct Answer:</div>
-                  <div className="text-sm text-green-600 dark:text-green-400 font-mono">{question.answer}</div>
-                </div>
-                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <div className="text-sm font-medium text-blue-700 dark:text-blue-300">Explanation:</div>
-                  <div className="text-sm text-blue-600 dark:text-blue-400">{question.explanation}</div>
-                </div>
-                {answers[questionKey] && (
+                {question.answer && (
+                  <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                    <div className="text-sm font-medium text-green-700 dark:text-green-300">Correct Answer:</div>
+                    <div className="text-sm text-green-600 dark:text-green-400 font-mono">{question.answer}</div>
+                  </div>
+                )}
+                {question.explanation && (
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <div className="text-sm font-medium text-blue-700 dark:text-blue-300">Explanation:</div>
+                    <div className="text-sm text-blue-600 dark:text-blue-400">{question.explanation}</div>
+                  </div>
+                )}
+                {answers[questionKey] && question.answer && (
                   <div className="flex items-center space-x-2">
-                    {answers[questionKey].toLowerCase().replace(/\s+/g, '') === 
-                     question.answer?.toLowerCase().replace(/\s+/g, '') ? (
-                      <Badge variant="default" className="bg-green-500">
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        Correct
-                      </Badge>
-                    ) : (
-                      <Badge variant="destructive">
-                        <XCircle className="h-3 w-3 mr-1" />
-                        Incorrect
-                      </Badge>
-                    )}
+                    {(() => {
+                      const normalizedUser = normalizeLogicExpression(answers[questionKey]);
+                      const normalizedCorrect = normalizeLogicExpression(question.answer);
+                      const isCorrect = normalizedUser === normalizedCorrect || areLogicallyEquivalent(normalizedUser, normalizedCorrect);
+                      
+                      return isCorrect ? (
+                        <Badge variant="default" className="bg-green-500">
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Correct
+                        </Badge>
+                      ) : (
+                        <Badge variant="destructive">
+                          <XCircle className="h-3 w-3 mr-1" />
+                          Incorrect
+                        </Badge>
+                      );
+                    })()}
+                  </div>
+                )}
+                {!question.answer && !question.explanation && (
+                  <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                    <div className="text-sm text-yellow-700 dark:text-yellow-300">
+                      Answer and explanation will be provided after submission.
+                    </div>
                   </div>
                 )}
               </div>
