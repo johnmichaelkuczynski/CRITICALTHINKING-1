@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { BookOpen, FileText, Clock, ExternalLink, Play, ToggleLeft, ToggleRight, RefreshCw, GraduationCap, Eye } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { presetLectures, presetPracticeHomework, presetPracticeQuizzes, presetPracticeExams } from "@shared/preset-content";
+import { InteractivePractice } from "@/components/interactive-practice";
 
 interface ModulesProps {
   onNavigateToLivingBook: (sectionId?: string) => void;
@@ -187,13 +188,13 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   const showPresetPracticeHomework = (weekNumber: number) => {
     const presetContent = presetPracticeHomework[weekNumber as keyof typeof presetPracticeHomework];
     if (presetContent) {
-      setGeneratedPracticeHomework(prev => ({
-        ...prev,
-        [weekNumber]: presetContent.content
-      }));
+      // Don't set the content in generatedPracticeHomework for structured content
+      // The InteractivePractice component will read directly from presetPracticeHomework
       setPracticeHomeworkStarted(prev => ({ ...prev, [weekNumber]: true }));
     }
   };
+
+
 
   const showPresetPracticeQuiz = (weekNumber: number) => {
     const presetContent = presetPracticeQuizzes[weekNumber as keyof typeof presetPracticeQuizzes];
@@ -413,6 +414,38 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
       setIsSubmitting(false);
       alert(`Homework ${weekNumber} submitted successfully! You will receive your grade within 24 hours.`);
     }, 2000);
+  };
+
+  const handlePracticeComplete = async (
+    practiceType: 'homework' | 'quiz' | 'test',
+    weekNumber: number,
+    score: number,
+    answers: Record<string, any>,
+    timeSpent: number
+  ) => {
+    if (!user) return;
+
+    try {
+      const response = await fetch('/api/practice/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          practiceType,
+          weekNumber,
+          score,
+          answers,
+          timeSpent
+        }),
+      });
+
+      if (response.ok) {
+        console.log('Practice performance logged successfully');
+      }
+    } catch (error) {
+      console.error('Error logging practice performance:', error);
+    }
   };
 
   const generatePracticeHomework = async (weekNumber: number) => {
@@ -1007,102 +1040,43 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         </div>
                       )}
 
-                      {practiceHomeworkStarted[selectedModuleData.week] && generatedPracticeHomework[selectedModuleData.week] && (
-                        <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-6">
-                          <h4 className="font-semibold text-green-800 mb-4">🎯 Practice Homework Content</h4>
-                          <div className="bg-white border rounded-lg p-4">
-                            <div className="prose max-w-none">
-                              {(() => {
-                                try {
-                                  const homeworkText = generatedPracticeHomework[selectedModuleData.week];
-                                  const jsonMatch = homeworkText.match(/```json\n([\s\S]*?)\n```/);
-                                  if (jsonMatch) {
-                                    const homeworkData = JSON.parse(jsonMatch[1]);
-                                    return (
-                                      <div className="space-y-4">
-                                        <div>
-                                          <h3 className="text-lg font-bold text-gray-900 mb-2">{homeworkData.title}</h3>
-                                          <p className="text-gray-700 mb-3">{homeworkData.instructions}</p>
-                                          <div className="bg-green-100 border border-green-300 rounded p-2 mb-3">
-                                            <p className="text-sm text-green-800">
-                                              <strong>Practice Mode:</strong> Total Points: {homeworkData.totalPoints} (Not graded)
-                                            </p>
-                                          </div>
-                                        </div>
-                                        
-                                        {homeworkData.parts.map((part: any, partIndex: number) => (
-                                          <div key={partIndex} className="border rounded-lg p-3 bg-gray-50">
-                                            <h4 className="font-medium text-gray-900 mb-2">
-                                              {part.title} ({part.points} points)
-                                            </h4>
-                                            <div className="space-y-3">
-                                              {part.questions.map((question: any, qIndex: number) => (
-                                                <div key={qIndex} className="bg-white rounded border p-3">
-                                                  <div className="flex justify-between items-start mb-2">
-                                                    <h5 className="font-medium text-gray-900">Question {qIndex + 1}</h5>
-                                                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                                                      {question.points} pts
-                                                    </span>
-                                                  </div>
-                                                  <p className="text-gray-700 whitespace-pre-wrap text-sm">{question.question}</p>
-                                                  <div className="mt-2 border-t pt-2">
-                                                    <div className="mb-2 flex items-center space-x-2">
-                                                      <Button
-                                                        size="sm"
-                                                        variant="outline"
-                                                        className="text-xs"
-                                                        onClick={() => convertSelectedText(`practice-${selectedModuleData.week}-${qIndex}`)}
-                                                        disabled={isConverting}
-                                                      >
-                                                        {isConverting ? (
-                                                          <>
-                                                            <Clock className="w-3 h-3 animate-spin mr-1" />
-                                                            Converting...
-                                                          </>
-                                                        ) : (
-                                                          'Convert to Logic'
-                                                        )}
-                                                      </Button>
-                                                      <Button
-                                                        size="sm"
-                                                        variant="outline"
-                                                        className="text-xs"
-                                                        onClick={() => setShowLogicKeyboard(!showLogicKeyboard)}
-                                                      >
-                                                        Logic Symbols
-                                                      </Button>
-                                                    </div>
-                                                    <textarea 
-                                                      id={`practice-${selectedModuleData.week}-${qIndex}`}
-                                                      placeholder="Type your practice answer here. Select text and click 'Convert to Logic' for symbolic notation."
-                                                      className="w-full p-2 border rounded text-sm h-20"
-                                                      value={practiceAnswers[`practice-${selectedModuleData.week}-${qIndex}`] || ''}
-                                                      onChange={(e) => {
-                                                        const fieldId = `practice-${selectedModuleData.week}-${qIndex}`;
-                                                        setPracticeAnswers(prev => ({
-                                                          ...prev,
-                                                          [fieldId]: e.target.value
-                                                        }));
-                                                      }}
-                                                    />
-                                                  </div>
-                                                </div>
-                                              ))}
-                                            </div>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    );
-                                  } else {
-                                    return <div className="text-sm text-gray-700 whitespace-pre-wrap">{homeworkText}</div>;
-                                  }
-                                } catch (error) {
-                                  return <div className="text-sm text-gray-700 whitespace-pre-wrap">{generatedPracticeHomework[selectedModuleData.week]}</div>;
+                      {practiceHomeworkStarted[selectedModuleData.week] && (
+                        (() => {
+                          // Check if we have preset interactive content
+                          const presetContent = presetPracticeHomework[selectedModuleData.week as keyof typeof presetPracticeHomework];
+                          if (presetContent && typeof presetContent.content === 'object') {
+                            // Use interactive practice component for structured content
+                            return (
+                              <InteractivePractice
+                                title={presetContent.title}
+                                content={presetContent.content as any}
+                                practiceType="homework"
+                                weekNumber={selectedModuleData.week}
+                                onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
+                                  handlePracticeComplete('homework', selectedModuleData.week, score, answers, timeSpent)
                                 }
-                              })()}
-                            </div>
-                          </div>
-                        </div>
+                              />
+                            );
+                          } 
+                          
+                          // Show fallback for generated content
+                          if (generatedPracticeHomework[selectedModuleData.week]) {
+                            return (
+                              <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-6">
+                                <h4 className="font-semibold text-green-800 mb-4">🎯 Practice Homework Content</h4>
+                                <div className="bg-white border rounded-lg p-4">
+                                  <div className="prose max-w-none">
+                                    <div className="text-sm text-gray-700 whitespace-pre-wrap">
+                                      {generatedPracticeHomework[selectedModuleData.week]}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          }
+                          
+                          return null;
+                        })()
                       )}
                     </div>
                   </CardContent>

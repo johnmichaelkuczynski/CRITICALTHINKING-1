@@ -629,80 +629,91 @@ Review all weekly materials, practice proofs, and understand the connections bet
 export const presetPracticeHomework = {
   1: {
     title: "Week 1 Practice Homework: Basic Logic Operations",
-    content: `# Week 1 Practice Homework: Basic Logic Operations
-
-**Instructions:** Complete all problems below. This is practice only - no grades recorded.
-
-## Problem 1: Identifying Propositions (10 points)
-Determine which of the following are propositions. For those that are, state whether they're true or false. For those that aren't, explain why.
-
-a) The sky is blue.
-b) Close the door!
-c) What time is it?
-d) 2 + 2 = 4
-e) This statement is false.
-f) x > 5
-
-## Problem 2: Basic Translations (15 points)
-Translate the following English statements into symbolic logic using the given predicates:
-- P: "It is raining"
-- Q: "The ground is wet"  
-- R: "I carry an umbrella"
-
-a) "If it is raining, then the ground is wet."
-b) "It is not raining, but the ground is wet."
-c) "I carry an umbrella if and only if it is raining."
-d) "Either it's raining or I don't carry an umbrella."
-e) "If it's not raining and the ground is not wet, then I don't carry an umbrella."
-
-## Problem 3: Truth Tables (20 points)
-Construct complete truth tables for the following formulas:
-
-a) P ∧ (Q ∨ ¬R)
-b) (P → Q) ∧ (¬Q → ¬P)
-c) (P ∨ Q) → (P ∧ Q)
-
-## Problem 4: Logical Operators (15 points)
-Given P = True, Q = False, R = True, evaluate:
-
-a) ¬P ∨ Q
-b) P ∧ (Q → R)  
-c) (P ∨ Q) ↔ (¬Q ∧ R)
-d) ¬(P ∧ Q) ∨ (Q ∨ R)
-
-## Problem 5: Applied Logic (10 points)
-A restaurant offers the following deal: "If you order the steak, you get free dessert. If you order fish, you get free soup."
-
-Express this deal in symbolic logic using:
-- S: "You order steak"
-- F: "You order fish"  
-- D: "You get free dessert"
-- O: "You get free soup"
-
-Then determine: If someone orders fish, what can we conclude about their meal?
-
-## Problem 6: Contradiction Analysis (10 points)
-Determine if the following statement is a tautology, contradiction, or contingency:
-(P → Q) ∧ (Q → P) ∧ P ∧ ¬Q
-
-Show your work using a truth table.
-
-## Problem 7: Real-World Logic (20 points)
-You're designing a security system with the following rules:
-- The alarm sounds if motion is detected AND it's nighttime
-- The lights turn on if the alarm sounds OR someone presses the manual button
-- The system arms only if all doors are closed AND all windows are locked
-
-Using appropriate variables, write these rules in symbolic logic, then determine what happens in each scenario:
-a) Motion detected, daytime, manual button pressed
-b) Nighttime, no motion, one door open
-c) Motion detected, nighttime, all doors closed, all windows locked
-
-**Submission Instructions:**
-- Show all work for truth tables
-- Clearly label your symbolic translations
-- Explain your reasoning for each answer
-- Use proper logical notation (∧, ∨, ¬, →, ↔)`
+    content: {
+      instructions: "Complete all problems below. This is practice only - no grades recorded.",
+      totalPoints: 100,
+      problems: [
+        {
+          id: "p1",
+          title: "Identifying Propositions",
+          points: 10,
+          type: "multiple_choice",
+          questions: [
+            {
+              id: "p1a",
+              question: "Is 'The sky is blue' a proposition?",
+              options: ["Yes, it's true", "Yes, it's false", "No, it's not a proposition"],
+              correct: 0,
+              explanation: "This is a proposition because it can be either true or false."
+            },
+            {
+              id: "p1b", 
+              question: "Is 'Close the door!' a proposition?",
+              options: ["Yes, it's true", "Yes, it's false", "No, it's not a proposition"],
+              correct: 2,
+              explanation: "Commands are not propositions because they cannot be true or false."
+            }
+          ]
+        },
+        {
+          id: "p2",
+          title: "Basic Translations",
+          points: 15,
+          type: "text_input",
+          context: "Use P: 'It is raining', Q: 'The ground is wet', R: 'I carry an umbrella'",
+          questions: [
+            {
+              id: "p2a",
+              question: "Translate: 'If it is raining, then the ground is wet.'",
+              answer: "P → Q",
+              explanation: "This is a conditional statement: if P then Q."
+            },
+            {
+              id: "p2b",
+              question: "Translate: 'It is not raining, but the ground is wet.'",
+              answer: "¬P ∧ Q", 
+              explanation: "This combines negation of P with conjunction to Q."
+            }
+          ]
+        },
+        {
+          id: "p3",
+          title: "Truth Tables",
+          points: 20,
+          type: "truth_table",
+          questions: [
+            {
+              id: "p3a",
+              question: "Complete the truth table for: P ∧ (Q ∨ ¬R)",
+              formula: "P ∧ (Q ∨ ¬R)",
+              variables: ["P", "Q", "R"],
+              correctResults: [false, false, true, false, false, false, true, false]
+            }
+          ]
+        },
+        {
+          id: "p4",
+          title: "Logical Operators",
+          points: 15,
+          type: "calculation",
+          context: "Given P = True, Q = False, R = True, evaluate:",
+          questions: [
+            {
+              id: "p4a",
+              question: "¬P ∨ Q",
+              answer: "False",
+              explanation: "¬True ∨ False = False ∨ False = False"
+            },
+            {
+              id: "p4b",
+              question: "P ∧ (Q → R)",
+              answer: "True",
+              explanation: "True ∧ (False → True) = True ∧ True = True"
+            }
+          ]
+        }
+      ]
+    }
   },
   2: {
     title: "Week 2 Practice Homework: Complex Formulas and Equivalences", 

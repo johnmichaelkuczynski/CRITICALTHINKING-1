@@ -808,6 +808,34 @@ Output only the abbreviation list, one per line. Be concise and use single capit
     }
   });
 
+  // Practice submission endpoint
+  app.post("/api/practice/submit", async (req, res) => {
+    try {
+      const { practiceType, weekNumber, score, answers, timeSpent } = req.body;
+      const user = await getCurrentUser(req);
+      
+      if (!user) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+      
+      // Store practice attempt
+      await storage.createPracticeAttempt({
+        userId: user.id,
+        practiceType,
+        weekNumber,
+        content: `Week ${weekNumber} ${practiceType}`,
+        questions: answers,
+        userAnswers: answers,
+        score
+      });
+      
+      res.json({ success: true, message: "Practice performance logged successfully" });
+    } catch (error) {
+      console.error("Practice submission error:", error);
+      res.status(500).json({ error: "Failed to log practice performance" });
+    }
+  });
+
   // Chat endpoint with authentication
   app.post("/api/chat", async (req, res) => {
     try {

@@ -12,6 +12,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={CourseApp} />
+      <Route path="/course" component={CourseApp} />
 
       <Route component={NotFound} />
     </Switch>
