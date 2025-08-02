@@ -49,6 +49,7 @@ export function InteractivePractice({
 }: InteractivePracticeProps) {
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [showResults, setShowResults] = useState(false);
+  const [showSolutions, setShowSolutions] = useState(false);
   const [score, setScore] = useState(0);
   const [startTime] = useState(Date.now());
   const [submitted, setSubmitted] = useState(false);
@@ -250,10 +251,45 @@ export function InteractivePractice({
                 </div>
               ))}
             </RadioGroup>
-            {showResults && (
-              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <div className="text-sm font-medium text-blue-700 dark:text-blue-300">Explanation:</div>
-                <div className="text-sm text-blue-600 dark:text-blue-400">{question.explanation}</div>
+            
+            {(showResults || showSolutions) && (
+              <div className="space-y-2 mt-4">
+                {question.correct !== undefined && (
+                  <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                    <div className="text-sm font-medium text-green-700 dark:text-green-300">Correct Answer:</div>
+                    <div className="text-sm text-green-600 dark:text-green-400 font-mono">
+                      {question.options?.[question.correct]}
+                    </div>
+                  </div>
+                )}
+                {question.explanation && (
+                  <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <div className="text-sm font-medium text-blue-700 dark:text-blue-300">Explanation:</div>
+                    <div className="text-sm text-blue-600 dark:text-blue-400">{question.explanation}</div>
+                  </div>
+                )}
+                {showResults && answers[questionKey] && question.correct !== undefined && (
+                  <div className="flex items-center space-x-2">
+                    {answers[questionKey] === question.correct ? (
+                      <Badge variant="default" className="bg-green-500">
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        Correct
+                      </Badge>
+                    ) : (
+                      <Badge variant="destructive">
+                        <XCircle className="h-3 w-3 mr-1" />
+                        Incorrect
+                      </Badge>
+                    )}
+                  </div>
+                )}
+                {showSolutions && !showResults && (
+                  <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                    <div className="text-sm text-yellow-700 dark:text-yellow-300">
+                      💡 Solution shown - you can still complete the practice and submit your answers!
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -338,7 +374,7 @@ export function InteractivePractice({
               </div>
             )}
             
-            {showResults && (
+            {(showResults || showSolutions) && (
               <div className="space-y-2">
                 {question.answer && (
                   <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
@@ -352,7 +388,7 @@ export function InteractivePractice({
                     <div className="text-sm text-blue-600 dark:text-blue-400">{question.explanation}</div>
                   </div>
                 )}
-                {answers[questionKey] && question.answer && (
+                {showResults && answers[questionKey] && question.answer && (
                   <div className="flex items-center space-x-2">
                     {(() => {
                       const normalizedUser = normalizeLogicExpression(answers[questionKey]);
@@ -371,6 +407,13 @@ export function InteractivePractice({
                         </Badge>
                       );
                     })()}
+                  </div>
+                )}
+                {showSolutions && !showResults && (
+                  <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                    <div className="text-sm text-yellow-700 dark:text-yellow-300">
+                      💡 Solution shown - you can still complete the practice and submit your answers!
+                    </div>
                   </div>
                 )}
                 {!question.answer && !question.explanation && (
@@ -459,7 +502,15 @@ export function InteractivePractice({
           ))}
 
           {!submitted ? (
-            <div className="flex justify-center pt-4">
+            <div className="flex justify-center gap-4 pt-4">
+              <Button 
+                onClick={() => setShowSolutions(true)}
+                variant="outline"
+                size="lg"
+                className="min-w-[180px]"
+              >
+                Show Solutions
+              </Button>
               <Button 
                 onClick={handleSubmit}
                 size="lg"

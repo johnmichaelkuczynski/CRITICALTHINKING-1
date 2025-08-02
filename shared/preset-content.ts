@@ -716,51 +716,106 @@ export const presetPracticeHomework = {
     }
   },
   2: {
-    title: "Week 2 Practice Homework: Complex Formulas and Equivalences", 
-    content: `# Week 2 Practice Homework: Complex Formulas and Equivalences
-
-## Problem 1: Operator Precedence (15 points)
-Add parentheses to clarify the meaning of these formulas according to standard precedence rules:
-
-a) ¬P ∧ Q → R ∨ S
-b) P → Q ∧ R ↔ S ∨ T
-c) ¬P ∨ Q ∧ ¬R → S ↔ T
-
-## Problem 2: Complex Truth Tables (25 points)
-Construct truth tables for:
-
-a) (P ∧ Q) → (R ∨ ¬S)
-b) (P → Q) ↔ (¬Q → ¬P)
-c) ¬(P ∨ Q) ∧ (R → P)
-
-## Problem 3: Logical Equivalences (20 points)
-Prove or disprove that these pairs are logically equivalent using truth tables:
-
-a) P → Q and ¬P ∨ Q
-b) ¬(P ∧ Q) and ¬P ∧ ¬Q
-c) (P → Q) ∧ (Q → P) and P ↔ Q
-
-## Problem 4: Tautologies and Contradictions (15 points)
-Classify each formula as tautology, contradiction, or contingency:
-
-a) P ∨ ¬P
-b) (P → Q) ∧ P ∧ ¬Q
-c) (P → Q) → ((Q → R) → (P → R))
-d) P ∧ Q ∧ ¬P
-
-## Problem 5: De Morgan's Laws (10 points)
-Apply De Morgan's laws to simplify:
-
-a) ¬(P ∧ (Q ∨ R))
-b) ¬((P → Q) ∧ (R ↔ S))
-
-## Problem 6: Circuit Logic (15 points)
-Design a Boolean circuit for: (A ∧ B) ∨ (¬A ∧ C)
-- Draw the circuit using AND, OR, and NOT gates
-- Create the truth table
-- Simplify if possible
-
-**Answer Key Available After Submission**`
+    title: "Week 2 Practice Homework: Complex Formulas and Equivalences",
+    content: {
+      instructions: "Work with complex logical formulas and learn equivalence rules.",
+      totalPoints: 100,
+      problems: [
+        {
+          id: "p1",
+          title: "Operator Precedence",
+          points: 20,
+          type: "text_input",
+          context: "Add parentheses to clarify meaning according to standard precedence rules:",
+          questions: [
+            {
+              id: "p1a",
+              question: "¬P ∧ Q → R ∨ S",
+              answer: "((¬P ∧ Q) → (R ∨ S))",
+              explanation: "Negation has highest precedence, then ∧ and ∨, then → has lowest precedence."
+            },
+            {
+              id: "p1b",
+              question: "P → Q ∧ R ↔ S ∨ T",
+              answer: "(P → (Q ∧ R)) ↔ (S ∨ T)",
+              explanation: "∧ and ∨ bind tighter than → and ↔."
+            }
+          ]
+        },
+        {
+          id: "p2",
+          title: "Logical Equivalences",
+          points: 25,
+          type: "multiple_choice",
+          questions: [
+            {
+              id: "p2a",
+              question: "Which is equivalent to P → Q?",
+              options: ["¬P ∨ Q", "P ∧ Q", "¬P ∧ Q", "P ∨ ¬Q"],
+              correct: 0,
+              explanation: "P → Q is equivalent to ¬P ∨ Q by the definition of conditional."
+            },
+            {
+              id: "p2b",
+              question: "Which is equivalent to ¬(P ∧ Q)?",
+              options: ["¬P ∧ ¬Q", "¬P ∨ ¬Q", "P ∨ Q", "¬P → ¬Q"],
+              correct: 1,
+              explanation: "By De Morgan's law: ¬(P ∧ Q) ≡ ¬P ∨ ¬Q"
+            }
+          ]
+        },
+        {
+          id: "p3",
+          title: "Tautologies and Contradictions",
+          points: 30,
+          type: "multiple_choice",
+          questions: [
+            {
+              id: "p3a", 
+              question: "What type is P ∨ ¬P?",
+              options: ["Tautology", "Contradiction", "Contingency"],
+              correct: 0,
+              explanation: "P ∨ ¬P is always true, making it a tautology."
+            },
+            {
+              id: "p3b",
+              question: "What type is P ∧ ¬P?",
+              options: ["Tautology", "Contradiction", "Contingency"],
+              correct: 1,
+              explanation: "P ∧ ¬P is always false, making it a contradiction."
+            },
+            {
+              id: "p3c",
+              question: "What type is (P → Q) → ((Q → R) → (P → R))?",
+              options: ["Tautology", "Contradiction", "Contingency"],
+              correct: 0,
+              explanation: "This represents transitivity of implication and is always true."
+            }
+          ]
+        },
+        {
+          id: "p4",
+          title: "Complex Truth Evaluations",
+          points: 25,
+          type: "calculation",
+          context: "Given P = True, Q = False, R = True, evaluate:",
+          questions: [
+            {
+              id: "p4a",
+              question: "(P ∧ Q) → (R ∨ ¬P)",
+              answer: "True",
+              explanation: "(True ∧ False) → (True ∨ False) = False → True = True"
+            },
+            {
+              id: "p4b",
+              question: "(P → Q) ↔ (¬Q → ¬P)",
+              answer: "True",
+              explanation: "(True → False) ↔ (True → False) = False ↔ False = True"
+            }
+          ]
+        }
+      ]
+    }
   },
   3: {
     title: "Week 3 Practice Homework: Boolean Algebra Applications",
