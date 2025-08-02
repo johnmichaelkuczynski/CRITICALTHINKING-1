@@ -1059,15 +1059,56 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                             );
                           } 
                           
-                          // Show fallback for generated content
+                          // Try to parse generated content as JSON for interactive component
                           if (generatedPracticeHomework[selectedModuleData.week]) {
+                            const generatedText = generatedPracticeHomework[selectedModuleData.week];
+                            try {
+                              // Extract JSON from markdown code block
+                              const jsonMatch = generatedText.match(/```json\n([\s\S]*?)\n```/);
+                              if (jsonMatch) {
+                                const homeworkData = JSON.parse(jsonMatch[1]);
+                                // Convert to InteractivePractice format
+                                const interactiveContent = {
+                                  instructions: homeworkData.instructions,
+                                  totalPoints: homeworkData.totalPoints || 100,
+                                  problems: homeworkData.parts?.map((part: any, index: number) => ({
+                                    id: `part-${index + 1}`,
+                                    title: part.title,
+                                    points: part.points,
+                                    type: 'text_input' as const,
+                                    questions: part.questions?.map((q: any) => ({
+                                      id: q.id,
+                                      question: q.question,
+                                      correctAnswer: '',
+                                      explanation: q.explanation || ''
+                                    })) || []
+                                  })) || []
+                                };
+                                
+                                return (
+                                  <InteractivePractice
+                                    title={homeworkData.title}
+                                    content={interactiveContent}
+                                    practiceType="homework"
+                                    weekNumber={selectedModuleData.week}
+                                    onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
+                                      handlePracticeComplete('homework', selectedModuleData.week, score, answers, timeSpent)
+                                    }
+                                  />
+                                );
+                              }
+                            } catch (error) {
+                              console.error('Failed to parse generated homework JSON:', error);
+                            }
+                            
+                            // Fallback: display as formatted text
                             return (
                               <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-6">
                                 <h4 className="font-semibold text-green-800 mb-4">🎯 Practice Homework Content</h4>
                                 <div className="bg-white border rounded-lg p-4">
                                   <div className="prose max-w-none">
                                     <div className="text-sm text-gray-700 whitespace-pre-wrap">
-                                      {generatedPracticeHomework[selectedModuleData.week]}
+                                      Generated homework format error. Please try generating again.
                                     </div>
                                   </div>
                                 </div>
@@ -1597,16 +1638,97 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                           </Button>
                         </div>
                       ) : (
-                        <div className="flex space-x-4">
-                          <Button 
-                            variant="outline" 
-                            className="flex items-center space-x-2"
-                            onClick={() => generatePracticeQuiz(selectedModuleData.week)}
-                            disabled={generatingPracticeQuiz}
-                          >
-                            <RefreshCw className="w-4 h-4" />
-                            <span>Generate New Quiz</span>
-                          </Button>
+                        <div className="space-y-4">
+                          <div className="flex space-x-4">
+                            <Button 
+                              variant="outline" 
+                              className="flex items-center space-x-2"
+                              onClick={() => generatePracticeQuiz(selectedModuleData.week)}
+                              disabled={generatingPracticeQuiz}
+                            >
+                              <RefreshCw className="w-4 h-4" />
+                              <span>Generate New Quiz</span>
+                            </Button>
+                          </div>
+
+                          {(() => {
+                            // Check if we have preset interactive content
+                            const presetContent = presetPracticeQuizzes[selectedModuleData.week as keyof typeof presetPracticeQuizzes];
+                            if (presetContent && typeof presetContent.content === 'object') {
+                              // Use interactive practice component for structured content
+                              return (
+                                <InteractivePractice
+                                  title={presetContent.title}
+                                  content={presetContent.content as any}
+                                  practiceType="quiz"
+                                  weekNumber={selectedModuleData.week}
+                                  onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
+                                    handlePracticeComplete('quiz', selectedModuleData.week, score, answers, timeSpent)
+                                  }
+                                />
+                              );
+                            } 
+                            
+                            // Try to parse generated content as JSON for interactive component
+                            if (generatedPracticeQuiz[selectedModuleData.week]) {
+                              const generatedText = generatedPracticeQuiz[selectedModuleData.week];
+                              try {
+                                // Extract JSON from markdown code block
+                                const jsonMatch = generatedText.match(/```json\n([\s\S]*?)\n```/);
+                                if (jsonMatch) {
+                                  const quizData = JSON.parse(jsonMatch[1]);
+                                  // Convert to InteractivePractice format
+                                  const interactiveContent = {
+                                    instructions: quizData.instructions || 'Complete the following quiz questions.',
+                                    totalPoints: quizData.totalPoints || 100,
+                                    problems: quizData.questions?.map((q: any, index: number) => ({
+                                      id: `q-${index + 1}`,
+                                      title: `Question ${index + 1}`,
+                                      points: q.points || 10,
+                                      type: 'multiple_choice' as const,
+                                      questions: [{
+                                        id: q.id || `q${index + 1}`,
+                                        question: q.question,
+                                        options: q.options || [],
+                                        correctAnswer: q.correctAnswer || q.options?.[0] || '',
+                                        explanation: q.explanation || ''
+                                      }]
+                                    })) || []
+                                  };
+                                  
+                                  return (
+                                    <InteractivePractice
+                                      title={quizData.title || `Practice Quiz - Week ${selectedModuleData.week}`}
+                                      content={interactiveContent}
+                                      practiceType="quiz"
+                                      weekNumber={selectedModuleData.week}
+                                      onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
+                                        handlePracticeComplete('quiz', selectedModuleData.week, score, answers, timeSpent)
+                                      }
+                                    />
+                                  );
+                                }
+                              } catch (error) {
+                                console.error('Failed to parse generated quiz JSON:', error);
+                              }
+                              
+                              // Fallback: display as formatted text
+                              return (
+                                <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-6">
+                                  <h4 className="font-semibold text-green-800 mb-4">🎯 Practice Quiz Content</h4>
+                                  <div className="bg-white border rounded-lg p-4">
+                                    <div className="prose max-w-none">
+                                      <div className="text-sm text-gray-700 whitespace-pre-wrap">
+                                        Generated quiz format error. Please try generating again.
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            }
+                            
+                            return null;
+                          })()}
                         </div>
                       )}
                     </div>
