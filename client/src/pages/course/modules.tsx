@@ -906,27 +906,37 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                   <CardContent>
                     {showingLecture[selectedModuleData.week] || generatedLectures[selectedModuleData.week] ? (
                       <div className="space-y-4">
-                        <div className="prose max-w-none">
-                          <div className="text-sm leading-relaxed text-gray-700 dark:text-gray-300 whitespace-pre-line">
-                            {(() => {
-                              const content = generatedLectures[selectedModuleData.week] || '';
-                              // Clean up the content by removing markup and formatting properly
-                              return content
-                                .replace(/#{1,6}\s*/g, '') // Remove markdown headers
-                                .replace(/\*\*([^*]+)\*\*/g, '$1') // Remove bold markdown
-                                .replace(/\*([^*]+)\*/g, '$1') // Remove italic markdown
-                                .replace(/###+/g, '') // Remove extra hash symbols
-                                .replace(/\s*-\s*Form:/g, '\n\nForm:') // Clean up form sections
-                                .replace(/\s*-\s*Example:/g, '\n\nExample:') // Clean up example sections
-                                .replace(/\s*###\s*/g, '\n\n') // Replace section dividers
-                                .replace(/\s{3,}/g, ' ') // Remove excessive spaces
-                                .replace(/^\s+|\s+$/g, '') // Trim whitespace
-                                .split('\n')
-                                .map(line => line.trim())
-                                .filter(line => line.length > 0)
-                                .join('\n\n');
-                            })()}
-                          </div>
+                        <div className="prose max-w-none dark:prose-invert">
+                          <div 
+                            className="text-sm leading-relaxed text-gray-700 dark:text-gray-300"
+                            dangerouslySetInnerHTML={{
+                              __html: (() => {
+                                const content = generatedLectures[selectedModuleData.week] || '';
+                                
+                                // If content is already HTML (from preset), return as-is
+                                if (content.includes('<h') || content.includes('<p') || content.includes('<ul')) {
+                                  return content;
+                                }
+                                
+                                // If content is markdown/plain text (from AI generation), convert it
+                                return content
+                                  .replace(/#{1,6}\s*/g, '') // Remove markdown headers
+                                  .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>') // Bold markdown
+                                  .replace(/\*([^*]+)\*/g, '<em>$1</em>') // Italic markdown
+                                  .replace(/###+/g, '') // Remove extra hash symbols
+                                  .replace(/\s*-\s*Form:/g, '\n\n<strong>Form:</strong>') // Clean up form sections
+                                  .replace(/\s*-\s*Example:/g, '\n\n<strong>Example:</strong>') // Clean up example sections
+                                  .replace(/\s*###\s*/g, '\n\n') // Replace section dividers
+                                  .replace(/\s{3,}/g, ' ') // Remove excessive spaces
+                                  .replace(/^\s+|\s+$/g, '') // Trim whitespace
+                                  .split('\n\n')
+                                  .map(line => line.trim())
+                                  .filter(line => line.length > 0)
+                                  .map(line => `<p>${line}</p>`)
+                                  .join('\n');
+                              })()
+                            }}
+                          />
                         </div>
                         <div className="flex space-x-4 pt-4 border-t">
                           <Button
