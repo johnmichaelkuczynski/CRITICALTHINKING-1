@@ -3,202 +3,261 @@
 export const presetLectures = {
   1: {
     title: "Week 1: Basic Concepts, Notation, and Logical Operators",
-    content: `# Week 1: Basic Concepts, Notation, and Logical Operators
+    content: `<h2>Week 1: Basic Concepts, Notation, and Logical Operators</h2>
 
-## Overview
-Welcome to symbolic logic! This week introduces the fundamental building blocks of logical reasoning and formal notation systems.
+<h3>Overview</h3>
+<p>Welcome to symbolic logic! This week introduces the fundamental building blocks of logical reasoning and formal notation systems.</p>
 
-## Key Concepts
+<h3>Key Concepts</h3>
 
-### 1. Propositions and Truth Values
-- A **proposition** is a statement that is either true or false
-- Examples: "It is raining" (can be true or false)
-- Non-examples: "What time is it?" (questions aren't propositions)
+<h4>1. Propositions and Truth Values</h4>
+<ul>
+<li>A <strong>proposition</strong> is a statement that is either true or false</li>
+<li>Examples: "It is raining" (can be true or false)</li>
+<li>Non-examples: "What time is it?" (questions aren't propositions)</li>
+</ul>
 
-### 2. Basic Logical Operators
+<h4>2. Basic Logical Operators</h4>
 
-#### Negation (¬)
-- Symbol: ¬ or ~
-- Meaning: "not"
-- Example: ¬P means "not P"
+<h5>Negation (¬)</h5>
+<ul>
+<li>Symbol: ¬ or ~</li>
+<li>Meaning: "not"</li>
+<li>Example: ¬P means "not P"</li>
+</ul>
 
-#### Conjunction (∧)
-- Symbol: ∧
-- Meaning: "and" 
-- Example: P ∧ Q means "P and Q"
-- True only when both P and Q are true
+<h5>Conjunction (∧)</h5>
+<ul>
+<li>Symbol: ∧</li>
+<li>Meaning: "and"</li>
+<li>Example: P ∧ Q means "P and Q"</li>
+<li>True only when both P and Q are true</li>
+</ul>
 
-#### Disjunction (∨)
-- Symbol: ∨
-- Meaning: "or" (inclusive or)
-- Example: P ∨ Q means "P or Q (or both)"
-- False only when both P and Q are false
+<h5>Disjunction (∨)</h5>
+<ul>
+<li>Symbol: ∨</li>
+<li>Meaning: "or" (inclusive or)</li>
+<li>Example: P ∨ Q means "P or Q (or both)"</li>
+<li>False only when both P and Q are false</li>
+</ul>
 
-#### Conditional (→)
-- Symbol: → or ⊃
-- Meaning: "if...then"
-- Example: P → Q means "if P then Q"
-- False only when P is true and Q is false
+<h5>Conditional (→)</h5>
+<ul>
+<li>Symbol: → or ⊃</li>
+<li>Meaning: "if...then"</li>
+<li>Example: P → Q means "if P then Q"</li>
+<li>False only when P is true and Q is false</li>
+</ul>
 
-#### Biconditional (↔)
-- Symbol: ↔ or ≡
-- Meaning: "if and only if"
-- Example: P ↔ Q means "P if and only if Q"
-- True when P and Q have the same truth value
+<h5>Biconditional (↔)</h5>
+<ul>
+<li>Symbol: ↔ or ≡</li>
+<li>Meaning: "if and only if"</li>
+<li>Example: P ↔ Q means "P if and only if Q"</li>
+<li>True when P and Q have the same truth value</li>
+</ul>
 
-### 3. Truth Tables
-Truth tables show all possible truth value combinations for logical formulas.
+<h4>3. Truth Tables</h4>
+<p>Truth tables show all possible truth value combinations for logical formulas.</p>
 
-## Practice Problems
-1. Translate: "If it rains, then the ground is wet"
-2. Create a truth table for: P ∧ (Q ∨ ¬R)
-3. Determine when (P → Q) ∧ (Q → R) is true
+<h3>Practice Problems</h3>
+<ol>
+<li>Translate: "If it rains, then the ground is wet"</li>
+<li>Create a truth table for: P ∧ (Q ∨ ¬R)</li>
+<li>Determine when (P → Q) ∧ (Q → R) is true</li>
+</ol>
 
-## Next Week Preview
-We'll explore more complex formulas and introduce quantifiers (∀, ∃).`
+<h3>Next Week Preview</h3>
+<p>We'll explore more complex formulas and introduce quantifiers (∀, ∃).</p>`
   },
   2: {
     title: "Week 2: Complex Formulas and Truth Tables",
-    content: `# Week 2: Complex Formulas and Truth Tables
+    content: `<h2>Week 2: Complex Formulas and Truth Tables</h2>
 
-## Building Complex Logical Formulas
+<h3>Building Complex Logical Formulas</h3>
 
-### Operator Precedence
-1. Negation (¬) - highest priority
-2. Conjunction (∧) and Disjunction (∨)
-3. Conditional (→) and Biconditional (↔) - lowest priority
+<h4>Operator Precedence</h4>
+<ol>
+<li>Negation (¬) - highest priority</li>
+<li>Conjunction (∧) and Disjunction (∨)</li>
+<li>Conditional (→) and Biconditional (↔) - lowest priority</li>
+</ol>
 
-### Parentheses for Clarity
-- Use parentheses to group operations: (P ∧ Q) → R
-- Without parentheses: P ∧ Q → R means P ∧ (Q → R)
+<h4>Parentheses for Clarity</h4>
+<ul>
+<li>Use parentheses to group operations: (P ∧ Q) → R</li>
+<li>Without parentheses: P ∧ Q → R means P ∧ (Q → R)</li>
+</ul>
 
-## Advanced Truth Table Construction
+<h3>Advanced Truth Table Construction</h3>
 
-### Step-by-Step Method
-1. List all atomic propositions
-2. Create columns for all possible truth value combinations
-3. Build intermediate columns for subformulas
-4. Calculate final column for the complete formula
+<h4>Step-by-Step Method</h4>
+<ol>
+<li>List all atomic propositions</li>
+<li>Create columns for all possible truth value combinations</li>
+<li>Build intermediate columns for subformulas</li>
+<li>Calculate final column for the complete formula</li>
+</ol>
 
-### Example: (P → Q) ∧ (¬P ∨ Q)
+<h4>Example: (P → Q) ∧ (¬P ∨ Q)</h4>
 
-| P | Q | P→Q | ¬P | ¬P∨Q | (P→Q)∧(¬P∨Q) |
-|---|---|-----|----|----- |---------------|
-| T | T | T   | F  | T    | T             |
-| T | F | F   | F  | F    | F             |
-| F | T | T   | T  | T    | T             |
-| F | F | T   | T  | T    | T             |
+<table border="1">
+<tr><th>P</th><th>Q</th><th>P→Q</th><th>¬P</th><th>¬P∨Q</th><th>(P→Q)∧(¬P∨Q)</th></tr>
+<tr><td>T</td><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td></tr>
+<tr><td>T</td><td>F</td><td>F</td><td>F</td><td>F</td><td>F</td></tr>
+<tr><td>F</td><td>T</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+<tr><td>F</td><td>F</td><td>T</td><td>T</td><td>T</td><td>T</td></tr>
+</table>
 
-## Tautologies, Contradictions, and Contingencies
+<h3>Tautologies, Contradictions, and Contingencies</h3>
 
-### Tautology
-- Always true regardless of truth values
-- Example: P ∨ ¬P
+<h4>Tautology</h4>
+<ul>
+<li>Always true regardless of truth values</li>
+<li>Example: P ∨ ¬P</li>
+</ul>
 
-### Contradiction
-- Always false regardless of truth values  
-- Example: P ∧ ¬P
+<h4>Contradiction</h4>
+<ul>
+<li>Always false regardless of truth values</li>
+<li>Example: P ∧ ¬P</li>
+</ul>
 
-### Contingency
-- Sometimes true, sometimes false
-- Most formulas are contingencies
+<h4>Contingency</h4>
+<ul>
+<li>Sometimes true, sometimes false</li>
+<li>Most formulas are contingencies</li>
+</ul>
 
-## Logical Equivalence
-Two formulas are logically equivalent if they have identical truth tables.
+<h3>Logical Equivalence</h3>
+<p>Two formulas are logically equivalent if they have identical truth tables.</p>
 
-Examples:
-- P → Q ≡ ¬P ∨ Q
-- ¬(P ∧ Q) ≡ ¬P ∨ ¬Q (De Morgan's Law)
+<p>Examples:</p>
+<ul>
+<li>P → Q ≡ ¬P ∨ Q</li>
+<li>¬(P ∧ Q) ≡ ¬P ∨ ¬Q (De Morgan's Law)</li>
+</ul>
 
-## Practice Problems
-1. Construct truth table for: (P ∧ Q) → (P ∨ R)
-2. Prove: ¬(P → Q) ≡ P ∧ ¬Q
-3. Identify tautologies: P → P, P ∧ ¬P, (P → Q) → ((Q → R) → (P → R))`
+<h3>Practice Problems</h3>
+<ol>
+<li>Construct truth table for: (P ∧ Q) → (P ∨ R)</li>
+<li>Prove: ¬(P → Q) ≡ P ∧ ¬Q</li>
+<li>Identify tautologies: P → P, P ∧ ¬P, (P → Q) → ((Q → R) → (P → R))</li>
+</ol>`
   },
   3: {
     title: "Week 3: Boolean Algebra and Functions",
-    content: `# Week 3: Boolean Algebra and Functions
+    content: `<h2>Week 3: Boolean Algebra and Functions</h2>
 
-## Boolean Algebra Fundamentals
+<h3>Boolean Algebra Fundamentals</h3>
 
-### Basic Laws
+<h4>Basic Laws</h4>
 
-#### Identity Laws
-- P ∧ T ≡ P (True is identity for ∧)
-- P ∨ F ≡ P (False is identity for ∨)
+<h5>Identity Laws</h5>
+<ul>
+<li>P ∧ T ≡ P (True is identity for ∧)</li>
+<li>P ∨ F ≡ P (False is identity for ∨)</li>
+</ul>
 
-#### Domination Laws
-- P ∧ F ≡ F (False dominates ∧)
-- P ∨ T ≡ T (True dominates ∨)
+<h5>Domination Laws</h5>
+<ul>
+<li>P ∧ F ≡ F (False dominates ∧)</li>
+<li>P ∨ T ≡ T (True dominates ∨)</li>
+</ul>
 
-#### Idempotent Laws
-- P ∧ P ≡ P
-- P ∨ P ≡ P
+<h5>Idempotent Laws</h5>
+<ul>
+<li>P ∧ P ≡ P</li>
+<li>P ∨ P ≡ P</li>
+</ul>
 
-#### Commutative Laws
-- P ∧ Q ≡ Q ∧ P
-- P ∨ Q ≡ Q ∨ P
+<h5>Commutative Laws</h5>
+<ul>
+<li>P ∧ Q ≡ Q ∧ P</li>
+<li>P ∨ Q ≡ Q ∨ P</li>
+</ul>
 
-#### Associative Laws
-- (P ∧ Q) ∧ R ≡ P ∧ (Q ∧ R)
-- (P ∨ Q) ∨ R ≡ P ∨ (Q ∨ R)
+<h5>Associative Laws</h5>
+<ul>
+<li>(P ∧ Q) ∧ R ≡ P ∧ (Q ∧ R)</li>
+<li>(P ∨ Q) ∨ R ≡ P ∨ (Q ∨ R)</li>
+</ul>
 
-#### Distributive Laws
-- P ∧ (Q ∨ R) ≡ (P ∧ Q) ∨ (P ∧ R)
-- P ∨ (Q ∧ R) ≡ (P ∨ Q) ∧ (P ∨ R)
+<h5>Distributive Laws</h5>
+<ul>
+<li>P ∧ (Q ∨ R) ≡ (P ∧ Q) ∨ (P ∧ R)</li>
+<li>P ∨ (Q ∧ R) ≡ (P ∨ Q) ∧ (P ∨ R)</li>
+</ul>
 
-#### De Morgan's Laws
-- ¬(P ∧ Q) ≡ ¬P ∨ ¬Q
-- ¬(P ∨ Q) ≡ ¬P ∧ ¬Q
+<h5>De Morgan's Laws</h5>
+<ul>
+<li>¬(P ∧ Q) ≡ ¬P ∨ ¬Q</li>
+<li>¬(P ∨ Q) ≡ ¬P ∧ ¬Q</li>
+</ul>
 
-#### Double Negation
-- ¬¬P ≡ P
+<h5>Double Negation</h5>
+<ul>
+<li>¬¬P ≡ P</li>
+</ul>
 
-### Boolean Functions
+<h4>Boolean Functions</h4>
 
-#### Definition
-A Boolean function maps n Boolean variables to a Boolean result:
-f: {T,F}ⁿ → {T,F}
+<h5>Definition</h5>
+<p>A Boolean function maps n Boolean variables to a Boolean result:<br>
+f: {T,F}ⁿ → {T,F}</p>
 
-#### Truth Table Representation
-Every Boolean function can be represented by a truth table.
+<h5>Truth Table Representation</h5>
+<p>Every Boolean function can be represented by a truth table.</p>
 
-#### Normal Forms
+<h5>Normal Forms</h5>
 
-##### Disjunctive Normal Form (DNF)
-- Disjunction of conjunctions
-- Example: (P ∧ Q) ∨ (¬P ∧ R)
+<h6>Disjunctive Normal Form (DNF)</h6>
+<ul>
+<li>Disjunction of conjunctions</li>
+<li>Example: (P ∧ Q) ∨ (¬P ∧ R)</li>
+</ul>
 
-##### Conjunctive Normal Form (CNF)  
-- Conjunction of disjunctions
-- Example: (P ∨ Q) ∧ (¬P ∨ R)
+<h6>Conjunctive Normal Form (CNF)</h6>
+<ul>
+<li>Conjunction of disjunctions</li>
+<li>Example: (P ∨ Q) ∧ (¬P ∨ R)</li>
+</ul>
 
-### Function Minimization
+<h4>Function Minimization</h4>
 
-#### Using Boolean Laws
-Simplify expressions by applying algebraic laws:
-- (P ∧ Q) ∨ (P ∧ ¬Q) ≡ P ∧ (Q ∨ ¬Q) ≡ P ∧ T ≡ P
+<h5>Using Boolean Laws</h5>
+<p>Simplify expressions by applying algebraic laws:</p>
+<ul>
+<li>(P ∧ Q) ∨ (P ∧ ¬Q) ≡ P ∧ (Q ∨ ¬Q) ≡ P ∧ T ≡ P</li>
+</ul>
 
-#### Karnaugh Maps (K-maps)
-Visual method for minimizing Boolean functions with few variables.
+<h5>Karnaugh Maps (K-maps)</h5>
+<p>Visual method for minimizing Boolean functions with few variables.</p>
 
-## Applications
+<h3>Applications</h3>
 
-### Circuit Design
-Boolean algebra directly corresponds to digital circuits:
-- AND gates implement ∧
-- OR gates implement ∨  
-- NOT gates implement ¬
+<h4>Circuit Design</h4>
+<p>Boolean algebra directly corresponds to digital circuits:</p>
+<ul>
+<li>AND gates implement ∧</li>
+<li>OR gates implement ∨</li>
+<li>NOT gates implement ¬</li>
+</ul>
 
-### Computer Science
-- Database queries
-- Search algorithms
-- Conditional statements in programming
+<h4>Computer Science</h4>
+<ul>
+<li>Database queries</li>
+<li>Search algorithms</li>
+<li>Conditional statements in programming</li>
+</ul>
 
-## Practice Problems
-1. Simplify: (P ∧ Q) ∨ (P ∧ ¬Q) ∨ (¬P ∧ Q)
-2. Convert to CNF: P → (Q ∨ R)
-3. Find DNF from truth table with outputs T,F,T,T for inputs 00,01,10,11`
+<h3>Practice Problems</h3>
+<ol>
+<li>Simplify: (P ∧ Q) ∨ (P ∧ ¬Q) ∨ (¬P ∧ Q)</li>
+<li>Convert to CNF: P → (Q ∨ R)</li>
+<li>Find DNF from truth table with outputs T,F,T,T for inputs 00,01,10,11</li>
+</ol>`
   },
   4: {
     title: "Week 4: Predicate Logic and Quantifiers",

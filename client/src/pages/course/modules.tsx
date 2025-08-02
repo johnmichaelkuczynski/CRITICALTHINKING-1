@@ -875,7 +875,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                       <div className="space-y-4">
                         <div className="prose max-w-none">
                           <div dangerouslySetInnerHTML={{ 
-                            __html: (generatedLectures[selectedModuleData.week] || '').replace(/\n/g, '<br/>') 
+                            __html: generatedLectures[selectedModuleData.week] || ''
                           }} />
                         </div>
                         <div className="flex space-x-4 pt-4 border-t">
