@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { BookOpen, FileText, Clock, ExternalLink, Play, ToggleLeft, ToggleRight, RefreshCw, GraduationCap } from "lucide-react";
+import { BookOpen, FileText, Clock, ExternalLink, Play, ToggleLeft, ToggleRight, RefreshCw, GraduationCap, Eye } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { presetLectures, presetPracticeHomework, presetPracticeQuizzes, presetPracticeExams } from "@shared/preset-content";
 
 interface ModulesProps {
   onNavigateToLivingBook: (sectionId?: string) => void;
@@ -43,6 +44,9 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   const [generatedPracticeQuiz, setGeneratedPracticeQuiz] = useState<{[key: number]: string}>({});
   const [generatingPracticeHomework, setGeneratingPracticeHomework] = useState(false);
   const [generatingPracticeQuiz, setGeneratingPracticeQuiz] = useState(false);
+  const [showingLecture, setShowingLecture] = useState<{[key: number]: boolean}>({});
+  const [generatingLecture, setGeneratingLecture] = useState(false);
+  const [generatedLectures, setGeneratedLectures] = useState<{[key: number]: string}>({});
 
   // Update selected module when selectedWeek prop changes
   useEffect(() => {
@@ -50,7 +54,6 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
       setSelectedModule(selectedWeek);
     }
   }, [selectedWeek]);
-  const [generatingLecture, setGeneratingLecture] = useState(false);
   const [generatingHomework, setGeneratingHomework] = useState(false);
   const [showLogicKeyboard, setShowLogicKeyboard] = useState(false);
   const [keyboardPosition, setKeyboardPosition] = useState({ x: 100, y: 100 });
@@ -169,6 +172,40 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     }
   };
 
+  // Show preset content functions
+  const showPresetLecture = (weekNumber: number) => {
+    const presetContent = presetLectures[weekNumber as keyof typeof presetLectures];
+    if (presetContent) {
+      setGeneratedLectures(prev => ({
+        ...prev,
+        [weekNumber]: presetContent.content
+      }));
+      setShowingLecture(prev => ({ ...prev, [weekNumber]: true }));
+    }
+  };
+
+  const showPresetPracticeHomework = (weekNumber: number) => {
+    const presetContent = presetPracticeHomework[weekNumber as keyof typeof presetPracticeHomework];
+    if (presetContent) {
+      setGeneratedPracticeHomework(prev => ({
+        ...prev,
+        [weekNumber]: presetContent.content
+      }));
+      setPracticeHomeworkStarted(prev => ({ ...prev, [weekNumber]: true }));
+    }
+  };
+
+  const showPresetPracticeQuiz = (weekNumber: number) => {
+    const presetContent = presetPracticeQuizzes[weekNumber as keyof typeof presetPracticeQuizzes];
+    if (presetContent) {
+      setGeneratedPracticeQuiz(prev => ({
+        ...prev,
+        [weekNumber]: presetContent.content
+      }));
+      setPracticeQuizStarted(prev => ({ ...prev, [weekNumber]: true }));
+    }
+  };
+
   const insertLogicSymbol = (symbol: string, textareaId: string) => {
     const textarea = document.getElementById(textareaId) as HTMLTextAreaElement;
     if (!textarea) return;
@@ -217,7 +254,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
           m.week === weekNumber ? { ...m, lectureGenerated: true } : m
         );
         console.log('Lecture generated successfully for week', weekNumber);
-        alert(`Lecture summary generated successfully for Week ${weekNumber}!`);
+        // Remove annoying popup - just mark as generated
       } else {
         console.error('Lecture generation failed:', data.error);
         alert('Failed to generate lecture: ' + data.error);
@@ -834,32 +871,66 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {!selectedModuleData.lectureGenerated ? (
-                      <div className="text-center py-8">
-                        <p className="text-muted-foreground mb-4">
-                          Generate an AI-powered lecture summary for this week's material.
-                        </p>
-                        <Button
-                          onClick={() => generateLecture(selectedModuleData.week)}
-                          disabled={generatingLecture}
-                          className="flex items-center space-x-2"
-                        >
-                          {generatingLecture ? (
-                            <>
-                              <Clock className="w-4 h-4 animate-spin" />
-                              <span>Generating Lecture...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Play className="w-4 h-4" />
-                              <span>Generate Lecture Summary</span>
-                            </>
-                          )}
-                        </Button>
+                    {showingLecture[selectedModuleData.week] || generatedLectures[selectedModuleData.week] ? (
+                      <div className="space-y-4">
+                        <div className="prose max-w-none">
+                          <div dangerouslySetInnerHTML={{ 
+                            __html: (generatedLectures[selectedModuleData.week] || '').replace(/\n/g, '<br/>') 
+                          }} />
+                        </div>
+                        <div className="flex space-x-4 pt-4 border-t">
+                          <Button
+                            variant="outline"
+                            onClick={() => generateLecture(selectedModuleData.week)}
+                            disabled={generatingLecture}
+                            className="flex items-center space-x-2"
+                          >
+                            {generatingLecture ? (
+                              <>
+                                <Clock className="w-4 h-4 animate-spin" />
+                                <span>Generating New...</span>
+                              </>
+                            ) : (
+                              <>
+                                <RefreshCw className="w-4 h-4" />
+                                <span>Generate New Lecture</span>
+                              </>
+                            )}
+                          </Button>
+                        </div>
                       </div>
                     ) : (
-                      <div>
-                        <p>Lecture content would appear here after generation.</p>
+                      <div className="text-center py-8">
+                        <p className="text-muted-foreground mb-4">
+                          View pre-existing lecture summary or generate a new AI-powered summary.
+                        </p>
+                        <div className="flex justify-center space-x-4">
+                          <Button
+                            variant="outline"
+                            onClick={() => showPresetLecture(selectedModuleData.week)}
+                            className="flex items-center space-x-2"
+                          >
+                            <Eye className="w-4 h-4" />
+                            <span>Show Lecture Summary</span>
+                          </Button>
+                          <Button
+                            onClick={() => generateLecture(selectedModuleData.week)}
+                            disabled={generatingLecture}
+                            className="flex items-center space-x-2"
+                          >
+                            {generatingLecture ? (
+                              <>
+                                <Clock className="w-4 h-4 animate-spin" />
+                                <span>Generating...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Play className="w-4 h-4" />
+                                <span>Generate New Lecture</span>
+                              </>
+                            )}
+                          </Button>
+                        </div>
                       </div>
                     )}
                   </CardContent>
@@ -894,41 +965,47 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         </ul>
                       </div>
 
-                      <div className="flex space-x-4">
-                        <Button 
-                          className="flex items-center space-x-2"
-                          onClick={() => {
-                            console.log('Practice homework button clicked for week:', selectedModuleData.week);
-                            generatePracticeHomework(selectedModuleData.week);
-                          }}
-                          disabled={generatingPracticeHomework}
-                        >
-                          {generatingPracticeHomework ? (
-                            <>
-                              <Clock className="w-4 h-4 animate-spin" />
-                              <span>Generating...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Play className="w-4 h-4" />
-                              <span>Start Practice Homework</span>
-                            </>
-                          )}
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          className="flex items-center space-x-2"
-                          onClick={() => {
-                            setGeneratedPracticeHomework(prev => ({ ...prev, [selectedModuleData.week]: '' }));
-                            setPracticeHomeworkStarted(prev => ({ ...prev, [selectedModuleData.week]: false }));
-                            generatePracticeHomework(selectedModuleData.week);
-                          }}
-                          disabled={generatingPracticeHomework}
-                        >
-                          <RefreshCw className="w-4 h-4" />
-                          <span>Generate New Practice Problems</span>
-                        </Button>
-                      </div>
+                      {!practiceHomeworkStarted[selectedModuleData.week] ? (
+                        <div className="flex justify-center space-x-4">
+                          <Button 
+                            variant="outline"
+                            className="flex items-center space-x-2"
+                            onClick={() => showPresetPracticeHomework(selectedModuleData.week)}
+                          >
+                            <Eye className="w-4 h-4" />
+                            <span>Show Practice Homework</span>
+                          </Button>
+                          <Button 
+                            className="flex items-center space-x-2"
+                            onClick={() => generatePracticeHomework(selectedModuleData.week)}
+                            disabled={generatingPracticeHomework}
+                          >
+                            {generatingPracticeHomework ? (
+                              <>
+                                <Clock className="w-4 h-4 animate-spin" />
+                                <span>Generating...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Play className="w-4 h-4" />
+                                <span>Generate New Practice</span>
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex space-x-4">
+                          <Button 
+                            variant="outline" 
+                            className="flex items-center space-x-2"
+                            onClick={() => generatePracticeHomework(selectedModuleData.week)}
+                            disabled={generatingPracticeHomework}
+                          >
+                            <RefreshCw className="w-4 h-4" />
+                            <span>Generate New Practice</span>
+                          </Button>
+                        </div>
+                      )}
 
                       {practiceHomeworkStarted[selectedModuleData.week] && generatedPracticeHomework[selectedModuleData.week] && (
                         <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-6">
@@ -1517,38 +1594,47 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         </ul>
                       </div>
 
-                      <div className="flex space-x-4">
-                        <Button 
-                          className="flex items-center space-x-2"
-                          onClick={() => generatePracticeQuiz(selectedModuleData.week)}
-                          disabled={generatingPracticeQuiz}
-                        >
-                          {generatingPracticeQuiz ? (
-                            <>
-                              <Clock className="w-4 h-4 animate-spin" />
-                              <span>Generating...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Play className="w-4 h-4" />
-                              <span>Start Practice Quiz</span>
-                            </>
-                          )}
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          className="flex items-center space-x-2"
-                          onClick={() => {
-                            setGeneratedPracticeQuiz(prev => ({ ...prev, [selectedModuleData.week]: '' }));
-                            setPracticeQuizStarted(prev => ({ ...prev, [selectedModuleData.week]: false }));
-                            generatePracticeQuiz(selectedModuleData.week);
-                          }}
-                          disabled={generatingPracticeQuiz}
-                        >
-                          <RefreshCw className="w-4 h-4" />
-                          <span>Generate New Practice Quiz</span>
-                        </Button>
-                      </div>
+                      {!practiceQuizStarted[selectedModuleData.week] ? (
+                        <div className="flex justify-center space-x-4">
+                          <Button 
+                            variant="outline"
+                            className="flex items-center space-x-2"
+                            onClick={() => showPresetPracticeQuiz(selectedModuleData.week)}
+                          >
+                            <Eye className="w-4 h-4" />
+                            <span>Show Practice Quiz</span>
+                          </Button>
+                          <Button 
+                            className="flex items-center space-x-2"
+                            onClick={() => generatePracticeQuiz(selectedModuleData.week)}
+                            disabled={generatingPracticeQuiz}
+                          >
+                            {generatingPracticeQuiz ? (
+                              <>
+                                <Clock className="w-4 h-4 animate-spin" />
+                                <span>Generating...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Play className="w-4 h-4" />
+                                <span>Generate New Quiz</span>
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex space-x-4">
+                          <Button 
+                            variant="outline" 
+                            className="flex items-center space-x-2"
+                            onClick={() => generatePracticeQuiz(selectedModuleData.week)}
+                            disabled={generatingPracticeQuiz}
+                          >
+                            <RefreshCw className="w-4 h-4" />
+                            <span>Generate New Quiz</span>
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
