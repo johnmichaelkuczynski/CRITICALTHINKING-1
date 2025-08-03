@@ -1119,41 +1119,68 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         </ul>
                       </div>
 
-                      {!practiceHomeworkStarted[selectedModuleData.week] ? (
-                        <div className="flex justify-center">
-                          <Button 
-                            className="flex items-center space-x-2"
-                            onClick={() => generatePracticeHomework(selectedModuleData.week)}
-                            disabled={generatingPracticeHomework}
-                          >
-                            {generatingPracticeHomework ? (
-                              <>
-                                <Clock className="w-4 h-4 animate-spin" />
-                                <span>Generating...</span>
-                              </>
-                            ) : (
-                              <>
-                                <Play className="w-4 h-4" />
+                      {/* Check if we have preset content and show it immediately */}
+                      {(() => {
+                        const presetContent = presetPracticeHomework[selectedModuleData.week as keyof typeof presetPracticeHomework];
+                        if (presetContent && typeof presetContent.content === 'object') {
+                          return (
+                            <InteractivePractice
+                              title={presetContent.title}
+                              content={presetContent.content as any}
+                              practiceType="homework"
+                              weekNumber={selectedModuleData.week}
+                              onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
+                                handlePracticeComplete('homework', selectedModuleData.week, score, answers, timeSpent)
+                              }
+                            />
+                          );
+                        }
+                        
+                        // If no preset, show generated practice or generate button
+                        if (practiceHomeworkStarted[selectedModuleData.week]) {
+                          return (
+                            <div className="flex space-x-4">
+                              <Button 
+                                variant="outline" 
+                                className="flex items-center space-x-2"
+                                onClick={() => generatePracticeHomework(selectedModuleData.week)}
+                                disabled={generatingPracticeHomework}
+                              >
+                                <RefreshCw className="w-4 h-4" />
                                 <span>Generate New Practice</span>
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="flex space-x-4">
-                          <Button 
-                            variant="outline" 
-                            className="flex items-center space-x-2"
-                            onClick={() => generatePracticeHomework(selectedModuleData.week)}
-                            disabled={generatingPracticeHomework}
-                          >
-                            <RefreshCw className="w-4 h-4" />
-                            <span>Generate New Practice</span>
-                          </Button>
-                        </div>
-                      )}
+                              </Button>
+                            </div>
+                          );
+                        }
+                        
+                        return (
+                          <div className="flex justify-center">
+                            <Button 
+                              className="flex items-center space-x-2"
+                              onClick={() => generatePracticeHomework(selectedModuleData.week)}
+                              disabled={generatingPracticeHomework}
+                            >
+                              {generatingPracticeHomework ? (
+                                <>
+                                  <Clock className="w-4 h-4 animate-spin" />
+                                  <span>Generating...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Play className="w-4 h-4" />
+                                  <span>Generate New Practice</span>
+                                </>
+                              )}
+                            </Button>
+                          </div>
+                        );
+                      })()}
 
-                      {practiceHomeworkStarted[selectedModuleData.week] && (
+                      {practiceHomeworkStarted[selectedModuleData.week] && (() => {
+                        const presetContent = presetPracticeHomework[selectedModuleData.week as keyof typeof presetPracticeHomework];
+                        const hasPresetContent = presetContent && typeof presetContent.content === 'object';
+                        return !hasPresetContent;
+                      })() && (
                         (() => {
                           // Check if we have preset interactive content
                           const presetContent = presetPracticeHomework[selectedModuleData.week as keyof typeof presetPracticeHomework];

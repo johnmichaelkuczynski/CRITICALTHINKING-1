@@ -75,14 +75,14 @@ export const presetLectures = {
 
 export const presetPracticeHomework = {
   1: {
-    title: "Week 1 Practice Homework: Test Version",
+    title: "Week 1 Practice Homework: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice homework with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Basic Logic Translation",
           points: 10,
           type: "text_input",
           questions: [
@@ -98,23 +98,23 @@ export const presetPracticeHomework = {
     }
   },
   2: {
-    title: "Week 2 Practice Homework: Test Version", 
+    title: "Week 2 Practice Homework: One Question Test", 
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice homework with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Proposition Recognition",
           points: 10,
           type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "Is 'The sky is blue' a proposition?",
-              options: ["Yes, it's true", "Yes, it's false", "No, it's not a proposition"],
-              correct: 0,
-              explanation: "This is a proposition because it can be either true or false."
+              question: "Which of the following is a proposition?",
+              options: ["What time is it?", "The sky is blue", "Please sit down"],
+              correct: 1,
+              explanation: "'The sky is blue' is a proposition because it can be either true or false."
             }
           ]
         }
@@ -122,14 +122,14 @@ export const presetPracticeHomework = {
     }
   },
   3: {
-    title: "Week 3 Practice Homework: Test Version",
+    title: "Week 3 Practice Homework: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice homework with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Boolean Simplification",
           points: 10,
           type: "text_input",
           questions: [
@@ -145,14 +145,14 @@ export const presetPracticeHomework = {
     }
   },
   4: {
-    title: "Week 4 Practice Homework: Test Version",
+    title: "Week 4 Practice Homework: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice homework with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Quantifier Logic",
           points: 10,
           type: "text_input",
           questions: [
@@ -160,7 +160,7 @@ export const presetPracticeHomework = {
               id: "p1a",
               question: "Translate: 'All students are smart' using S(x) for student, M(x) for smart",
               answer: "∀x(S(x) → M(x))",
-              explanation: "Universal quantification with conditional"
+              explanation: "Universal quantification with conditional: for all x, if x is a student then x is smart."
             }
           ]
         }
@@ -168,22 +168,22 @@ export const presetPracticeHomework = {
     }
   },
   5: {
-    title: "Week 5 Practice Homework: Test Version",
+    title: "Week 5 Practice Homework: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice homework with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Predicate Logic",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What rule of inference: P → Q, P ∴ Q",
-              answer: "Modus Ponens",
-              explanation: "Classic rule: if P implies Q and P is true, then Q is true"
+              question: "Translate: 'Some dogs are friendly' using D(x) for dog, F(x) for friendly",
+              answer: "∃x(D(x) ∧ F(x))",
+              explanation: "Existential quantification with conjunction: there exists an x such that x is a dog and x is friendly."
             }
           ]
         }
@@ -191,23 +191,22 @@ export const presetPracticeHomework = {
     }
   },
   6: {
-    title: "Week 6 Practice Homework: Test Version",
+    title: "Week 6 Practice Homework: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice homework with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Complex Translation",
           points: 10,
-          type: "multiple_choice",
+          type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What type of statement is P ∨ ¬P?",
-              options: ["Tautology", "Contradiction", "Contingency"],
-              correct: 0,
-              explanation: "Always true, so it's a tautology"
+              question: "Translate: 'No cats are dogs' using C(x) for cat, D(x) for dog",
+              answer: "∀x(C(x) → ¬D(x))",
+              explanation: "Universal negative: for all x, if x is a cat then x is not a dog."
             }
           ]
         }
@@ -215,22 +214,22 @@ export const presetPracticeHomework = {
     }
   },
   7: {
-    title: "Week 7 Practice Homework: Test Version",
+    title: "Week 7 Practice Homework: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice homework with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Modal Logic",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Express 'It is possible that P' in modal logic",
-              answer: "◊P",
-              explanation: "Diamond symbol represents possibility in modal logic"
+              question: "What does □P mean in modal logic?",
+              answer: "P is necessarily true",
+              explanation: "The box symbol □ represents necessity in modal logic."
             }
           ]
         }
@@ -238,23 +237,22 @@ export const presetPracticeHomework = {
     }
   },
   8: {
-    title: "Week 8 Practice Homework: Test Version",
+    title: "Week 8 Practice Homework: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice homework with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test", 
+          title: "Advanced Logic",
           points: 10,
-          type: "multiple_choice",
+          type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Which is a valid inference rule?",
-              options: ["Modus Ponens", "Affirming Consequent", "Denying Antecedent"],
-              correct: 0,
-              explanation: "Modus Ponens is valid, the others are fallacies"
+              question: "What is the difference between first-order and second-order logic?",
+              answer: "Second-order logic can quantify over predicates and relations",
+              explanation: "Second-order logic extends first-order logic by allowing quantification over predicates, not just individuals."
             }
           ]
         }
@@ -265,23 +263,23 @@ export const presetPracticeHomework = {
 
 export const presetPracticeQuizzes = {
   1: {
-    title: "Week 1 Practice Quiz: Test Version",
+    title: "Week 1 Practice Quiz: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice quiz with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Basic Logic Quiz",
           points: 10,
           type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "Which symbol represents 'and'?",
-              options: ["∧", "∨", "→"],
-              correct: 0,
-              explanation: "∧ is the symbol for logical conjunction (and)"
+              question: "What is the symbol for conjunction?",
+              options: ["∨", "∧", "→"],
+              correct: 1,
+              explanation: "∧ is the symbol for conjunction (and)."
             }
           ]
         }
@@ -289,22 +287,23 @@ export const presetPracticeQuizzes = {
     }
   },
   2: {
-    title: "Week 2 Practice Quiz: Test Version",
+    title: "Week 2 Practice Quiz: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice quiz with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Truth Tables Quiz",
           points: 10,
-          type: "text_input",
+          type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "What is ¬(P ∧ Q) equivalent to?",
-              answer: "¬P ∨ ¬Q",
-              explanation: "De Morgan's law: negation distributes over conjunction"
+              question: "When is P → Q false?",
+              options: ["When P is false", "When Q is false", "When P is true and Q is false"],
+              correct: 2,
+              explanation: "A conditional is false only when the antecedent is true and the consequent is false."
             }
           ]
         }
@@ -312,23 +311,22 @@ export const presetPracticeQuizzes = {
     }
   },
   3: {
-    title: "Week 3 Practice Quiz: Test Version",
+    title: "Week 3 Practice Quiz: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice quiz with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
-          id: "p1", 
-          title: "Basic Logic Test",
+          id: "p1",
+          title: "Boolean Algebra Quiz",
           points: 10,
-          type: "multiple_choice",
+          type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What is the absorption law?",
-              options: ["P ∧ (P ∨ Q) = P", "P ∨ (P ∧ Q) = Q", "P ∧ Q = Q ∧ P"],
-              correct: 0,
-              explanation: "Absorption: P ∧ (P ∨ Q) = P"
+              question: "What is the result of P ∨ ¬P?",
+              answer: "True",
+              explanation: "P ∨ ¬P is always true (law of excluded middle)."
             }
           ]
         }
@@ -336,22 +334,23 @@ export const presetPracticeQuizzes = {
     }
   },
   4: {
-    title: "Week 4 Practice Quiz: Test Version",
+    title: "Week 4 Practice Quiz: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice quiz with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Quantifiers Quiz",
           points: 10,
-          type: "text_input",
+          type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "What does ∀x P(x) mean?",
-              answer: "For all x, P(x) is true",
-              explanation: "Universal quantifier means the property holds for all elements"
+              question: "What does ∀ mean?",
+              options: ["There exists", "For all", "If and only if"],
+              correct: 1,
+              explanation: "∀ is the universal quantifier meaning 'for all'."
             }
           ]
         }
@@ -359,23 +358,23 @@ export const presetPracticeQuizzes = {
     }
   },
   5: {
-    title: "Week 5 Practice Quiz: Test Version",
+    title: "Week 5 Practice Quiz: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.", 
+      instructions: "Practice quiz with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Predicate Logic Quiz",
           points: 10,
           type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "Which is NOT a valid rule of inference?",
-              options: ["Modus Ponens", "Modus Tollens", "Affirming Consequent"],
-              correct: 2,
-              explanation: "Affirming the consequent is a logical fallacy, not valid"
+              question: "What does ∃ mean?",
+              options: ["For all", "There exists", "Necessarily"],
+              correct: 1,
+              explanation: "∃ is the existential quantifier meaning 'there exists'."
             }
           ]
         }
@@ -383,22 +382,22 @@ export const presetPracticeQuizzes = {
     }
   },
   6: {
-    title: "Week 6 Practice Quiz: Test Version",
+    title: "Week 6 Practice Quiz: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice quiz with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Advanced Logic Quiz",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What does □P mean in modal logic?",
-              answer: "P is necessarily true",
-              explanation: "Box symbol represents necessity in modal logic"
+              question: "What is proof by contradiction also called?",
+              answer: "Reductio ad absurdum",
+              explanation: "Proof by contradiction is also known as reductio ad absurdum."
             }
           ]
         }
@@ -406,23 +405,23 @@ export const presetPracticeQuizzes = {
     }
   },
   7: {
-    title: "Week 7 Practice Quiz: Test Version",
+    title: "Week 7 Practice Quiz: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice quiz with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Modal Logic Quiz",
           points: 10,
           type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "In temporal logic, what does Gp mean?",
-              options: ["p is always true", "p is sometimes true", "p was true"],
-              correct: 0,
-              explanation: "G (globally) means the proposition is always true"
+              question: "What does ◊P mean?",
+              options: ["P is necessary", "P is possible", "P is true"],
+              correct: 1,
+              explanation: "◊ is the possibility operator in modal logic."
             }
           ]
         }
@@ -430,22 +429,23 @@ export const presetPracticeQuizzes = {
     }
   },
   8: {
-    title: "Week 8 Practice Quiz: Test Version",
+    title: "Week 8 Practice Quiz: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice quiz with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Review Quiz",
           points: 10,
-          type: "text_input",
+          type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "What is the main goal of automated theorem proving?",
-              answer: "Prove theorems using computer algorithms",
-              explanation: "Automated theorem proving uses algorithms to establish mathematical truths"
+              question: "Which is NOT a logical operator?",
+              options: ["∧", "∨", "√"],
+              correct: 2,
+              explanation: "√ is a mathematical symbol, not a logical operator."
             }
           ]
         }
@@ -456,9 +456,9 @@ export const presetPracticeQuizzes = {
 
 export const presetPracticeTests = {
   1: {
-    title: "Week 1 Practice Test: Test Version",
+    title: "Week 1 Practice Test: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice test with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
@@ -469,9 +469,9 @@ export const presetPracticeTests = {
           questions: [
             {
               id: "p1a",
-              question: "Define what makes a statement a proposition",
+              question: "Define what a proposition is in logic.",
               answer: "A statement that is either true or false",
-              explanation: "Propositions are declarative statements with definite truth values"
+              explanation: "A proposition is a declarative statement that has exactly one truth value."
             }
           ]
         }
@@ -479,23 +479,22 @@ export const presetPracticeTests = {
     }
   },
   2: {
-    title: "Week 2 Practice Test: Test Version",
+    title: "Week 2 Practice Test: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice test with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Truth Tables Test",
           points: 10,
-          type: "multiple_choice",
+          type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "When is P → Q false?",
-              options: ["When P is true and Q is false", "When P is false and Q is true", "When both are false"],
-              correct: 0,
-              explanation: "Conditional is false only when antecedent is true and consequent is false"
+              question: "How many rows are needed for a truth table with 3 variables?",
+              answer: "8",
+              explanation: "With n variables, you need 2^n rows. For 3 variables: 2^3 = 8 rows."
             }
           ]
         }
@@ -503,22 +502,22 @@ export const presetPracticeTests = {
     }
   },
   3: {
-    title: "Week 3 Practice Test: Test Version",
+    title: "Week 3 Practice Test: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice test with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Boolean Algebra Test",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Apply absorption law to simplify: P ∧ (P ∨ Q)",
-              answer: "P",
-              explanation: "Absorption law: P ∧ (P ∨ Q) = P"
+              question: "What is De Morgan's Law for negation of conjunction?",
+              answer: "¬(P ∧ Q) = ¬P ∨ ¬Q",
+              explanation: "De Morgan's Law states that the negation of a conjunction equals the disjunction of the negations."
             }
           ]
         }
@@ -526,23 +525,22 @@ export const presetPracticeTests = {
     }
   },
   4: {
-    title: "Week 4 Practice Test: Test Version",
+    title: "Week 4 Practice Test: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice test with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Quantifier Logic Test",
           points: 10,
-          type: "multiple_choice",
+          type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What does ∃x P(x) mean?",
-              options: ["For all x, P(x)", "For some x, P(x)", "For no x, P(x)"],
-              correct: 1,
-              explanation: "Existential quantifier means there exists some x for which P(x) is true"
+              question: "What is the negation of ∀x P(x)?",
+              answer: "∃x ¬P(x)",
+              explanation: "The negation of 'for all x, P(x)' is 'there exists an x such that not P(x)'."
             }
           ]
         }
@@ -550,22 +548,22 @@ export const presetPracticeTests = {
     }
   },
   5: {
-    title: "Week 5 Practice Test: Test Version",
+    title: "Week 5 Practice Test: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice test with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Predicate Logic Test",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What is the contrapositive of P → Q?",
-              answer: "¬Q → ¬P",
-              explanation: "Contrapositive switches and negates both parts"
+              question: "What is the difference between a predicate and a proposition?",
+              answer: "A predicate contains variables and becomes a proposition when variables are bound",
+              explanation: "Predicates are functions of variables that become propositions when the variables are quantified or assigned values."
             }
           ]
         }
@@ -573,23 +571,22 @@ export const presetPracticeTests = {
     }
   },
   6: {
-    title: "Week 6 Practice Test: Test Version",
+    title: "Week 6 Practice Test: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice test with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Advanced Logic Test",
           points: 10,
-          type: "multiple_choice",
+          type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "In three-valued logic, what represents unknown?",
-              options: ["T", "F", "U"],
-              correct: 2,
-              explanation: "U represents unknown/undefined in three-valued logic systems"
+              question: "What is the principle of explosion in logic?",
+              answer: "From a contradiction, anything follows",
+              explanation: "The principle of explosion states that from a contradiction (P ∧ ¬P), any statement can be derived."
             }
           ]
         }
@@ -597,22 +594,22 @@ export const presetPracticeTests = {
     }
   },
   7: {
-    title: "Week 7 Practice Test: Test Version",
+    title: "Week 7 Practice Test: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice test with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Modal Logic Test",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What does Fp mean in temporal logic?",
-              answer: "p will be true in the future",
-              explanation: "F (future) operator means the proposition will hold at some future time"
+              question: "What is the modal logic formula for 'P is possibly necessary'?",
+              answer: "◊□P",
+              explanation: "◊□P means it is possible that P is necessary."
             }
           ]
         }
@@ -620,23 +617,22 @@ export const presetPracticeTests = {
     }
   },
   8: {
-    title: "Week 8 Practice Test: Test Version",
+    title: "Week 8 Practice Test: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice test with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Comprehensive Review Test",
           points: 10,
-          type: "multiple_choice",
+          type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What is the key benefit of automated reasoning?",
-              options: ["Speed", "Accuracy", "Both speed and accuracy"],
-              correct: 2,
-              explanation: "Automated reasoning provides both speed and accuracy advantages"
+              question: "What is soundness in logical systems?",
+              answer: "All provable statements are true",
+              explanation: "A logical system is sound if every theorem (provable statement) is also a tautology (always true)."
             }
           ]
         }
@@ -647,14 +643,14 @@ export const presetPracticeTests = {
 
 export const presetPracticeExams = {
   midterm: {
-    title: "Midterm Practice Exam: Test Version",
+    title: "Midterm Practice Exam: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice midterm with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Midterm Logic Test",
           points: 10,
           type: "multiple_choice",
           questions: [
@@ -663,7 +659,7 @@ export const presetPracticeExams = {
               question: "Which is the most fundamental concept in logic?",
               options: ["Proposition", "Argument", "Syllogism"],
               correct: 0,
-              explanation: "Propositions are the basic building blocks of all logical reasoning"
+              explanation: "Propositions are the basic building blocks of all logical reasoning."
             }
           ]
         }
@@ -671,14 +667,14 @@ export const presetPracticeExams = {
     }
   },
   final: {
-    title: "Final Practice Exam: Test Version",
+    title: "Final Practice Exam: One Question Test",
     content: {
-      instructions: "Single question test version for app testing.",
+      instructions: "Practice final with one question to test the system.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Basic Logic Test",
+          title: "Final Logic Test",
           points: 10,
           type: "text_input",
           questions: [
@@ -686,7 +682,7 @@ export const presetPracticeExams = {
               id: "p1a",
               question: "What are the main branches of symbolic logic?",
               answer: "Propositional logic and predicate logic",
-              explanation: "These are the two fundamental branches that form the foundation of symbolic logic"
+              explanation: "These are the two fundamental branches that form the foundation of symbolic logic."
             }
           ]
         }
