@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { BookOpen, FileText, Clock, ExternalLink, Play, ToggleLeft, ToggleRight, RefreshCw, GraduationCap, Eye } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { presetLectures, presetPracticeHomework, presetPracticeQuizzes, presetPracticeExams } from "@shared/preset-content";
+import { presetLectures, presetPracticeHomework, presetPracticeQuizzes, presetPracticeTests, presetPracticeExams } from "@shared/preset-content";
 import { InteractivePractice } from "@/components/interactive-practice";
 
 interface ModulesProps {
@@ -538,12 +538,10 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
 
   const startPracticeMidterm = () => {
     setPracticeMidtermStarted(true);
-    alert('Practice Midterm started! This is for practice only - no grades will be recorded.');
   };
 
   const startPracticeFinal = () => {
     setPracticeFinalStarted(true);
-    alert('Practice Final started! This is for practice only - no grades will be recorded.');
   };
 
   const generateNewPracticeExam = (examType: 'midterm' | 'final') => {
@@ -691,48 +689,96 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
         {selectedModule === 6.5 ? (
           // Practice Midterm Module
           <div className="max-w-4xl">
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold mb-2">Practice Midterm Exam</h1>
-              <div className="flex items-center space-x-4">
-                <Badge variant="default" className="bg-green-100 text-green-800">🎯 Practice Mode</Badge>
-                <Badge variant="outline">100 points</Badge>
-              </div>
-            </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Practice Midterm Examination</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <p className="text-muted-foreground">
-                    Practice for your midterm exam with unlimited attempts. These exams cover material from Weeks 1-4.
-                  </p>
-                  
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-green-800 mb-2">✅ Practice Benefits</h4>
-                    <ul className="text-sm text-green-700 space-y-1">
-                      <li>• Take as many practice exams as you want</li>
-                      <li>• No time pressure - learn at your own pace</li>
-                      <li>• No grades recorded - purely for learning</li>
-                      <li>• Get immediate feedback on answers</li>
-                      <li>• Similar format to the actual midterm</li>
-                    </ul>
-                  </div>
-
-                  <div className="flex space-x-4">
-                    <Button size="lg" className="flex items-center space-x-2" onClick={startPracticeMidterm}>
-                      <Play className="w-4 h-4" />
-                      <span>Start Practice Midterm</span>
-                    </Button>
-                    <Button variant="outline" size="lg" className="flex items-center space-x-2" onClick={() => generateNewPracticeExam('midterm')}>
-                      <RefreshCw className="w-4 h-4" />
-                      <span>Generate New Practice Exam</span>
-                    </Button>
+            {!practiceMidtermStarted ? (
+              <div>
+                <div className="mb-6">
+                  <h1 className="text-2xl font-bold mb-2">Practice Midterm Exam</h1>
+                  <div className="flex items-center space-x-4">
+                    <Badge variant="default" className="bg-green-100 text-green-800">🎯 Practice Mode</Badge>
+                    <Badge variant="outline">100 points</Badge>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Practice Midterm Examination</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <p className="text-muted-foreground">
+                        Practice for your midterm exam with unlimited attempts. These exams cover material from Weeks 1-4.
+                      </p>
+                      
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h4 className="font-semibold text-green-800 mb-2">✅ Practice Benefits</h4>
+                        <ul className="text-sm text-green-700 space-y-1">
+                          <li>• Take as many practice exams as you want</li>
+                          <li>• No time pressure - learn at your own pace</li>
+                          <li>• No grades recorded - purely for learning</li>
+                          <li>• Get immediate feedback on answers</li>
+                          <li>• Similar format to the actual midterm</li>
+                        </ul>
+                      </div>
+
+                      <div className="flex space-x-4">
+                        <Button size="lg" className="flex items-center space-x-2" onClick={startPracticeMidterm}>
+                          <Play className="w-4 h-4" />
+                          <span>Start Practice Midterm</span>
+                        </Button>
+                        <Button variant="outline" size="lg" className="flex items-center space-x-2" onClick={() => generateNewPracticeExam('midterm')}>
+                          <RefreshCw className="w-4 h-4" />
+                          <span>Generate New Practice Exam</span>
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ) : (
+              // Show Interactive Practice Test
+              (() => {
+                const presetContent = presetPracticeExams.midterm; // Week 1-2 Midterm
+                if (presetContent) {
+                  // Convert preset test content to InteractivePractice format
+                  const practiceContent = {
+                    instructions: "Practice Midterm covering Weeks 1-2 material. Take your time and review concepts as needed.",
+                    totalPoints: 100,
+                    problems: [
+                      {
+                        id: 'midterm-section-1',
+                        title: 'Comprehensive Logic Practice',
+                        points: 100,
+                        type: 'multiple_choice' as const,
+                        context: presetContent.content,
+                        questions: [
+                          {
+                            id: 'midterm-q1',
+                            question: 'Review the complete practice midterm content above and work through all problems.',
+                            options: ['I have completed all sections', 'I need more practice', 'Ready to submit'],
+                            correct: 0,
+                            answer: 'I have completed all sections',
+                            explanation: 'This practice midterm covers foundational logic concepts. Review each section carefully.'
+                          }
+                        ]
+                      }
+                    ]
+                  };
+
+                  return (
+                    <InteractivePractice
+                      title="Practice Midterm Exam (Weeks 1-2)"
+                      content={practiceContent}
+                      practiceType="test"
+                      weekNumber={1}
+                      onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
+                        handlePracticeComplete('test', 1, score, answers, timeSpent)
+                      }
+                    />
+                  );
+                }
+                return null;
+              })()
+            )}
           </div>
         ) : selectedModule === 7 ? (
           // Midterm Exam Module
@@ -779,48 +825,96 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
         ) : selectedModule === 7.5 ? (
           // Practice Final Exam Module
           <div className="max-w-4xl">
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold mb-2">Practice Final Exam</h1>
-              <div className="flex items-center space-x-4">
-                <Badge variant="default" className="bg-green-100 text-green-800">🎯 Practice Mode</Badge>
-                <Badge variant="outline">200 points</Badge>
-              </div>
-            </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Practice Final Examination</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <p className="text-muted-foreground">
-                    Practice for your final exam with unlimited attempts. This comprehensive exam covers all course material from Weeks 1-6.
-                  </p>
-                  
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-green-800 mb-2">✅ Practice Benefits</h4>
-                    <ul className="text-sm text-green-700 space-y-1">
-                      <li>• Take as many practice exams as you want</li>
-                      <li>• No time pressure - learn at your own pace</li>
-                      <li>• No grades recorded - purely for learning</li>
-                      <li>• Get immediate feedback on answers</li>
-                      <li>• Same format as the actual final exam</li>
-                    </ul>
-                  </div>
-
-                  <div className="flex space-x-4">
-                    <Button size="lg" className="flex items-center space-x-2" onClick={startPracticeFinal}>
-                      <Play className="w-4 h-4" />
-                      <span>Start Practice Final</span>
-                    </Button>
-                    <Button variant="outline" size="lg" className="flex items-center space-x-2" onClick={() => generateNewPracticeExam('final')}>
-                      <RefreshCw className="w-4 h-4" />
-                      <span>Generate New Practice Final</span>
-                    </Button>
+            {!practiceFinalStarted ? (
+              <div>
+                <div className="mb-6">
+                  <h1 className="text-2xl font-bold mb-2">Practice Final Exam</h1>
+                  <div className="flex items-center space-x-4">
+                    <Badge variant="default" className="bg-green-100 text-green-800">🎯 Practice Mode</Badge>
+                    <Badge variant="outline">200 points</Badge>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Practice Final Examination</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <p className="text-muted-foreground">
+                        Practice for your final exam with unlimited attempts. This comprehensive exam covers all course material from Weeks 1-6.
+                      </p>
+                      
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h4 className="font-semibold text-green-800 mb-2">✅ Practice Benefits</h4>
+                        <ul className="text-sm text-green-700 space-y-1">
+                          <li>• Take as many practice exams as you want</li>
+                          <li>• No time pressure - learn at your own pace</li>
+                          <li>• No grades recorded - purely for learning</li>
+                          <li>• Get immediate feedback on answers</li>
+                          <li>• Same format as the actual final exam</li>
+                        </ul>
+                      </div>
+
+                      <div className="flex space-x-4">
+                        <Button size="lg" className="flex items-center space-x-2" onClick={startPracticeFinal}>
+                          <Play className="w-4 h-4" />
+                          <span>Start Practice Final</span>
+                        </Button>
+                        <Button variant="outline" size="lg" className="flex items-center space-x-2" onClick={() => generateNewPracticeExam('final')}>
+                          <RefreshCw className="w-4 h-4" />
+                          <span>Generate New Practice Final</span>
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ) : (
+              // Show Interactive Practice Final
+              (() => {
+                const presetContent = presetPracticeExams.final; // Comprehensive Final
+                if (presetContent) {
+                  // Convert preset test content to InteractivePractice format
+                  const practiceContent = {
+                    instructions: "Comprehensive Practice Final covering all course material from Weeks 1-6. This is your opportunity to test your complete understanding of symbolic logic.",
+                    totalPoints: 200,
+                    problems: [
+                      {
+                        id: 'final-section-1',
+                        title: 'Comprehensive Logic Final',
+                        points: 200,
+                        type: 'multiple_choice' as const,
+                        context: presetContent.content,
+                        questions: [
+                          {
+                            id: 'final-q1',
+                            question: 'Complete the comprehensive final exam above. Work through all sections systematically.',
+                            options: ['I have completed all sections', 'I need to review more material', 'Ready for final submission'],
+                            correct: 0,
+                            answer: 'I have completed all sections',
+                            explanation: 'This comprehensive final tests all aspects of symbolic logic from basic concepts to advanced applications.'
+                          }
+                        ]
+                      }
+                    ]
+                  };
+
+                  return (
+                    <InteractivePractice
+                      title="Practice Final Exam (Comprehensive)"
+                      content={practiceContent}
+                      practiceType="test"
+                      weekNumber={6}
+                      onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
+                        handlePracticeComplete('test', 6, score, answers, timeSpent)
+                      }
+                    />
+                  );
+                }
+                return null;
+              })()
+            )}
           </div>
         ) : selectedModule === 8 ? (
           // Final Exam Module
