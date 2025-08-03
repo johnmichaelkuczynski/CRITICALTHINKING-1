@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LivingBook from "./living-book";
 import Syllabus from "./course/syllabus";
 import Modules from "./course/modules";
-import PracticeCenter from "./course/practice-center";
+import Analytics from "./course/practice-center";
 import MyGrades from "./course/my-grades";
 
 export default function CourseApp() {
@@ -58,7 +58,7 @@ export default function CourseApp() {
             value="practice"
             className="px-6 py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
           >
-            Practice Center
+            Analytics
           </TabsTrigger>
           <TabsTrigger 
             value="grades"
@@ -88,7 +88,7 @@ export default function CourseApp() {
         </TabsContent>
 
         <TabsContent value="practice" className="h-full m-0 p-0">
-          <PracticeCenter />
+          <Analytics />
         </TabsContent>
 
         <TabsContent value="grades" className="h-full m-0 p-0">
