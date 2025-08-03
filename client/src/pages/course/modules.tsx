@@ -1679,21 +1679,46 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                           </div>
 
                           {(() => {
-                            // Check if we have preset interactive content
+                            // Check if we have preset content (either object or string)
                             const presetContent = presetPracticeQuizzes[selectedModuleData.week as keyof typeof presetPracticeQuizzes];
-                            if (presetContent && typeof presetContent.content === 'object') {
-                              // Use interactive practice component for structured content
-                              return (
-                                <InteractivePractice
-                                  title={presetContent.title}
-                                  content={presetContent.content as any}
-                                  practiceType="quiz"
-                                  weekNumber={selectedModuleData.week}
-                                  onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
-                                    handlePracticeComplete('quiz', selectedModuleData.week, score, answers, timeSpent)
-                                  }
-                                />
-                              );
+                            if (presetContent) {
+                              // If preset content is an object, use interactive component
+                              if (typeof presetContent.content === 'object') {
+                                return (
+                                  <InteractivePractice
+                                    title={presetContent.title}
+                                    content={presetContent.content as any}
+                                    practiceType="quiz"
+                                    weekNumber={selectedModuleData.week}
+                                    onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
+                                      handlePracticeComplete('quiz', selectedModuleData.week, score, answers, timeSpent)
+                                    }
+                                  />
+                                );
+                              }
+                              // If preset content is a string (markdown), display it as formatted text
+                              else if (typeof presetContent.content === 'string') {
+                                return (
+                                  <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-6">
+                                    <h4 className="font-semibold text-green-800 mb-4">🎯 {presetContent.title}</h4>
+                                    <div className="prose prose-sm max-w-none text-gray-700 dark:text-gray-300">
+                                      {presetContent.content.split('\n').map((line, index) => {
+                                        if (line.startsWith('# ')) {
+                                          return <h1 key={index} className="text-xl font-bold mt-4 mb-2">{line.substring(2)}</h1>;
+                                        } else if (line.startsWith('## ')) {
+                                          return <h2 key={index} className="text-lg font-semibold mt-3 mb-2">{line.substring(3)}</h2>;
+                                        } else if (line.startsWith('**') && line.endsWith('**')) {
+                                          return <p key={index} className="font-semibold mb-2">{line.slice(2, -2)}</p>;
+                                        } else if (line.trim() === '') {
+                                          return <br key={index} />;
+                                        } else {
+                                          return <p key={index} className="mb-1">{line}</p>;
+                                        }
+                                      })}
+                                    </div>
+                                  </div>
+                                );
+                              }
                             } 
                             
                             // Try to parse generated content as JSON for interactive component
