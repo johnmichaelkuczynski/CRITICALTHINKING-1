@@ -1773,46 +1773,45 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                           </div>
 
                           {(() => {
-                            // Check if we have preset content (either object or string)
+                            // Check if we have preset content - convert to InteractivePractice format
                             const presetContent = presetPracticeQuizzes[selectedModuleData.week as keyof typeof presetPracticeQuizzes];
                             if (presetContent) {
-                              // If preset content is an object, use interactive component
-                              if (typeof presetContent.content === 'object') {
-                                return (
-                                  <InteractivePractice
-                                    title={presetContent.title}
-                                    content={presetContent.content as any}
-                                    practiceType="quiz"
-                                    weekNumber={selectedModuleData.week}
-                                    onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
-                                      handlePracticeComplete('quiz', selectedModuleData.week, score, answers, timeSpent)
-                                    }
-                                  />
-                                );
-                              }
-                              // If preset content is a string (markdown), display it as formatted text
-                              else if (typeof presetContent.content === 'string') {
-                                return (
-                                  <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-6">
-                                    <h4 className="font-semibold text-green-800 mb-4">🎯 {presetContent.title}</h4>
-                                    <div className="prose prose-sm max-w-none text-gray-700 dark:text-gray-300">
-                                      {presetContent.content.split('\n').map((line, index) => {
-                                        if (line.startsWith('# ')) {
-                                          return <h1 key={index} className="text-xl font-bold mt-4 mb-2">{line.substring(2)}</h1>;
-                                        } else if (line.startsWith('## ')) {
-                                          return <h2 key={index} className="text-lg font-semibold mt-3 mb-2">{line.substring(3)}</h2>;
-                                        } else if (line.startsWith('**') && line.endsWith('**')) {
-                                          return <p key={index} className="font-semibold mb-2">{line.slice(2, -2)}</p>;
-                                        } else if (line.trim() === '') {
-                                          return <br key={index} />;
-                                        } else {
-                                          return <p key={index} className="mb-1">{line}</p>;
-                                        }
-                                      })}
-                                    </div>
-                                  </div>
-                                );
-                              }
+                              // Convert preset quiz content to InteractivePractice format
+                              const practiceContent = {
+                                instructions: `Practice Quiz for Week ${selectedModuleData.week}. Take your time and review concepts as needed.`,
+                                totalPoints: 100,
+                                problems: [
+                                  {
+                                    id: 'quiz-section-1',
+                                    title: 'Practice Quiz Questions',
+                                    points: 100,
+                                    type: 'multiple_choice' as const,
+                                    context: presetContent.content,
+                                    questions: [
+                                      {
+                                        id: 'quiz-q1',
+                                        question: 'Complete the practice quiz content above. Work through all questions systematically.',
+                                        options: ['I have completed all questions', 'I need more practice', 'Ready to submit'],
+                                        correct: 0,
+                                        answer: 'I have completed all questions',
+                                        explanation: 'This practice quiz covers the key concepts from this week. Review each section carefully.'
+                                      }
+                                    ]
+                                  }
+                                ]
+                              };
+
+                              return (
+                                <InteractivePractice
+                                  title={presetContent.title}
+                                  content={practiceContent}
+                                  practiceType="quiz"
+                                  weekNumber={selectedModuleData.week}
+                                  onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
+                                    handlePracticeComplete('quiz', selectedModuleData.week, score, answers, timeSpent)
+                                  }
+                                />
+                              );
                             } 
                             
                             // Try to parse generated content as JSON for interactive component
