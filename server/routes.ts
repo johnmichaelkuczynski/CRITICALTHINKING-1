@@ -809,6 +809,23 @@ Output only the abbreviation list, one per line. Be concise and use single capit
   });
 
   // Practice submission endpoint
+  // Get practice attempts for current user
+  app.get("/api/practice-attempts", requireAuth, async (req, res) => {
+    try {
+      const user = await getCurrentUser(req);
+      
+      if (!user) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+      
+      const attempts = await storage.getPracticeAttemptsByUserId(user.id);
+      res.json(attempts);
+    } catch (error) {
+      console.error("Get practice attempts error:", error);
+      res.status(500).json({ error: "Failed to get practice attempts" });
+    }
+  });
+
   app.post("/api/practice/submit", async (req, res) => {
     try {
       const { practiceType, weekNumber, score, answers, timeSpent } = req.body;

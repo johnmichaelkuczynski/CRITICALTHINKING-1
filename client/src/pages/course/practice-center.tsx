@@ -1,59 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertCircle, Play, Clock, Target } from "lucide-react";
+import { AlertCircle, Play, Clock, Target, BookOpen, FileText, GraduationCap, Trophy } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface PracticeAttempt {
   id: number;
-  type: string;
-  week?: number;
+  practiceType: string;
+  weekNumber?: number;
   score: number;
-  completedAt: Date;
+  completedAt: string;
 }
 
 export default function PracticeCenter() {
+  const { user } = useAuth();
   const [selectedType, setSelectedType] = useState<string>("");
   const [selectedWeek, setSelectedWeek] = useState<string>("");
   const [generating, setGenerating] = useState(false);
-  const [recentAttempts, setRecentAttempts] = useState<PracticeAttempt[]>([
-    {
-      id: 1,
-      type: "homework",
-      week: 1,
-      score: 85,
-      completedAt: new Date(Date.now() - 2 * 60 * 60 * 1000) // 2 hours ago
-    },
-    {
-      id: 2,
-      type: "homework",
-      week: 2,
-      score: 92,
-      completedAt: new Date(Date.now() - 24 * 60 * 60 * 1000) // 1 day ago
-    }
-  ]);
+
+  // Fetch real practice attempts from database
+  const { data: practiceAttempts = [], isLoading } = useQuery<PracticeAttempt[]>({
+    queryKey: ['/api/practice-attempts'],
+    enabled: !!user,
+  });
 
   const practiceTypes = [
-    { value: "homework", label: "Homework Practice", weeks: [1, 2, 3, 4, 5, 6] },
-    { value: "quiz", label: "Quiz Practice", weeks: [1, 2, 3, 5, 6] },
-    { value: "midterm", label: "Midterm Practice", weeks: null },
-    { value: "final", label: "Final Exam Practice", weeks: null }
+    { value: "homework", label: "Homework Practice", weeks: [1, 2, 3, 4, 5, 6, 7, 8], icon: BookOpen },
+    { value: "quiz", label: "Quiz Practice", weeks: [1, 2, 3, 4, 5, 6, 7, 8], icon: FileText },
+    { value: "test", label: "Practice Test", weeks: [1, 2, 3, 4, 5, 6, 7, 8], icon: GraduationCap },
+    { value: "midterm", label: "Midterm Practice", weeks: null, icon: Trophy },
+    { value: "final", label: "Final Exam Practice", weeks: null, icon: Trophy }
   ];
 
   const generatePractice = async () => {
     if (!selectedType) return;
     
-    setGenerating(true);
-    // TODO: Implement practice generation
-    setTimeout(() => {
-      setGenerating(false);
-      // TODO: Navigate to practice session
-    }, 2000);
+    // Navigate to Course Modules and trigger practice generation
+    const weekParam = selectedWeek ? `?week=${selectedWeek}` : '';
+    window.location.href = `/course?tab=course-modules&practice=${selectedType}${weekParam}`;
   };
 
   const selectedTypeData = practiceTypes.find(t => t.value === selectedType);
+  
+  // Calculate statistics from real data
+  const totalSessions = practiceAttempts.length;
+  const averageScore = totalSessions > 0 
+    ? Math.round(practiceAttempts.reduce((sum: number, attempt: PracticeAttempt) => sum + (attempt.score || 0), 0) / totalSessions)
+    : 0;
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -185,17 +182,17 @@ export default function PracticeCenter() {
               <CardTitle>Recent Practice Sessions</CardTitle>
             </CardHeader>
             <CardContent>
-              {recentAttempts.length > 0 ? (
+              {practiceAttempts.length > 0 ? (
                 <div className="space-y-3">
-                  {recentAttempts.map((attempt) => (
+                  {practiceAttempts.map((attempt) => (
                     <div key={attempt.id} className="flex items-center justify-between p-3 border rounded-lg">
                       <div>
                         <h4 className="font-medium capitalize">
-                          {attempt.type} Practice
-                          {attempt.week && ` - Week ${attempt.week}`}
+                          {attempt.practiceType} Practice
+                          {attempt.weekNumber && ` - Week ${attempt.weekNumber}`}
                         </h4>
                         <p className="text-sm text-muted-foreground">
-                          {attempt.completedAt.toLocaleDateString()} at {attempt.completedAt.toLocaleTimeString()}
+                          {new Date(attempt.completedAt).toLocaleDateString()} at {new Date(attempt.completedAt).toLocaleTimeString()}
                         </p>
                       </div>
                       <div className="text-right">
@@ -223,14 +220,12 @@ export default function PracticeCenter() {
             <CardContent>
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div className="p-4 border rounded-lg">
-                  <p className="text-2xl font-bold text-blue-600">{recentAttempts.length}</p>
+                  <p className="text-2xl font-bold text-blue-600">{totalSessions}</p>
                   <p className="text-sm text-muted-foreground">Total Sessions</p>
                 </div>
                 <div className="p-4 border rounded-lg">
                   <p className="text-2xl font-bold text-green-600">
-                    {recentAttempts.length > 0 
-                      ? Math.round(recentAttempts.reduce((sum, a) => sum + a.score, 0) / recentAttempts.length)
-                      : 0}%
+                    {averageScore}%
                   </p>
                   <p className="text-sm text-muted-foreground">Avg Score</p>
                 </div>
