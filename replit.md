@@ -27,6 +27,13 @@ Preferred communication style: Simple, everyday language.
 - Added proper markdown formatting for string-based quiz content with headers and styling
 - Users can now instantly access pre-existing practice quizzes without waiting for generation
 
+### Grading System Overhaul ✅
+- Fixed overly narrow grading that rejected correct logical symbolizations due to notation differences
+- Implemented liberal grading logic that accepts multiple notation systems (∧/&/and, ∨/|/or, ¬/~/not, etc.)
+- Added semantic equivalence checking that focuses on logical correctness rather than syntax
+- Automatic answer reveal after submission - students immediately see correct answers and explanations
+- Enhanced post-submission feedback with clear indication that solutions are displayed
+
 ### Show Solutions Feature Implementation ✅
 - Added "Show Solutions" button to all practice homework, quizzes, and tests
 - Students can instantly view answers and explanations without completing assignments

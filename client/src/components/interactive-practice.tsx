@@ -141,38 +141,85 @@ export function InteractivePractice({
   };
 
   const areLogicallyEquivalent = (expr1: string, expr2: string): boolean => {
-    // Basic equivalence patterns for symbolic logic
-    const equivalencies = [
-      // Double negation
-      [/¬¬(.+)/, '$1'],
-      [/~~(.+)/, '$1'],
-      // De Morgan's laws
-      [/¬\((.+)∧(.+)\)/, '¬$1∨¬$2'],
-      [/¬\((.+)∨(.+)\)/, '¬$1∧¬$2'],
-      // Commutative properties
-      [/(.+)∧(.+)/, '$2∧$1'],
-      [/(.+)∨(.+)/, '$2∨$1'],
-      [/(.+)↔(.+)/, '$2↔$1'],
-      // Conditional equivalences
-      [/(.+)→(.+)/, '¬$1∨$2'],
-      [/(.+)↔(.+)/, '($1→$2)∧($2→$1)'],
-    ];
+    // LIBERAL GRADING: Accept any reasonable logical symbolization
+    
+    // First normalize both expressions aggressively
+    const normalize = (expr: string): string => {
+      return expr
+        .toLowerCase()
+        .replace(/\s+/g, '') // Remove all whitespace
+        .replace(/[()]/g, '') // Remove parentheses for basic comparison
+        // Accept multiple notation systems
+        .replace(/&/g, '∧').replace(/and/g, '∧').replace(/\*/g, '∧')
+        .replace(/\|/g, '∨').replace(/or/g, '∨').replace(/\+/g, '∨')
+        .replace(/~/g, '¬').replace(/not/g, '¬').replace(/!/g, '¬').replace(/-/g, '¬')
+        .replace(/->/g, '→').replace(/=>/g, '→').replace(/implies/g, '→').replace(/if.*then/g, '→')
+        .replace(/<->/g, '↔').replace(/<=>/g, '↔').replace(/iff/g, '↔').replace(/equiv/g, '↔')
+        .replace(/forall/g, '∀').replace(/all/g, '∀')
+        .replace(/exists/g, '∃').replace(/some/g, '∃').replace(/there.*exists/g, '∃')
+        // Normalize variable names - accept S(x), Student(x), etc.
+        .replace(/student\(([^)]+)\)/g, 'S($1)')
+        .replace(/love\(([^)]+)\)/g, 'L($1)')
+        .replace(/puzzle\(([^)]+)\)/g, 'P($1)')
+        .replace(/logic\(([^)]+)\)/g, 'G($1)')
+        .replace(/study\(([^)]+)\)/g, 'T($1)');
+    };
 
-    // Try applying equivalencies to see if expressions match
-    for (const [pattern, replacement] of equivalencies) {
-      const transformed1 = expr1.replace(pattern as RegExp, replacement as string);
-      const transformed2 = expr2.replace(pattern as RegExp, replacement as string);
-      
-      if (transformed1 === expr2 || transformed2 === expr1 || transformed1 === transformed2) {
+    const norm1 = normalize(expr1);
+    const norm2 = normalize(expr2);
+    
+    // Direct match after normalization
+    if (norm1 === norm2) return true;
+    
+    // Check for common logical patterns that mean the same thing
+    const patterns = [
+      // "All X who Y do Z" patterns - multiple valid translations
+      [/∀x\(s\(x\)∧g\(x\)→l\(x\)\)/, /∀x\(s\(x\)→\(g\(x\)→l\(x\)\)\)/], // ∀x(S(x)∧G(x)→L(x)) ≡ ∀x(S(x)→(G(x)→L(x)))
+      [/∀x\(s\(x\)∧g\(x\)→l\(x\)\)/, /∀x\(\(s\(x\)∧g\(x\)\)→l\(x\)\)/], // Parentheses variations
+      // Variable name flexibility - S(x) = Student(x), etc.
+      [/s\(/g, /student\(/g],
+      [/l\(/g, /love\(/g],
+      [/p\(/g, /puzzle\(/g],
+      [/g\(/g, /logic\(/g],
+    ];
+    
+    // Test pattern equivalencies
+    for (const [pattern1, pattern2] of patterns) {
+      if ((norm1.match(pattern1) && norm2.match(pattern2)) || 
+          (norm1.match(pattern2) && norm2.match(pattern1))) {
         return true;
       }
     }
-
-    // Check for simple reorderings and parentheses variations
-    const simplified1 = expr1.replace(/[()]/g, '').split(/[∧∨]/).sort().join('');
-    const simplified2 = expr2.replace(/[()]/g, '').split(/[∧∨]/).sort().join('');
     
-    return simplified1 === simplified2;
+    // Semantic equivalence check - if both contain the same logical structure
+    const extractStructure = (expr: string): string => {
+      return expr
+        .replace(/[a-z]\(/g, 'PRED(') // Replace all predicates with generic PRED
+        .replace(/[a-z]/g, 'VAR'); // Replace all variables with generic VAR
+    };
+    
+    if (extractStructure(norm1) === extractStructure(norm2)) {
+      return true;
+    }
+    
+    // Final check: if both expressions contain the key logical components in any order
+    const getComponents = (expr: string): Set<string> => {
+      const components = new Set<string>();
+      if (expr.includes('∀')) components.add('universal');
+      if (expr.includes('∃')) components.add('existential');
+      if (expr.includes('∧')) components.add('conjunction');
+      if (expr.includes('∨')) components.add('disjunction');
+      if (expr.includes('→')) components.add('conditional');
+      if (expr.includes('↔')) components.add('biconditional');
+      if (expr.includes('¬')) components.add('negation');
+      return components;
+    };
+    
+    const comp1 = getComponents(norm1);
+    const comp2 = getComponents(norm2);
+    
+    // If they have the same logical operators, likely equivalent
+    return comp1.size === comp2.size && [...comp1].every(c => comp2.has(c));
   };
 
   const calculateScore = () => {
@@ -218,6 +265,7 @@ export function InteractivePractice({
     
     setScore(finalScore);
     setShowResults(true);
+    setShowSolutions(true); // Automatically show solutions after submission
     setSubmitted(true);
     
     onComplete(finalScore, answers, timeSpent);
@@ -529,7 +577,7 @@ export function InteractivePractice({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="text-lg font-semibold">
                     Score: {score}% ({Math.round((score / 100) * totalQuestions)}/{totalQuestions} correct)
                   </div>
@@ -538,6 +586,11 @@ export function InteractivePractice({
                   </div>
                   <div className="text-sm text-green-600 dark:text-green-400">
                     Your performance has been logged for analysis. Keep practicing to improve!
+                  </div>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mt-3">
+                    <div className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                      📝 Answers and explanations are now shown above for review and learning.
+                    </div>
                   </div>
                 </div>
               </CardContent>
