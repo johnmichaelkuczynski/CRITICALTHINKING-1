@@ -1350,7 +1350,119 @@ Boolean algebra is applied in:
 a) Digital circuits
 b) Database queries
 c) Search algorithms
-d) All of the above`
+d) All of the above
+
+## Question 8 (5 points)
+Translate: "Every student who studies logic loves puzzles"
+Use S(x) = "x is a student", G(x) = "x studies logic", L(x) = "x loves puzzles"
+
+## Question 9 (6 points)
+Prove or disprove: ∀x (P(x) → Q(x)), ∃x P(x) ⊢ ∃x Q(x)
+Show your reasoning.
+
+## Question 10 (8 points)
+Design a complete proof system for the following argument:
+1. All mammals are warm-blooded
+2. All whales are mammals  
+3. Shamu is a whale
+4. Therefore, Shamu is warm-blooded
+
+Use predicate logic with appropriate domain and predicates.`
+  },
+  7: {
+    title: "Week 7 Practice Quiz: Extended Applications",
+    content: `# Week 7 Practice Quiz: Extended Applications
+
+**Advanced Logic Applications and Review**
+
+## Question 1 (3 points)
+In temporal logic, ◊P means:
+a) P is always true
+b) P is eventually true  
+c) P is never true
+d) P is currently true
+
+## Question 2 (4 points)
+Which of these is a well-formed formula in first-order logic?
+a) ∀x ∃y (P(x,y) ∧ ∀z Q(z))
+b) ∀x (P(x) → ∃y R(x,y))
+c) ∃x ∀y (P(x) ∧ Q(y) → R(x,y))
+d) All of the above
+
+## Question 3 (5 points)
+In a logic programming language, what does the following represent?
+"parent(tom, bob). parent(bob, pat). grandparent(X,Z) :- parent(X,Y), parent(Y,Z)."
+
+## Question 4 (5 points)
+Express in symbolic logic: "There is someone who is older than everyone else"
+Let O(x,y) = "x is older than y", P(x) = "x is a person"
+
+## Question 5 (6 points)
+Construct a resolution proof for: {P ∨ Q, ¬P ∨ R, ¬Q ∨ R} ⊢ R
+
+## Question 6 (7 points)
+Design a logic circuit that implements: (A ∧ B) ∨ (¬A ∧ C) ∨ (B ∧ C)
+Minimize the expression and draw the circuit.`
+  },
+  8: {
+    title: "Week 8 Practice Quiz: Comprehensive Review",
+    content: `# Week 8 Practice Quiz: Comprehensive Review
+
+**Final Preparation and Mastery Check**
+
+## Question 1 (3 points)
+The principle of bivalence states that:
+a) Every proposition has exactly two truth values
+b) Every proposition is either true or false
+c) Logic has only two operators
+d) There are two types of reasoning
+
+## Question 2 (4 points)
+In second-order logic, ∀P ∃x P(x) means:
+a) For every property P, there exists an x that has P
+b) For every x, there exists a property P
+c) Properties and individuals are equivalent
+d) Second-order quantification is undefined
+
+## Question 3 (5 points)
+Gödel's incompleteness theorem tells us that:
+a) All logical systems are complete
+b) Some logical systems contain undecidable propositions
+c) Mathematics is inconsistent
+d) Logic cannot be formalized
+
+## Question 4 (5 points)
+In fuzzy logic, if A = 0.7 and B = 0.3, what is A ∧ B using min operator?
+a) 0.21
+b) 0.3
+c) 0.7
+d) 1.0
+
+## Question 5 (6 points)
+Translate: "No student passes without studying"
+Let S(x) = "x is a student", P(x) = "x passes", T(x) = "x studies"
+
+## Question 6 (7 points)
+Prove using natural deduction: (P → Q) → ((Q → R) → (P → R))
+
+## Question 7 (8 points)
+A knowledge base contains:
+1. bird(X) → flies(X) ∨ penguin(X)
+2. penguin(X) → ¬flies(X)  
+3. bird(tweety)
+4. penguin(opus)
+
+What can be concluded about flies(tweety) and flies(opus)?
+
+## Question 8 (12 points)
+Complete logic system design:
+You're designing a smart building system. The system should:
+- Turn on lights if motion detected AND (dark outside OR manual override)
+- Activate security if door opened AND system armed AND NOT (valid keycard)
+- Sound alarm if security activated OR smoke detected
+- Emergency mode overrides all other settings
+
+Express each rule in symbolic logic, create truth tables for critical combinations, and design the minimal Boolean circuits.`
   }
 };
 

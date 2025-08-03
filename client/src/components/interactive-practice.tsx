@@ -219,7 +219,7 @@ export function InteractivePractice({
     const comp2 = getComponents(norm2);
     
     // If they have the same logical operators, likely equivalent
-    return comp1.size === comp2.size && [...comp1].every(c => comp2.has(c));
+    return comp1.size === comp2.size && Array.from(comp1).every(c => comp2.has(c));
   };
 
   const calculateScore = () => {
