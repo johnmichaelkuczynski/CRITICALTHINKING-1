@@ -16,6 +16,10 @@ export default function CourseApp() {
     setActiveTab("living-book");
     if (sectionId) {
       setOpenLivingBookSection(sectionId);
+      // Clear the section after a delay to avoid repeated navigation
+      setTimeout(() => {
+        setOpenLivingBookSection(null);
+      }, 2000);
     }
   };
 

@@ -64,6 +64,124 @@ export default function LivingBook({ openSection }: LivingBookProps = {}) {
     initializeMathRenderer();
   }, []);
 
+  // Auto-navigate to specific section when openSection prop changes
+  useEffect(() => {
+    if (openSection) {
+      // Wait a bit for the content to render before trying to scroll
+      setTimeout(() => {
+        console.log(`Auto-navigating to section: ${openSection}`);
+        
+        // First try to find exact section ID match
+        let element = document.getElementById(openSection);
+        console.log(`Found element by ID: ${!!element}`);
+        
+        if (element) {
+          console.log(`Scrolling to section: ${element.id}`);
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+          
+          // Add a temporary highlight to show the user where they landed
+          element.style.backgroundColor = '#fef3c7';
+          setTimeout(() => {
+            if (element) {
+              element.style.backgroundColor = '';
+            }
+          }, 3000);
+        } else {
+          // Fallback: try to find by text content patterns like NavigationSidebar does
+          const titleMap: { [key: string]: string } = {
+            // Week 1 content patterns
+            "section-1": "Week 1",
+            "introduction-to-logic": "Introduction to Logic",
+            "basic-concepts": "Statement (Proposition):",
+            "basic-logical-symbols": "Basic Logical Symbols",
+            "material-vs-strict-implication": "Material vs. Strict Implication",
+            "translation-practice": "Translation Practice",
+            "homework-1": "Symbolic Logic - Homework 1",
+            
+            // Week 2 content patterns
+            "section-2": "Week 2",
+            "propositional-calculus": "The Propositional Calculus",
+            "truth-tables": "Truth Tables",
+            "elementary-proofs": "Elementary Proofs",
+            "de-morgans-laws": "De Morgan's Laws",
+            "homework-2": "Symbolic Logic - Homework 2",
+            
+            // Week 3 content patterns
+            "section-3": "Week 3",
+            "boolean-algebra": "Introduction to Boolean Algebra",
+            "boolean-operations": "NOT (Complement) Symbol:",
+            "boolean-laws": "Fundamental Laws of Boolean Algebra",
+            "boolean-functions": "Boolean Functions and Truth Tables",
+            "homework-3": "Symbolic Logic - Homework 3",
+            
+            // Week 4 content patterns
+            "section-4": "Week 4",
+            "quantification-concepts": "Basic Concepts of Quantification",
+            "universal-quantifier": "Universal Quantifier (∀)",
+            "existential-quantifier": "Existential Quantifier (∃)",
+            "complex-quantification": "Complex Quantification",
+            "homework-4": "Symbolic Logic - Homework 4",
+            
+            // Week 5 content patterns
+            "section-5": "Week 5",
+            "advanced-translation": "Advanced Translation Patterns",
+            "uniqueness-quantifier": "Uniqueness Quantifier (∃!)",
+            "mathematical-logic": "Mathematical Logic Applications",
+            "homework-5": "Symbolic Logic - Homework 5",
+            
+            // Week 6 content patterns
+            "section-6": "Week 6",
+            "models-introduction": "Introduction to Models",
+            "model-definition": "Definition of a Model",
+            "proving-invalidity": "Proving Invalidity",
+            "homework-6": "Symbolic Logic - Homework 6",
+            
+            // Week 7 content patterns
+            "section-7": "Week 7",
+            "recursive-number-systems": "Recursive Number Systems",
+            "natural-numbers": "Natural Numbers (ℕ)",
+            "statement-classes": "Statement Classes",
+            "homework-7": "Symbolic Logic - Homework 7",
+            
+            // Week 8 content patterns
+            "section-8": "Week 8",
+            "basic-concepts-review": "Basic Concepts Review",
+            "truth-tables-review": "Truth Tables Review",
+            "quantifier-logic-review": "Quantifier Logic Review",
+            "exam-preparation": "Exam Preparation",
+            
+            // Week 9 content patterns
+            "section-9": "Week 9",
+            "final-exam": "Final Exam",
+            "course-conclusion": "Course Conclusion"
+          };
+
+          const searchPattern = titleMap[openSection];
+          if (searchPattern) {
+            console.log(`Searching for text pattern: ${searchPattern}`);
+            
+            // Search for headings or elements containing this text
+            const allElements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, .chunk-content, p, div');
+            for (let i = 0; i < allElements.length; i++) {
+              const el = allElements[i];
+              if (el.textContent && el.textContent.includes(searchPattern)) {
+                console.log(`Found element with text: ${searchPattern}`);
+                el.scrollIntoView({ behavior: "smooth", block: "start" });
+                
+                // Add highlight
+                (el as HTMLElement).style.backgroundColor = '#fef3c7';
+                setTimeout(() => {
+                  (el as HTMLElement).style.backgroundColor = '';
+                }, 3000);
+                break;
+              }
+            }
+          }
+        }
+      }, 500); // Give content time to render
+    }
+  }, [openSection]);
+
 
 
   const handleTextSelectedForChat = (text: string) => {
