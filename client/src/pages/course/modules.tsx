@@ -198,7 +198,11 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
 
   const showPresetPracticeQuiz = (weekNumber: number) => {
     const presetContent = presetPracticeQuizzes[weekNumber as keyof typeof presetPracticeQuizzes];
-    if (presetContent) {
+    if (presetContent && typeof presetContent.content === 'object') {
+      // For structured content, just mark as started - the InteractivePractice will read directly
+      setPracticeQuizStarted(prev => ({ ...prev, [weekNumber]: true }));
+    } else if (presetContent && typeof presetContent.content === 'string') {
+      // For string content, set in generated state
       setGeneratedPracticeQuiz(prev => ({
         ...prev,
         [weekNumber]: presetContent.content
@@ -737,37 +741,12 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
             ) : (
               // Show Interactive Practice Test
               (() => {
-                const presetContent = presetPracticeExams.midterm; // Week 1-2 Midterm
-                if (presetContent) {
-                  // Convert preset test content to InteractivePractice format
-                  const practiceContent = {
-                    instructions: "Practice Midterm covering Weeks 1-2 material. Take your time and review concepts as needed.",
-                    totalPoints: 100,
-                    problems: [
-                      {
-                        id: 'midterm-section-1',
-                        title: 'Comprehensive Logic Practice',
-                        points: 100,
-                        type: 'multiple_choice' as const,
-                        context: presetContent.content,
-                        questions: [
-                          {
-                            id: 'midterm-q1',
-                            question: 'Review the complete practice midterm content above and work through all problems.',
-                            options: ['I have completed all sections', 'I need more practice', 'Ready to submit'],
-                            correct: 0,
-                            answer: 'I have completed all sections',
-                            explanation: 'This practice midterm covers foundational logic concepts. Review each section carefully.'
-                          }
-                        ]
-                      }
-                    ]
-                  };
-
+                const presetContent = presetPracticeExams.midterm;
+                if (presetContent && typeof presetContent.content === 'object') {
                   return (
                     <InteractivePractice
-                      title="Practice Midterm Exam (Weeks 1-2)"
-                      content={practiceContent}
+                      title={presetContent.title}
+                      content={presetContent.content as any}
                       practiceType="test"
                       weekNumber={1}
                       onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
@@ -1784,38 +1763,13 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                           </div>
 
                           {(() => {
-                            // Check if we have preset content - convert to InteractivePractice format
+                            // Check if we have preset content
                             const presetContent = presetPracticeQuizzes[selectedModuleData.week as keyof typeof presetPracticeQuizzes];
-                            if (presetContent) {
-                              // Convert preset quiz content to InteractivePractice format
-                              const practiceContent = {
-                                instructions: `Practice Quiz for Week ${selectedModuleData.week}. Take your time and review concepts as needed.`,
-                                totalPoints: 100,
-                                problems: [
-                                  {
-                                    id: 'quiz-section-1',
-                                    title: 'Practice Quiz Questions',
-                                    points: 100,
-                                    type: 'multiple_choice' as const,
-                                    context: presetContent.content,
-                                    questions: [
-                                      {
-                                        id: 'quiz-q1',
-                                        question: 'Complete the practice quiz content above. Work through all questions systematically.',
-                                        options: ['I have completed all questions', 'I need more practice', 'Ready to submit'],
-                                        correct: 0,
-                                        answer: 'I have completed all questions',
-                                        explanation: 'This practice quiz covers the key concepts from this week. Review each section carefully.'
-                                      }
-                                    ]
-                                  }
-                                ]
-                              };
-
+                            if (presetContent && typeof presetContent.content === 'object') {
                               return (
                                 <InteractivePractice
                                   title={presetContent.title}
-                                  content={practiceContent}
+                                  content={presetContent.content as any}
                                   practiceType="quiz"
                                   weekNumber={selectedModuleData.week}
                                   onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
