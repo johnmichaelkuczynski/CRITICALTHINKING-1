@@ -52,6 +52,19 @@ export default function PracticeCenter() {
     ? Math.round(practiceAttempts.reduce((sum: number, attempt: PracticeAttempt) => sum + (attempt.score || 0), 0) / totalSessions)
     : 0;
 
+  if (isLoading) {
+    return (
+      <div className="p-6 max-w-6xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Practice Center</h1>
+          <p className="text-lg text-muted-foreground">
+            Loading practice data...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="mb-8">
