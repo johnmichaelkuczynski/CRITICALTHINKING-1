@@ -382,6 +382,22 @@ async function generateOpenAIStudyGuideResponse(prompt: string, systemPrompt: st
   return response.choices[0].message.content || "I apologize, but I couldn't generate a response.";
 }
 
+// Higher token limit version for quiz/test generation
+async function generateOpenAIQuizResponse(prompt: string, systemPrompt: string): Promise<string> {
+  // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: prompt }
+    ],
+    max_tokens: 4000, // Much higher limit for comprehensive quizzes
+    temperature: 0.3, // Slightly higher for more comprehensive content
+  });
+
+  return response.choices[0].message.content || "I apologize, but I couldn't generate a response.";
+}
+
 async function generateAnthropicResponse(prompt: string, systemPrompt: string): Promise<string> {
   const response = await anthropic.messages.create({
     // "claude-sonnet-4-20250514"
@@ -403,6 +419,20 @@ async function generateAnthropicStudyGuideResponse(prompt: string, systemPrompt:
     system: systemPrompt,
     messages: [{ role: "user", content: prompt }],
     max_tokens: 4000, // Much higher limit for comprehensive study guides
+  });
+
+  const textContent = response.content[0];
+  return (textContent.type === 'text' ? textContent.text : "I apologize, but I couldn't generate a response.");
+}
+
+// Higher token limit version for quiz/test generation
+async function generateAnthropicQuizResponse(prompt: string, systemPrompt: string): Promise<string> {
+  const response = await anthropic.messages.create({
+    // "claude-sonnet-4-20250514"
+    model: DEFAULT_ANTHROPIC_MODEL,
+    system: systemPrompt,
+    messages: [{ role: "user", content: prompt }],
+    max_tokens: 4000, // Much higher limit for comprehensive quizzes
   });
 
   const textContent = response.content[0];
@@ -464,6 +494,34 @@ async function generatePerplexityStudyGuideResponse(prompt: string, systemPrompt
   return data.choices[0].message.content || "I apologize, but I couldn't generate a response.";
 }
 
+// Higher token limit version for quiz/test generation
+async function generatePerplexityQuizResponse(prompt: string, systemPrompt: string): Promise<string> {
+  const response = await fetch("https://api.perplexity.ai/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.PERPLEXITY_API_KEY || process.env.PERPLEXITY_API_KEY_ENV_VAR || ""}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "llama-3.1-sonar-small-128k-online",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: prompt }
+      ],
+      max_tokens: 4000, // Much higher limit for comprehensive quizzes  
+      temperature: 0.3, // Slightly higher for more comprehensive content
+      stream: false,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`AI4 API error: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.choices[0].message.content || "I apologize, but I couldn't generate a response.";
+}
+
 export async function generateQuiz(model: AIModel, sourceText: string, instructions: string, includeAnswerKey: boolean = false): Promise<{ testContent: string; answerKey?: string }> {
   const paperContext = getPaperContext();
   
@@ -500,16 +558,16 @@ ${includeAnswerKey ? 'Please provide both the test questions AND a separate answ
     let result: string;
     switch (model) {
       case "openai":
-        result = await generateOpenAIResponse(fullPrompt, systemPrompt);
+        result = await generateOpenAIQuizResponse(fullPrompt, systemPrompt);
         break;
       case "anthropic":
-        result = await generateAnthropicResponse(fullPrompt, systemPrompt);
+        result = await generateAnthropicQuizResponse(fullPrompt, systemPrompt);
         break;
       case "perplexity":
-        result = await generatePerplexityResponse(fullPrompt, systemPrompt);
+        result = await generatePerplexityQuizResponse(fullPrompt, systemPrompt);
         break;
       case "deepseek":
-        result = await generateDeepSeekResponse(fullPrompt, systemPrompt);
+        result = await generateDeepSeekQuizResponse(fullPrompt, systemPrompt);
         break;
       default:
         throw new Error(`Unsupported AI model: ${model}`);
@@ -537,7 +595,7 @@ ${includeAnswerKey ? 'Please provide both the test questions AND a separate answ
     if (model !== "openai") {
       console.log(`Attempting fallback to AI2 due to ${modelName} failure`);
       try {
-        const fallbackResult = await generateOpenAIResponse(fullPrompt, systemPrompt);
+        const fallbackResult = await generateOpenAIQuizResponse(fullPrompt, systemPrompt);
         const cleanedResult = cleanRewriteText(fallbackResult);
         
         if (includeAnswerKey && cleanedResult) {
@@ -736,16 +794,16 @@ This answer key is MANDATORY for proper grading functionality.`;
     let result: string;
     switch (model) {
       case "openai":
-        result = await generateOpenAIResponse(fullPrompt, systemPrompt);
+        result = await generateOpenAIQuizResponse(fullPrompt, systemPrompt);
         break;
       case "anthropic":
-        result = await generateAnthropicResponse(fullPrompt, systemPrompt);
+        result = await generateAnthropicQuizResponse(fullPrompt, systemPrompt);
         break;
       case "perplexity":
-        result = await generatePerplexityResponse(fullPrompt, systemPrompt);
+        result = await generatePerplexityQuizResponse(fullPrompt, systemPrompt);
         break;
       case "deepseek":
-        result = await generateDeepSeekResponse(fullPrompt, systemPrompt);
+        result = await generateDeepSeekQuizResponse(fullPrompt, systemPrompt);
         break;
       default:
         throw new Error(`Unsupported AI model: ${model}`);
@@ -762,7 +820,7 @@ This answer key is MANDATORY for proper grading functionality.`;
     if (model !== "openai") {
       console.log(`Attempting fallback to OpenAI due to ${modelName} failure`);
       try {
-        const fallbackResult = await generateOpenAIResponse(fullPrompt, systemPrompt);
+        const fallbackResult = await generateOpenAIQuizResponse(fullPrompt, systemPrompt);
         const cleanedResult = cleanRewriteText(fallbackResult);
         return { testContent: cleanedResult };
       } catch (fallbackError) {
@@ -835,6 +893,48 @@ async function generateDeepSeekStudyGuideResponse(prompt: string, systemPrompt: 
           { role: "user", content: prompt }
         ],
         max_tokens: 4000, // Much higher limit for comprehensive study guides
+        temperature: 0.3, // Slightly higher for more comprehensive content
+        stream: false,
+      }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`AI1 API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content || "I apologize, but I couldn't generate a response.";
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Request timed out. Please try again.');
+    }
+    throw error;
+  }
+}
+
+// Higher token limit version for quiz/test generation
+async function generateDeepSeekQuizResponse(prompt: string, systemPrompt: string): Promise<string> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // Longer timeout for quizzes
+  
+  try {
+    const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY_ENV_VAR || ""}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "deepseek-chat",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: prompt }
+        ],
+        max_tokens: 4000, // Much higher limit for comprehensive quizzes
         temperature: 0.3, // Slightly higher for more comprehensive content
         stream: false,
       }),

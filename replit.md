@@ -15,6 +15,12 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Progress (August 2025)
 
+### Content Generation Token Limit Fix ✅
+- Fixed critical truncation issue affecting study guides, quizzes, and practice tests
+- Increased AI model token limits from 500 to 4000 tokens for comprehensive content generation
+- Created high-token specialized functions for all AI models (OpenAI, Anthropic, DeepSeek, Perplexity)
+- All content generation features now produce complete, full-length responses without cutting off mid-sentence
+
 ### Show Solutions Feature Implementation ✅
 - Added "Show Solutions" button to all practice homework, quizzes, and tests
 - Students can instantly view answers and explanations without completing assignments
