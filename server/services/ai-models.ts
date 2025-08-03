@@ -366,6 +366,22 @@ async function generateOpenAIResponse(prompt: string, systemPrompt: string): Pro
   return response.choices[0].message.content || "I apologize, but I couldn't generate a response.";
 }
 
+// Higher token limit version for study guides
+async function generateOpenAIStudyGuideResponse(prompt: string, systemPrompt: string): Promise<string> {
+  // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: prompt }
+    ],
+    max_tokens: 4000, // Much higher limit for comprehensive study guides
+    temperature: 0.3, // Slightly higher for more comprehensive content
+  });
+
+  return response.choices[0].message.content || "I apologize, but I couldn't generate a response.";
+}
+
 async function generateAnthropicResponse(prompt: string, systemPrompt: string): Promise<string> {
   const response = await anthropic.messages.create({
     // "claude-sonnet-4-20250514"
@@ -373,6 +389,20 @@ async function generateAnthropicResponse(prompt: string, systemPrompt: string): 
     system: systemPrompt,
     messages: [{ role: "user", content: prompt }],
     max_tokens: 500, // Reduced for ultra-fast generation
+  });
+
+  const textContent = response.content[0];
+  return (textContent.type === 'text' ? textContent.text : "I apologize, but I couldn't generate a response.");
+}
+
+// Higher token limit version for study guides
+async function generateAnthropicStudyGuideResponse(prompt: string, systemPrompt: string): Promise<string> {
+  const response = await anthropic.messages.create({
+    // "claude-sonnet-4-20250514"
+    model: DEFAULT_ANTHROPIC_MODEL,
+    system: systemPrompt,
+    messages: [{ role: "user", content: prompt }],
+    max_tokens: 4000, // Much higher limit for comprehensive study guides
   });
 
   const textContent = response.content[0];
@@ -394,6 +424,34 @@ async function generatePerplexityResponse(prompt: string, systemPrompt: string):
       ],
       max_tokens: 500, // Reduced for ultra-fast responses  
       temperature: 0.1, // Minimal temperature for fastest generation
+      stream: false,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`AI4 API error: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.choices[0].message.content || "I apologize, but I couldn't generate a response.";
+}
+
+// Higher token limit version for study guides
+async function generatePerplexityStudyGuideResponse(prompt: string, systemPrompt: string): Promise<string> {
+  const response = await fetch("https://api.perplexity.ai/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.PERPLEXITY_API_KEY || process.env.PERPLEXITY_API_KEY_ENV_VAR || ""}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "llama-3.1-sonar-small-128k-online",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: prompt }
+      ],
+      max_tokens: 4000, // Much higher limit for comprehensive study guides  
+      temperature: 0.3, // Slightly higher for more comprehensive content
       stream: false,
     }),
   });
@@ -538,16 +596,16 @@ Please provide a well-structured study guide that helps students understand and 
     let result: string;
     switch (model) {
       case "openai":
-        result = await generateOpenAIResponse(fullPrompt, systemPrompt);
+        result = await generateOpenAIStudyGuideResponse(fullPrompt, systemPrompt);
         break;
       case "anthropic":
-        result = await generateAnthropicResponse(fullPrompt, systemPrompt);
+        result = await generateAnthropicStudyGuideResponse(fullPrompt, systemPrompt);
         break;
       case "perplexity":
-        result = await generatePerplexityResponse(fullPrompt, systemPrompt);
+        result = await generatePerplexityStudyGuideResponse(fullPrompt, systemPrompt);
         break;
       case "deepseek":
-        result = await generateDeepSeekResponse(fullPrompt, systemPrompt);
+        result = await generateDeepSeekStudyGuideResponse(fullPrompt, systemPrompt);
         break;
       default:
         throw new Error(`Unsupported AI model: ${model}`);
@@ -564,7 +622,7 @@ Please provide a well-structured study guide that helps students understand and 
     if (model !== "openai") {
       console.log(`Attempting fallback to AI2 due to ${modelName} failure`);
       try {
-        const fallbackResult = await generateOpenAIResponse(fullPrompt, systemPrompt);
+        const fallbackResult = await generateOpenAIStudyGuideResponse(fullPrompt, systemPrompt);
         const cleanedResult = cleanRewriteText(fallbackResult);
         return { guideContent: cleanedResult };
       } catch (fallbackError) {
@@ -736,6 +794,48 @@ async function generateDeepSeekResponse(prompt: string, systemPrompt: string): P
         ],
         max_tokens: 500, // Reduced for ultra-fast generation
         temperature: 0.1, // Minimal temperature for fastest responses
+        stream: false,
+      }),
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`AI1 API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content || "I apologize, but I couldn't generate a response.";
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Request timed out. Please try again.');
+    }
+    throw error;
+  }
+}
+
+// Higher token limit version for study guides
+async function generateDeepSeekStudyGuideResponse(prompt: string, systemPrompt: string): Promise<string> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // Longer timeout for study guides
+  
+  try {
+    const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.DEEPSEEK_API_KEY || process.env.DEEPSEEK_API_KEY_ENV_VAR || ""}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "deepseek-chat",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: prompt }
+        ],
+        max_tokens: 4000, // Much higher limit for comprehensive study guides
+        temperature: 0.3, // Slightly higher for more comprehensive content
         stream: false,
       }),
       signal: controller.signal
