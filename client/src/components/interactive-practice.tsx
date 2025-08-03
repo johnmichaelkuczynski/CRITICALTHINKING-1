@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Clock, Calculator, ToggleLeft, ToggleRight, Keyboard } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Calculator, ToggleLeft, ToggleRight, Keyboard, Eye } from 'lucide-react';
 
 interface Question {
   id: string;
@@ -50,6 +50,7 @@ export function InteractivePractice({
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [showResults, setShowResults] = useState(false);
   const [showSolutions, setShowSolutions] = useState(false);
+  const [showIndividualAnswers, setShowIndividualAnswers] = useState<Record<string, boolean>>({});
   const [score, setScore] = useState(0);
   const [startTime] = useState(Date.now());
   const [submitted, setSubmitted] = useState(false);
@@ -112,6 +113,13 @@ export function InteractivePractice({
       [questionId]: !prev[questionId]
     }));
     setActiveTextarea(questionId);
+  };
+
+  const showAnswerForQuestion = (questionId: string) => {
+    setShowIndividualAnswers(prev => ({
+      ...prev,
+      [questionId]: true
+    }));
   };
 
   const normalizeLogicExpression = (expr: string): string => {
@@ -278,7 +286,20 @@ export function InteractivePractice({
       case 'multiple_choice':
         return (
           <div key={questionKey} className="space-y-3">
-            <div className="font-medium">{index + 1}. {question.question}</div>
+            <div className="flex items-center justify-between">
+              <div className="font-medium">{index + 1}. {question.question}</div>
+              {!submitted && !showIndividualAnswers[questionKey] && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => showAnswerForQuestion(questionKey)}
+                  className="flex items-center space-x-1 text-xs"
+                >
+                  <Eye className="w-3 h-3" />
+                  <span>Show Answer</span>
+                </Button>
+              )}
+            </div>
             <RadioGroup
               value={answers[questionKey]?.toString()}
               onValueChange={(value) => updateAnswer(questionKey, parseInt(value))}
@@ -300,7 +321,7 @@ export function InteractivePractice({
               ))}
             </RadioGroup>
             
-            {(showResults || showSolutions) && (
+            {(showResults || showSolutions || showIndividualAnswers[questionKey]) && (
               <div className="space-y-2 mt-4">
                 {question.correct !== undefined && (
                   <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
@@ -347,7 +368,20 @@ export function InteractivePractice({
       case 'calculation':
         return (
           <div key={questionKey} className="space-y-3">
-            <div className="font-medium">{index + 1}. {question.question}</div>
+            <div className="flex items-center justify-between">
+              <div className="font-medium">{index + 1}. {question.question}</div>
+              {!submitted && !showIndividualAnswers[questionKey] && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => showAnswerForQuestion(questionKey)}
+                  className="flex items-center space-x-1 text-xs"
+                >
+                  <Eye className="w-3 h-3" />
+                  <span>Show Answer</span>
+                </Button>
+              )}
+            </div>
             
             {/* Logic symbols toggle and keyboard controls */}
             <div className="flex items-center justify-between">
@@ -422,7 +456,7 @@ export function InteractivePractice({
               </div>
             )}
             
-            {(showResults || showSolutions) && (
+            {(showResults || showSolutions || showIndividualAnswers[questionKey]) && (
               <div className="space-y-2">
                 {question.answer && (
                   <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
@@ -436,25 +470,41 @@ export function InteractivePractice({
                     <div className="text-sm text-blue-600 dark:text-blue-400">{question.explanation}</div>
                   </div>
                 )}
-                {showResults && answers[questionKey] && question.answer && (
-                  <div className="flex items-center space-x-2">
-                    {(() => {
-                      const normalizedUser = normalizeLogicExpression(answers[questionKey]);
-                      const normalizedCorrect = normalizeLogicExpression(question.answer);
-                      const isCorrect = normalizedUser === normalizedCorrect || areLogicallyEquivalent(normalizedUser, normalizedCorrect);
-                      
-                      return isCorrect ? (
-                        <Badge variant="default" className="bg-green-500">
-                          <CheckCircle className="h-3 w-3 mr-1" />
-                          Correct
-                        </Badge>
-                      ) : (
-                        <Badge variant="destructive">
-                          <XCircle className="h-3 w-3 mr-1" />
-                          Incorrect
-                        </Badge>
-                      );
-                    })()}
+                {showResults && answers[questionKey] && (
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      {(() => {
+                        if (!question.answer) {
+                          return (
+                            <Badge variant="secondary">
+                              <Clock className="h-3 w-3 mr-1" />
+                              Answer Pending
+                            </Badge>
+                          );
+                        }
+                        
+                        const normalizedUser = normalizeLogicExpression(answers[questionKey]);
+                        const normalizedCorrect = normalizeLogicExpression(question.answer);
+                        const isCorrect = normalizedUser === normalizedCorrect || areLogicallyEquivalent(normalizedUser, normalizedCorrect);
+                        
+                        return isCorrect ? (
+                          <Badge variant="default" className="bg-green-500">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Correct
+                          </Badge>
+                        ) : (
+                          <Badge variant="destructive">
+                            <XCircle className="h-3 w-3 mr-1" />
+                            Incorrect
+                          </Badge>
+                        );
+                      })()}
+                    </div>
+                    {showResults && !answers[questionKey] && (
+                      <div className="p-2 bg-gray-50 dark:bg-gray-900/20 rounded text-xs text-gray-600 dark:text-gray-400">
+                        Your answer: <span className="font-mono">{answers[questionKey] || '(no answer)'}</span>
+                      </div>
+                    )}
                   </div>
                 )}
                 {showSolutions && !showResults && (

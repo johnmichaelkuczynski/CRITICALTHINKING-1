@@ -1120,15 +1120,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                       </div>
 
                       {!practiceHomeworkStarted[selectedModuleData.week] ? (
-                        <div className="flex justify-center space-x-4">
-                          <Button 
-                            variant="outline"
-                            className="flex items-center space-x-2"
-                            onClick={() => showPresetPracticeHomework(selectedModuleData.week)}
-                          >
-                            <Eye className="w-4 h-4" />
-                            <span>Show Practice Homework</span>
-                          </Button>
+                        <div className="flex justify-center">
                           <Button 
                             className="flex items-center space-x-2"
                             onClick={() => generatePracticeHomework(selectedModuleData.week)}
@@ -1731,15 +1723,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                       </div>
 
                       {!practiceQuizStarted[selectedModuleData.week] ? (
-                        <div className="flex justify-center space-x-4">
-                          <Button 
-                            variant="outline"
-                            className="flex items-center space-x-2"
-                            onClick={() => showPresetPracticeQuiz(selectedModuleData.week)}
-                          >
-                            <Eye className="w-4 h-4" />
-                            <span>Show Practice Quiz</span>
-                          </Button>
+                        <div className="flex justify-center">
                           <Button 
                             className="flex items-center space-x-2"
                             onClick={() => generatePracticeQuiz(selectedModuleData.week)}
