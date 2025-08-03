@@ -92,14 +92,23 @@ export function isAdmin(user: User | null): boolean {
 }
 
 export function canAccessFeature(user: User | null): boolean {
-  if (!user) return false;
+  if (!user) {
+    console.log('canAccessFeature: No user provided');
+    return false;
+  }
   
   // Admin bypass: jmkuczynski@yahoo.com gets unlimited access
-  if (isAdmin(user)) {
+  const adminStatus = isAdmin(user);
+  console.log('canAccessFeature: User:', user.username, 'Admin:', adminStatus, 'Credits:', user.credits);
+  
+  if (adminStatus) {
+    console.log('canAccessFeature: Admin access granted');
     return true;
   }
   
-  return user.credits > 0;
+  const hasCredits = user.credits > 0;
+  console.log('canAccessFeature: Credit check:', hasCredits);
+  return hasCredits;
 }
 
 export function getPreviewResponse(fullResponse: string, isUnregistered: boolean): string {

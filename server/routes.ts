@@ -1161,6 +1161,16 @@ Output only the abbreviation list, one per line. Be concise and use single capit
       const { sourceText, instructions, chunkIndex, model } = studyGuideRequestSchema.parse(req.body);
       const user = await getCurrentUser(req);
       
+      // Debug logging for admin user access
+      console.log('Study guide request - User:', user ? {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        credits: user.credits
+      } : 'No user');
+      console.log('Is admin:', isAdmin(user));
+      console.log('Can access feature:', canAccessFeature(user));
+      
       const fullStudyGuide = await generateStudyGuide(model, sourceText, instructions);
       
       // Check if user has access to full features
@@ -1168,9 +1178,11 @@ Output only the abbreviation list, one per line. Be concise and use single capit
       let isPreview = false;
       
       if (!canAccessFeature(user)) {
+        console.log('Access denied - returning preview');
         studyGuide = getPreviewResponse(fullStudyGuide.guideContent, !user);
         isPreview = true;
       } else {
+        console.log('Access granted - returning full content');
         studyGuide = fullStudyGuide.guideContent;
         // Deduct 1 credit for full response (skip for admin)
         if (!isAdmin(user)) {
