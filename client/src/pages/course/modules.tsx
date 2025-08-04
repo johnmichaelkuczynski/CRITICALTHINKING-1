@@ -1105,6 +1105,28 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         </ul>
                       </div>
 
+                      {/* ALWAYS SHOW GENERATE NEW BUTTON */}
+                      <div className="flex justify-center mb-6">
+                        <Button 
+                          variant="outline"
+                          className="flex items-center space-x-2 border-green-300 text-green-700 hover:bg-green-50"
+                          onClick={() => generatePracticeHomework(selectedModuleData.week)}
+                          disabled={generatingPracticeHomework}
+                        >
+                          {generatingPracticeHomework ? (
+                            <>
+                              <Clock className="w-4 h-4 animate-spin" />
+                              <span>Generating New Practice...</span>
+                            </>
+                          ) : (
+                            <>
+                              <RefreshCw className="w-4 h-4" />
+                              <span>Generate New Practice Homework</span>
+                            </>
+                          )}
+                        </Button>
+                      </div>
+
                       {/* Check if we have preset content and show it immediately */}
                       {(() => {
                         const presetContent = presetPracticeHomework[selectedModuleData.week as keyof typeof presetPracticeHomework];
@@ -1118,46 +1140,27 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                               onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
                                 handlePracticeComplete('homework', selectedModuleData.week, score, answers, timeSpent)
                               }
+                              onGenerateNew={() => generatePracticeHomework(selectedModuleData.week)}
                             />
                           );
                         }
                         
-                        // If no preset, show generated practice or generate button
-                        if (practiceHomeworkStarted[selectedModuleData.week]) {
+                        // Show message if generating or no content
+                        if (generatingPracticeHomework) {
                           return (
-                            <div className="flex space-x-4">
-                              <Button 
-                                variant="outline" 
-                                className="flex items-center space-x-2"
-                                onClick={() => generatePracticeHomework(selectedModuleData.week)}
-                                disabled={generatingPracticeHomework}
-                              >
-                                <RefreshCw className="w-4 h-4" />
-                                <span>Generate New Practice</span>
-                              </Button>
+                            <div className="text-center py-8">
+                              <Clock className="w-8 h-8 animate-spin mx-auto mb-4 text-green-600" />
+                              <p className="text-lg font-medium">Generating new practice homework...</p>
+                              <p className="text-sm text-gray-600">This may take a moment.</p>
                             </div>
                           );
                         }
                         
                         return (
-                          <div className="flex justify-center">
-                            <Button 
-                              className="flex items-center space-x-2"
-                              onClick={() => generatePracticeHomework(selectedModuleData.week)}
-                              disabled={generatingPracticeHomework}
-                            >
-                              {generatingPracticeHomework ? (
-                                <>
-                                  <Clock className="w-4 h-4 animate-spin" />
-                                  <span>Generating...</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Play className="w-4 h-4" />
-                                  <span>Generate New Practice</span>
-                                </>
-                              )}
-                            </Button>
+                          <div className="text-center py-8">
+                            <p className="text-muted-foreground mb-4">
+                              Click "Generate New Practice Homework" above to create a custom practice session.
+                            </p>
                           </div>
                         );
                       })()}
