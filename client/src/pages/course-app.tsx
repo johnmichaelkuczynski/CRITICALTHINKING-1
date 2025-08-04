@@ -73,7 +73,10 @@ export default function CourseApp() {
         </TabsList>
 
         <TabsContent value="living-book" className="h-full m-0 p-0">
-          <LivingBook openSection={openLivingBookSection} />
+          <LivingBook 
+            openSection={openLivingBookSection} 
+            onNavigateToModules={handleNavigateToHomework} 
+          />
         </TabsContent>
 
         <TabsContent value="syllabus" className="h-full m-0 p-0">

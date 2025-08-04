@@ -17,6 +17,7 @@ interface DocumentContentProps {
   onCreateStudyGuide?: (text: string) => void;
   onTestMe?: (text: string) => void;
   onCreatePodcast?: (text: string) => void;
+  onNavigateToModules?: (weekNumber?: number, section?: string) => void;
 }
 
 export default function DocumentContent({ 
@@ -26,11 +27,38 @@ export default function DocumentContent({
   onPassageDiscussion, 
   onCreateStudyGuide,
   onTestMe,
-  onCreatePodcast
+  onCreatePodcast,
+  onNavigateToModules
 }: DocumentContentProps) {
   const { selection, isSelecting, clearSelection, highlightSelection, removeHighlights } = useTextSelection();
   const [showChunkingModal, setShowChunkingModal] = useState(false);
   const [selectedTextForChunking, setSelectedTextForChunking] = useState("");
+
+  // Add click handlers for interactive links
+  useEffect(() => {
+    const handleLinkClick = (event: Event) => {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('homework-link') || 
+          target.classList.contains('answer-key-link') || 
+          target.classList.contains('practice-link') || 
+          target.classList.contains('chapter-link')) {
+        
+        event.preventDefault();
+        const weekNumber = parseInt(target.getAttribute('data-week') || '1');
+        const type = target.getAttribute('data-type') || '';
+        const title = target.getAttribute('data-title') || '';
+        
+        console.log(`Navigating to Modules tab: Week ${weekNumber}, Type: ${type}, Title: ${title}`);
+        
+        if (onNavigateToModules) {
+          onNavigateToModules(weekNumber, type);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleLinkClick);
+    return () => document.removeEventListener('click', handleLinkClick);
+  }, [onNavigateToModules]);
 
 
   // Math rendering is handled in processContentForMathMode function
@@ -229,8 +257,48 @@ export default function DocumentContent({
             }
           }
           
+          // Convert action items to clickable links
+          let processedParagraph = paragraph.trim();
+          
+          // Detect homework patterns and make them clickable
+          processedParagraph = processedParagraph.replace(
+            /Homework\s+(\d+\.?\d*\.?\d*\.?\d*):\s*([^.\n]+)/gi,
+            (match, homeworkNumber, title) => {
+              const weekNumber = Math.ceil(parseFloat(homeworkNumber.replace(/\./g, '')));
+              return `<a href="#" class="homework-link text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-medium" data-week="${weekNumber}" data-type="homework" data-title="${title.trim()}">${match}</a>`;
+            }
+          );
+          
+          // Detect answer key patterns
+          processedParagraph = processedParagraph.replace(
+            /Answer\s+Key:?\s*(Homework\s+\d+\.?\d*\.?\d*\.?\d*|[^.\n]+)/gi,
+            (match, reference) => {
+              const weekMatch = reference.match(/\d+/);
+              const weekNumber = weekMatch ? parseInt(weekMatch[0]) : 1;
+              return `<a href="#" class="answer-key-link text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 underline font-medium" data-week="${weekNumber}" data-type="answer-key" data-title="${reference.trim()}">${match}</a>`;
+            }
+          );
+          
+          // Detect practice problems patterns
+          processedParagraph = processedParagraph.replace(
+            /Practice\s+Problems?\s+(Set\s+[AB]?:?\s*)?([^.\n]+)/gi,
+            (match, setInfo, title) => {
+              const weekNumber = 1; // Default week, could be improved with context
+              return `<a href="#" class="practice-link text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 underline font-medium" data-week="${weekNumber}" data-type="practice" data-title="${title.trim()}">${match}</a>`;
+            }
+          );
+          
+          // Detect chapter-based homework patterns
+          processedParagraph = processedParagraph.replace(
+            /Chapter\s+(\d+\.?\d*\.?\d*):?\s+([^.\n]+)/gi,
+            (match, chapterNumber, title) => {
+              const weekNumber = Math.ceil(parseFloat(chapterNumber));
+              return `<a href="#" class="chapter-link text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 underline font-medium" data-week="${weekNumber}" data-type="chapter" data-title="${title.trim()}">${match}</a>`;
+            }
+          );
+
           // Regular paragraph with improved styling
-          return `<p class="mb-4 leading-relaxed text-slate-800 dark:text-slate-200">${paragraph.trim()}</p>`;
+          return `<p class="mb-4 leading-relaxed text-slate-800 dark:text-slate-200">${processedParagraph}</p>`;
         })
         .filter(p => p)
         .join('');

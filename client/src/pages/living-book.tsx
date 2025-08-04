@@ -31,9 +31,10 @@ import type { AIModel } from "@shared/schema";
 
 interface LivingBookProps {
   openSection?: string | null;
+  onNavigateToModules?: (weekNumber: number, assignmentType: string) => void;
 }
 
-export default function LivingBook({ openSection }: LivingBookProps = {}) {
+export default function LivingBook({ openSection, onNavigateToModules }: LivingBookProps = {}) {
   const { user, logout, isAuthenticated } = useAuth();
   const [selectedModel, setSelectedModel] = useState<AIModel>("openai");
   const [mathMode, setMathMode] = useState<boolean>(true);
@@ -267,6 +268,13 @@ export default function LivingBook({ openSection }: LivingBookProps = {}) {
     }
   };
 
+  const handleNavigateToModules = (weekNumber?: number, section?: string) => {
+    console.log(`Navigating to Modules tab: Week ${weekNumber}, Section: ${section}`);
+    if (onNavigateToModules && weekNumber) {
+      onNavigateToModules(weekNumber, section || 'homework');
+    }
+  };
+
   const handleCreatePodcastFromSelection = (text: string) => {
     const wordCount = text.split(/\s+/).length;
     
@@ -487,6 +495,7 @@ export default function LivingBook({ openSection }: LivingBookProps = {}) {
             onCreateStudyGuide={handleCreateStudyGuideFromSelection}
             onTestMe={handleTestMeFromSelection}
             onCreatePodcast={handleCreatePodcastFromSelection}
+            onNavigateToModules={handleNavigateToModules}
           />
         </main>
 
