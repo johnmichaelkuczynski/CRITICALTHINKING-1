@@ -2,149 +2,152 @@
 
 export const presetLectures = {
   1: {
-    title: "Week 1: Basic Concepts, Notation, and Logical Operators",
-    content: `<h2>Week 1: Basic Concepts, Notation, and Logical Operators</h2>
+    title: "Week 1: Introduction to Critical Thinking and Reasoning",
+    content: `<h2>Week 1: Introduction to Critical Thinking and Reasoning</h2>
 
 <h3>Overview</h3>
-<p>Welcome to symbolic logic! This week introduces the fundamental building blocks of logical reasoning and formal notation systems.</p>
+<p>Welcome to Critical Thinking! This week introduces the fundamental skills of rational thought, analytical reasoning, and effective decision-making.</p>
 
 <h3>Key Concepts</h3>
 
-<h4>1. Propositions and Truth Values</h4>
+<h4>1. What is Critical Thinking?</h4>
 <ul>
-<li>A <strong>proposition</strong> is a statement that is either true or false</li>
-<li>Examples: "It is raining" (can be true or false)</li>
-<li>Non-examples: "What time is it?" (questions aren't propositions)</li>
+<li><strong>Critical thinking</strong> is the objective analysis and evaluation of an issue to form a judgment</li>
+<li>Involves questioning assumptions, examining evidence, and considering alternative perspectives</li>
+<li>Goal: Make well-reasoned decisions and solve problems effectively</li>
 </ul>
 
-<h4>2. Basic Logical Operators</h4>
+<h4>2. Core Elements of Critical Thinking</h4>
 
-<h5>Negation (¬)</h5>
+<h5>Analysis</h5>
 <ul>
-<li>Symbol: ¬ or ~</li>
-<li>Meaning: "not"</li>
-<li>Example: ¬P means "not P"</li>
+<li>Breaking down complex information into components</li>
+<li>Identifying patterns, relationships, and underlying structures</li>
+<li>Example: Analyzing the causes of a social problem</li>
 </ul>
 
-<h5>Conjunction (∧)</h5>
+<h5>Evaluation</h5>
 <ul>
-<li>Symbol: ∧</li>
-<li>Meaning: "and"</li>
-<li>Example: P ∧ Q means "P and Q"</li>
-<li>True only when both P and Q are true</li>
+<li>Assessing the credibility and quality of evidence</li>
+<li>Determining the strength of arguments</li>
+<li>Example: Evaluating the reliability of news sources</li>
 </ul>
 
-<h5>Disjunction (∨)</h5>
+<h5>Inference</h5>
 <ul>
-<li>Symbol: ∨</li>
-<li>Meaning: "or" (inclusive or)</li>
-<li>Example: P ∨ Q means "P or Q (or both)"</li>
-<li>False only when both P and Q are false</li>
+<li>Drawing logical conclusions from available information</li>
+<li>Making reasonable predictions based on evidence</li>
+<li>Example: Inferring trends from data patterns</li>
 </ul>
 
-<h5>Conditional (→)</h5>
+<h5>Interpretation</h5>
 <ul>
-<li>Symbol: → or ⊃</li>
-<li>Meaning: "if...then"</li>
-<li>Example: P → Q means "if P then Q"</li>
-<li>False only when P is true and Q is false</li>
+<li>Understanding the meaning and significance of information</li>
+<li>Recognizing implications and consequences</li>
+<li>Example: Interpreting statistical data in context</li>
 </ul>
 
-<h5>Biconditional (↔)</h5>
+<h5>Explanation</h5>
 <ul>
-<li>Symbol: ↔ or ≡</li>
-<li>Meaning: "if and only if"</li>
-<li>Example: P ↔ Q means "P if and only if Q"</li>
-<li>True when P and Q have the same truth value</li>
+<li>Clearly communicating reasoning and evidence</li>
+<li>Justifying conclusions and methodology</li>
+<li>Example: Explaining the rationale behind a business decision</li>
 </ul>
 
-<h4>3. Truth Tables</h4>
-<p>Truth tables show all possible truth value combinations for logical formulas.</p>
+<h4>3. The Critical Thinking Process</h4>
+<ol>
+<li><strong>Identify</strong> the problem or question</li>
+<li><strong>Gather</strong> relevant information and evidence</li>
+<li><strong>Consider</strong> multiple perspectives and alternatives</li>
+<li><strong>Analyze</strong> assumptions and biases</li>
+<li><strong>Evaluate</strong> evidence and arguments</li>
+<li><strong>Draw</strong> well-reasoned conclusions</li>
+</ol>
 
 <h3>Practice Problems</h3>
 <ol>
-<li>Translate: "If it rains, then the ground is wet"</li>
-<li>Create a truth table for: P ∧ (Q ∨ ¬R)</li>
-<li>Determine when (P → Q) ∧ (Q → R) is true</li>
+<li>Identify three assumptions in this statement: "Social media is bad for teenagers because it causes depression."</li>
+<li>List five questions you would ask when evaluating a news article about climate change.</li>
+<li>Describe how you would analyze the reliability of a scientific study.</li>
 </ol>
 
 <h3>Next Week Preview</h3>
-<p>We'll explore more complex formulas and introduce quantifiers (∀, ∃).</p>`
+<p>We'll explore logical fallacies and learn to identify common errors in reasoning.</p>`
   }
 };
 
 export const presetPracticeHomework = {
   1: {
-    title: "Week 1 Practice Homework: Basic Concepts & Operators",
+    title: "Week 1 Practice Homework: Critical Thinking Fundamentals",
     content: {
-      instructions: "Practice translating statements into symbolic logic and working with basic logical operators. Take your time and use the logic symbol keyboard when needed.",
+      instructions: "Practice identifying critical thinking elements and analyzing real-world scenarios. Focus on developing your analytical reasoning skills.",
       totalPoints: 50,
       problems: [
         {
           id: "p1",
-          title: "Statement Translation",
+          title: "Identifying Assumptions",
           points: 20,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Translate: 'If it rains, then the ground is wet' using P for rain and Q for wet ground.",
-              answer: "P → Q",
-              explanation: "This is a conditional statement: if P then Q."
+              question: "List three assumptions in this statement: 'Students who use smartphones in class perform worse because technology is distracting.'",
+              answer: "1) All smartphone use in class is distracting, 2) Poor performance is caused by distraction, 3) Technology inherently reduces learning",
+              explanation: "Critical thinkers identify hidden assumptions that may not be supported by evidence."
             },
             {
               id: "p1b",
-              question: "Translate: 'Either John is tall or Mary is short' using J for 'John is tall' and M for 'Mary is short'.",
-              answer: "J ∨ M",
-              explanation: "This is a disjunction: J or M (or both)."
+              question: "What assumption is made in: 'This restaurant must be good because it's always crowded'?",
+              answer: "That crowd size indicates quality",
+              explanation: "This assumes a correlation between popularity and quality without considering other factors."
             },
             {
               id: "p1c",
-              question: "Translate: 'It is not the case that both the sun is shining and it is raining' using S for sun shining and R for raining.",
-              answer: "¬(S ∧ R)",
-              explanation: "This negates the conjunction of S and R."
+              question: "Identify an assumption in: 'We should ban video games because they cause violent behavior.'",
+              answer: "That video games directly cause violent behavior",
+              explanation: "This assumes a causal relationship that may not be supported by evidence."
             }
           ]
         },
         {
           id: "p2",
-          title: "Logical Operators",
+          title: "Evidence Evaluation",
           points: 15,
           type: "multiple_choice",
           questions: [
             {
               id: "p2a",
-              question: "What is the truth value of P ∧ Q when P is true and Q is false?",
-              options: ["True", "False", "Cannot be determined"],
+              question: "Which source would be most reliable for information about climate change?",
+              options: ["Social media post", "Peer-reviewed scientific journal", "Opinion blog"],
               correct: 1,
-              explanation: "A conjunction is true only when both operands are true."
+              explanation: "Peer-reviewed journals undergo rigorous evaluation by experts in the field."
             },
             {
               id: "p2b",
-              question: "When is P → Q false?",
-              options: ["When P is false", "When Q is false", "When P is true and Q is false", "Never"],
-              correct: 2,
-              explanation: "A conditional is false only when the antecedent is true and the consequent is false."
+              question: "What makes evidence strong?",
+              options: ["It supports your opinion", "It comes from multiple reliable sources", "It's widely shared online"],
+              correct: 1,
+              explanation: "Strong evidence is credible, verifiable, and comes from multiple reliable sources."
             }
           ]
         },
         {
           id: "p3",
-          title: "Complex Expressions",
+          title: "Critical Analysis",
           points: 15,
           type: "text_input",
           questions: [
             {
               id: "p3a",
-              question: "Translate: 'If John studies hard, then he will pass the exam, but if he doesn't study, he will fail' using S for studies hard, P for passes exam, F for fails.",
-              answer: "(S → P) ∧ (¬S → F)",
-              explanation: "This combines two conditionals with conjunction."
+              question: "Describe three questions you would ask to evaluate this claim: 'Exercise improves mental health.'",
+              answer: "1) What type of exercise? 2) What evidence supports this? 3) Are there any exceptions or limitations?",
+              explanation: "Critical thinkers ask probing questions to understand claims fully."
             },
             {
               id: "p3b",
-              question: "What is the negation of P ∨ Q?",
-              answer: "¬P ∧ ¬Q",
-              explanation: "By De Morgan's law, ¬(P ∨ Q) = ¬P ∧ ¬Q."
+              question: "What alternative explanations might exist for this observation: 'Crime rates are higher in poor neighborhoods'?",
+              answer: "Higher police presence, different reporting rates, systemic inequalities, lack of resources",
+              explanation: "Considering alternative explanations prevents jumping to conclusions."
             }
           ]
         }
@@ -152,85 +155,85 @@ export const presetPracticeHomework = {
     }
   },
   2: {
-    title: "Week 2 Practice Homework: Truth Tables & Propositions", 
+    title: "Week 2 Practice Homework: Logical Fallacies & Reasoning Errors", 
     content: {
-      instructions: "Practice creating truth tables and working with propositional logic. Focus on understanding when complex statements are true or false.",
+      instructions: "Practice identifying common logical fallacies and reasoning errors. Learn to spot flawed arguments in everyday situations.",
       totalPoints: 60,
       problems: [
         {
           id: "p1",
-          title: "Proposition Recognition",
+          title: "Fallacy Identification",
           points: 15,
           type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "Which of the following is a proposition?",
-              options: ["What time is it?", "The sky is blue", "Please sit down"],
+              question: "What fallacy is present in: 'We can't trust John's opinion on taxes because he doesn't pay enough of them'?",
+              options: ["Straw man", "Ad hominem", "False dilemma"],
               correct: 1,
-              explanation: "'The sky is blue' is a proposition because it can be either true or false."
+              explanation: "Ad hominem attacks the person rather than addressing their argument."
             },
             {
               id: "p1b",
-              question: "Which statement is NOT a proposition?",
-              options: ["2 + 2 = 4", "Close the door!", "Paris is in France"],
-              correct: 1,
-              explanation: "Commands are not propositions because they cannot be true or false."
+              question: "Identify the fallacy: 'Either we ban all cars or we accept that the environment will be destroyed.'",
+              options: ["False dilemma", "Slippery slope", "Appeal to authority"],
+              correct: 0,
+              explanation: "False dilemma presents only two options when more exist."
             },
             {
               id: "p1c",
-              question: "A proposition must be:",
-              options: ["Always true", "Always false", "Either true or false", "Neither true nor false"],
-              correct: 2,
-              explanation: "By definition, a proposition has exactly one truth value: either true or false."
+              question: "What fallacy does this represent: 'If we allow students to retake tests, soon they'll expect to retake entire courses, then degrees will be meaningless'?",
+              options: ["Red herring", "Slippery slope", "Circular reasoning"],
+              correct: 1,
+              explanation: "Slippery slope assumes that one event will inevitably lead to a chain of negative consequences."
             }
           ]
         },
         {
           id: "p2",
-          title: "Truth Table Construction",
+          title: "Argument Analysis",
           points: 25,
           type: "text_input",
           questions: [
             {
               id: "p2a",
-              question: "How many rows are needed for a truth table with 2 variables P and Q?",
-              answer: "4",
-              explanation: "With n variables, you need 2^n rows. For 2 variables: 2^2 = 4 rows."
+              question: "Explain why this is a weak argument: 'Most celebrities endorse this product, so it must be good.'",
+              answer: "Appeal to popularity/bandwagon fallacy - popularity doesn't guarantee quality",
+              explanation: "Celebrity endorsements don't provide evidence about product quality; this is an appeal to authority/popularity."
             },
             {
               id: "p2b",
-              question: "In a truth table for P ∧ Q, in how many rows is the result true?",
-              answer: "1",
-              explanation: "P ∧ Q is true only when both P and Q are true, which occurs in exactly 1 row."
+              question: "What type of reasoning error is shown in: 'I met three rude people from that city, so everyone from there must be rude'?",
+              answer: "Hasty generalization",
+              explanation: "Drawing broad conclusions from limited examples is hasty generalization."
             },
             {
               id: "p2c",
-              question: "For the formula P → (Q ∨ R), how many variables are there?",
-              answer: "3",
-              explanation: "The variables are P, Q, and R, so there are 3 variables total."
+              question: "Identify the flaw in: 'You're either with us or against us.'",
+              answer: "False dilemma - presents only two options when more exist",
+              explanation: "This creates an artificial either/or choice, ignoring neutral positions or other alternatives."
             }
           ]
         },
         {
           id: "p3",
-          title: "Complex Truth Conditions",
+          title: "Source Evaluation",
           points: 20,
           type: "multiple_choice",
           questions: [
             {
               id: "p3a",
-              question: "When is (P ∨ Q) ∧ ¬P true?",
-              options: ["When P is true", "When Q is true and P is false", "When both P and Q are true", "Never"],
-              correct: 1,
-              explanation: "For the conjunction to be true, both parts must be true: Q must be true (making P ∨ Q true) and P must be false (making ¬P true)."
+              question: "Which factor is LEAST important when evaluating a source's credibility?",
+              options: ["Author's expertise", "Publication date", "How many times it's been shared", "Evidence provided"],
+              correct: 2,
+              explanation: "Social media shares don't indicate credibility - popularity isn't the same as accuracy."
             },
             {
               id: "p3b",
-              question: "The biconditional P ↔ Q is true when:",
-              options: ["P and Q have the same truth value", "P and Q have different truth values", "P is true", "Q is false"],
-              correct: 0,
-              explanation: "A biconditional is true when both sides have the same truth value (both true or both false)."
+              question: "What makes a source more reliable?",
+              options: ["It confirms your existing beliefs", "It provides citations and evidence", "It uses emotional language"],
+              correct: 1,
+              explanation: "Reliable sources back up claims with evidence and allow readers to verify information."
             }
           ]
         }
@@ -238,40 +241,40 @@ export const presetPracticeHomework = {
     }
   },
   3: {
-    title: "Week 3 Practice Homework: Boolean Algebra & Equivalences",
+    title: "Week 3 Practice Homework: Decision Making & Problem Solving",
     content: {
-      instructions: "Practice applying Boolean algebra laws and determining logical equivalences. Focus on simplifying complex expressions and proving equivalences.",
+      instructions: "Practice applying critical thinking frameworks to real-world decision making and problem solving. Focus on systematic analysis and evaluation of options.",
       totalPoints: 75,
       problems: [
         {
           id: "p1", 
-          title: "Boolean Simplification",
+          title: "Decision-Making Framework",
           points: 30,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Simplify: P ∧ (P ∨ Q)",
-              answer: "P",
-              explanation: "By absorption law: P ∧ (P ∨ Q) = P"
+              question: "You need to choose between two job offers. List 5 criteria you would use to evaluate them.",
+              answer: "Salary, career growth, work-life balance, company culture, location",
+              explanation: "Good decision-making considers multiple relevant factors, not just obvious ones like salary."
             },
             {
               id: "p1b", 
-              question: "Simplify: (P ∨ Q) ∧ (P ∨ ¬Q)",
-              answer: "P",
-              explanation: "Factor out P: P ∨ (Q ∧ ¬Q) = P ∨ F = P"
+              question: "Describe the steps in a rational decision-making process.",
+              answer: "1) Define the problem, 2) Gather information, 3) Identify alternatives, 4) Evaluate options, 5) Choose and implement, 6) Review results",
+              explanation: "Systematic approaches help avoid emotional or impulsive decisions."
             },
             {
               id: "p1c",
-              question: "Simplify: ¬(¬P ∧ Q) ∨ (P ∧ ¬Q)",
-              answer: "P ∨ ¬Q",
-              explanation: "Apply De Morgan's: (P ∨ ¬Q) ∨ (P ∧ ¬Q) = P ∨ ¬Q by absorption"
+              question: "What cognitive bias is involved when someone only considers information that supports their preferred choice?",
+              answer: "Confirmation bias",
+              explanation: "Confirmation bias leads us to seek information that confirms our existing beliefs while ignoring contradictory evidence."
             },
             {
               id: "p1d",
-              question: "What is P ∨ ¬P equal to?",
-              answer: "T",
-              explanation: "This is the law of excluded middle - always true (tautology)"
+              question: "Why is it important to consider alternative solutions to a problem?",
+              answer: "To avoid tunnel vision and find better solutions that might not be immediately obvious",
+              explanation: "Multiple alternatives prevent us from settling for the first solution we think of, which may not be optimal."
             }
           ]
         },
@@ -328,95 +331,95 @@ export const presetPracticeHomework = {
     }
   },
   4: {
-    title: "Week 4 Practice Homework: Quantifier Logic & Predicates",
+    title: "Week 4 Practice Homework: Scientific Thinking & Research Methods",
     content: {
-      instructions: "Practice translating statements with quantifiers and working with predicate logic. Focus on understanding the difference between universal and existential quantification.",
+      instructions: "Practice applying scientific thinking and research evaluation skills. Focus on understanding how to assess research quality and interpret findings.",
       totalPoints: 80,
       problems: [
         {
           id: "p1",
-          title: "Basic Quantifier Translation",
+          title: "Research Design Evaluation",
           points: 30,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Translate: 'All students are smart' using S(x) for student, M(x) for smart",
-              answer: "∀x(S(x) → M(x))",
-              explanation: "Universal quantification with conditional: for all x, if x is a student then x is smart."
+              question: "A study claims 'eating chocolate improves test scores' based on comparing students who eat chocolate vs. those who don't. What confounding variables might affect this conclusion?",
+              answer: "Study habits, sleep, stress levels, socioeconomic status, overall diet, motivation",
+              explanation: "Many factors could explain the difference in test scores besides chocolate consumption."
             },
             {
               id: "p1b",
-              question: "Translate: 'Some dogs are friendly' using D(x) for dog, F(x) for friendly",
-              answer: "∃x(D(x) ∧ F(x))",
-              explanation: "Existential quantification with conjunction: there exists an x such that x is a dog and x is friendly."
+              question: "What's the difference between correlation and causation? Give an example.",
+              answer: "Correlation shows relationship; causation shows one causes the other. Example: Ice cream sales and drowning both increase in summer, but ice cream doesn't cause drowning.",
+              explanation: "Correlation doesn't prove causation - there may be third variables or the relationship may be coincidental."
             },
             {
               id: "p1c",
-              question: "Translate: 'No cats are dogs' using C(x) for cat, D(x) for dog",
-              answer: "¬∃x(C(x) ∧ D(x))",
-              explanation: "Negated existential: there does not exist an x that is both a cat and a dog."
+              question: "Why do scientists use control groups in experiments?",
+              answer: "To isolate the effect of the variable being tested by comparing to a baseline",
+              explanation: "Control groups help determine if observed changes are due to the treatment or other factors."
             },
             {
               id: "p1d",
-              question: "Translate: 'Not all birds can fly' using B(x) for bird, F(x) for can fly",
-              answer: "¬∀x(B(x) → F(x))",
-              explanation: "Negated universal: it is not the case that all birds can fly."
+              question: "What makes a sample representative in research?",
+              answer: "It accurately reflects the characteristics of the larger population being studied",
+              explanation: "Representative samples allow researchers to generalize findings to the broader population."
             }
           ]
         },
         {
           id: "p2",
-          title: "Quantifier Equivalences",
+          title: "Research Methodology",
           points: 25,
           type: "multiple_choice",
           questions: [
             {
               id: "p2a",
-              question: "What is ¬∀x P(x) equivalent to?",
-              options: ["∀x ¬P(x)", "∃x ¬P(x)", "¬∃x P(x)", "∃x P(x)"],
+              question: "What is the main purpose of a control group in an experiment?",
+              options: ["To prove the hypothesis", "To provide a baseline for comparison", "To increase sample size", "To eliminate all variables"],
               correct: 1,
-              explanation: "¬∀x P(x) ≡ ∃x ¬P(x) by quantifier negation rules."
+              explanation: "Control groups provide a baseline to determine if observed effects are due to the treatment or other factors."
             },
             {
               id: "p2b",
-              question: "What is ¬∃x P(x) equivalent to?",
-              options: ["∃x ¬P(x)", "∀x ¬P(x)", "¬∀x P(x)", "∀x P(x)"],
-              correct: 1,
-              explanation: "¬∃x P(x) ≡ ∀x ¬P(x) by quantifier negation rules."
+              question: "Which best describes a double-blind study?",
+              options: ["Neither participants nor researchers know who receives treatment", "Only participants don't know", "Only researchers don't know", "Everyone knows the treatment assignments"],
+              correct: 0,
+              explanation: "Double-blind studies prevent bias by keeping both participants and researchers unaware of treatment assignments."
             },
             {
               id: "p2c",
-              question: "The statement 'Everyone loves someone' is:",
-              options: ["∀x ∃y L(x,y)", "∃x ∀y L(x,y)", "∀x ∀y L(x,y)", "∃x ∃y L(x,y)"],
-              correct: 0,
-              explanation: "For every person x, there exists someone y that x loves."
+              question: "What makes a research sample representative?",
+              options: ["It's very large", "It accurately reflects the target population", "It includes only volunteers", "It's convenient to access"],
+              correct: 1,
+              explanation: "Representative samples accurately reflect characteristics of the population being studied."
             }
           ]
         },
         {
           id: "p3",
-          title: "Complex Predicate Statements",
+          title: "Scientific Reasoning",
           points: 25,
           type: "text_input",
           questions: [
             {
               id: "p3a",
-              question: "Translate: 'Every student who studies logic loves puzzles' using S(x) for student, L(x) for studies logic, P(x) for loves puzzles",
-              answer: "∀x((S(x) ∧ L(x)) → P(x))",
-              explanation: "Universal quantification over students who study logic, then conditional to loving puzzles."
+              question: "A study finds that students who eat breakfast score higher on tests. List three possible confounding variables that could explain this relationship.",
+              answer: "Socioeconomic status, sleep patterns, family structure, health consciousness, time management skills",
+              explanation: "Many factors beyond breakfast could influence both eating habits and academic performance."
             },
             {
               id: "p3b",
-              question: "Translate: 'There is a student who loves logic but doesn't love puzzles' using S(x), L(x), P(x) as above",
-              answer: "∃x(S(x) ∧ L(x) ∧ ¬P(x))",
-              explanation: "Existential statement: there exists a student who studies logic and doesn't love puzzles."
+              question: "Explain why anecdotal evidence is generally not considered reliable in scientific reasoning.",
+              answer: "It's not systematic, may be biased, lacks controls, and cannot be generalized",
+              explanation: "Anecdotal evidence lacks the systematic methodology needed to establish reliable conclusions."
             },
             {
               id: "p3c",
-              question: "What is the negation of ∀x(S(x) → L(x))?",
-              answer: "∃x(S(x) ∧ ¬L(x))",
-              explanation: "¬∀x(S(x) → L(x)) ≡ ∃x¬(S(x) → L(x)) ≡ ∃x(S(x) ∧ ¬L(x))"
+              question: "What's the difference between a hypothesis and a theory in scientific thinking?",
+              answer: "A hypothesis is a testable prediction; a theory is a well-supported explanation of phenomena",
+              explanation: "Hypotheses are tested to build theories, which are comprehensive explanations supported by evidence."
             }
           ]
         }
@@ -424,95 +427,95 @@ export const presetPracticeHomework = {
     }
   },
   5: {
-    title: "Week 5 Practice Homework: Complex Translation & Mathematical Logic",
+    title: "Week 5 Practice Homework: Media Literacy & Information Evaluation",
     content: {
-      instructions: "Practice advanced translation patterns and mathematical logic applications. Focus on complex quantification, uniqueness, and mathematical statements.",
+      instructions: "Practice evaluating media sources, identifying bias, and analyzing information quality. Focus on digital literacy and information verification skills.",
       totalPoints: 85,
       problems: [
         {
           id: "p1",
-          title: "Advanced Translation Patterns",
+          title: "Source Credibility Assessment",
           points: 35,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Translate: 'There is exactly one person who loves everyone' using L(x,y) for 'x loves y', P(x) for 'x is a person'",
-              answer: "∃x(P(x) ∧ ∀y(P(y) → L(x,y)) ∧ ∀z((P(z) ∧ ∀w(P(w) → L(z,w))) → z = x))",
-              explanation: "This requires existential quantification with uniqueness condition."
+              question: "List five criteria you would use to evaluate the credibility of a news website.",
+              answer: "Author credentials, publication date, citations/sources, editorial standards, transparency about funding",
+              explanation: "Credible sources provide clear authorship, recent information, evidence, and transparency."
             },
             {
               id: "p1b",
-              question: "Translate: 'Every student has at least one friend who is also a student' using S(x) for student, F(x,y) for 'x is friends with y'",
-              answer: "∀x(S(x) → ∃y(S(y) ∧ F(x,y)))",
-              explanation: "Universal quantification over students, then existential for friends who are also students."
+              question: "Explain how you would fact-check a viral social media claim about a health topic.",
+              answer: "Check original source, consult medical databases, verify with multiple reliable sources, check for peer review",
+              explanation: "Health claims require verification through authoritative medical sources and peer-reviewed research."
             },
             {
               id: "p1c",
-              question: "Translate: 'No one likes everyone' using L(x,y) for 'x likes y'",
-              answer: "¬∃x∀y L(x,y)",
-              explanation: "Negated existential: there is no person who likes everyone."
+              question: "What are three warning signs that a source might be unreliable?",
+              answer: "Anonymous authorship, lack of citations, sensational language, obvious bias, no contact information",
+              explanation: "Unreliable sources often lack transparency, evidence, and professional standards."
             },
             {
               id: "p1d",
-              question: "Translate: 'If someone is happy, then everyone around them is happy' using H(x) for happy, A(x,y) for 'x is around y'",
-              answer: "∀x(H(x) → ∀y(A(y,x) → H(y)))",
-              explanation: "Universal conditional: if anyone is happy, then all people around them are happy."
+              question: "How would you distinguish between an opinion piece and news reporting?",
+              answer: "News reporting presents facts objectively; opinion pieces express viewpoints and interpretations",
+              explanation: "Understanding this distinction helps readers evaluate information appropriately."
             }
           ]
         },
         {
           id: "p2",
-          title: "Uniqueness Quantifier (∃!)",
+          title: "Bias Recognition",
           points: 25,
           type: "multiple_choice",
           questions: [
             {
               id: "p2a",
-              question: "What does ∃!x P(x) mean?",
-              options: ["There exists at least one x such that P(x)", "There exists exactly one x such that P(x)", "There exists no x such that P(x)", "For all x, P(x)"],
-              correct: 1,
-              explanation: "∃! is the uniqueness quantifier meaning 'there exists exactly one'."
+              question: "Which best describes confirmation bias?",
+              options: ["Seeking information that confirms existing beliefs", "Being overly confident in decisions", "Following the crowd", "Avoiding difficult decisions"],
+              correct: 0,
+              explanation: "Confirmation bias leads people to seek information that supports their preexisting beliefs."
             },
             {
               id: "p2b",
-              question: "How do you express ∃!x P(x) using standard quantifiers?",
-              options: ["∃x P(x)", "∃x(P(x) ∧ ∀y(P(y) → y = x))", "∀x P(x)", "¬∃x P(x)"],
+              question: "What is the best way to minimize selection bias in reporting?",
+              options: ["Use larger samples", "Include diverse perspectives", "Focus on recent events", "Use expert opinions only"],
               correct: 1,
-              explanation: "Uniqueness requires existence plus the condition that any other element with the property equals the first."
+              explanation: "Including diverse perspectives helps counteract the bias of selective reporting."
             },
             {
               id: "p2c",
-              question: "Which statement uses uniqueness correctly?",
-              options: ["∃!x(x > 5)", "∃!x(x = x)", "∃!x(x is the president)", "∃!x(x is a number)"],
-              correct: 2,
-              explanation: "There is exactly one president (assuming a specific context/country)."
+              question: "Which indicates potential bias in a news source?",
+              options: ["Citing multiple sources", "Using emotional language", "Providing context", "Including expert quotes"],
+              correct: 1,
+              explanation: "Emotional language often indicates bias rather than objective reporting."
             }
           ]
         },
         {
           id: "p3",
-          title: "Mathematical Logic Applications",
+          title: "Digital Information Literacy",
           points: 25,
           type: "text_input",
           questions: [
             {
               id: "p3a",
-              question: "Translate: 'For every positive number, there exists a smaller positive number' using P(x) for positive, L(x,y) for 'x < y'",
-              answer: "∀x(P(x) → ∃y(P(y) ∧ L(y,x)))",
-              explanation: "Universal quantification over positive numbers, then existential for smaller positive numbers."
+              question: "Describe how you would verify the authenticity of a photograph shared on social media that claims to show a recent news event.",
+              answer: "Reverse image search, check metadata, verify location details, cross-reference with news sources",
+              explanation: "Visual content requires technical verification methods beyond just source checking."
             },
             {
               id: "p3b",
-              question: "Express: 'The square root of 2 is irrational' using R(x) for rational, S(x,y) for 'x is the square root of y'",
-              answer: "∃x(S(x,2) ∧ ¬R(x))",
-              explanation: "There exists a number that is the square root of 2 and is not rational."
+              question: "What are three ways to identify potentially false information in online articles?",
+              answer: "Check publication date, verify claims with authoritative sources, examine author credentials, look for citations",
+              explanation: "False information often lacks proper sourcing, credible authorship, or verifiable claims."
             },
             {
               id: "p3c",
-              question: "What is the negation of ∀x∃y(x < y)?",
-              answer: "∃x∀y(x ≥ y)",
-              explanation: "Negating universal and existential quantifiers and flipping the relation."
+              question: "How does algorithmic filtering on social media affect the information we see?",
+              answer: "Creates echo chambers, reinforces existing beliefs, prioritizes engagement over accuracy",
+              explanation: "Understanding algorithmic bias helps users seek diverse information sources actively."
             }
           ]
         }
@@ -520,95 +523,95 @@ export const presetPracticeHomework = {
     }
   },
   6: {
-    title: "Week 6 Practice Homework: Models & Validity Proofs",
+    title: "Week 6 Practice Homework: Ethical Reasoning & Moral Arguments",
     content: {
-      instructions: "Practice using models to prove invalidity and demonstrate consistency. Focus on constructing counterexamples and understanding model theory.",
+      instructions: "Practice analyzing ethical dilemmas and moral arguments. Focus on understanding different ethical frameworks and applying them to real-world situations.",
       totalPoints: 90,
       problems: [
         {
           id: "p1",
-          title: "Model Construction",
+          title: "Ethical Framework Analysis",
           points: 40,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Construct a model to prove that ∀x P(x) ⊬ ∃x (P(x) ∧ Q(x)) (domain: {1,2}, show P and Q interpretations)",
-              answer: "Domain: {1,2}, P = {1,2}, Q = {} (empty set)",
-              explanation: "All elements satisfy P(x), but no element satisfies both P(x) and Q(x), making the conclusion false."
+              question: "Apply utilitarianism to this dilemma: A self-driving car must choose between hitting one person or swerving to hit three people. What factors would a utilitarian consider?",
+              answer: "Total harm/benefit, number of people affected, probability of outcomes, long-term consequences",
+              explanation: "Utilitarianism focuses on maximizing overall happiness and minimizing total harm."
             },
             {
               id: "p1b",
-              question: "Create a model where ∃x (P(x) ∧ Q(x)) is true but ∀x (P(x) → Q(x)) is false",
-              answer: "Domain: {1,2}, P = {1,2}, Q = {1}",
-              explanation: "Element 1 satisfies both P and Q, but element 2 satisfies P but not Q, making the universal false."
+              question: "How would a deontological ethics approach the question of lying to protect someone's feelings?",
+              answer: "Focus on the inherent rightness/wrongness of lying, regardless of consequences",
+              explanation: "Deontological ethics judges actions by their adherence to moral rules, not their outcomes."
             },
             {
               id: "p1c",
-              question: "Show that ∀x P(x), ∃x ¬P(x) is inconsistent by attempting to construct a model",
-              answer: "No model possible - contradiction",
-              explanation: "Cannot have both 'all x satisfy P' and 'some x doesn't satisfy P' in the same model."
+              question: "Analyze this situation using virtue ethics: A student finds a wallet with $200 and no ID. What would virtue ethics suggest?",
+              answer: "Consider what a virtuous person would do - honesty, integrity, compassion for the owner",
+              explanation: "Virtue ethics focuses on character traits and what actions reflect moral virtues."
             },
             {
               id: "p1d",
-              question: "Construct a model for: ∃x P(x), ∀x (P(x) → Q(x)), ∃x ¬Q(x)",
-              answer: "Domain: {1,2}, P = {1}, Q = {1}",
-              explanation: "Element 1 satisfies P and Q, element 2 satisfies neither P nor Q, making all statements true."
+              question: "Apply the principle of justice to workplace hiring: A company wants to hire the most qualified candidate, but lacks diversity. How should they balance these concerns?",
+              answer: "Consider both merit and systemic barriers, ensure fair process, address structural inequalities",
+              explanation: "Justice requires both fair procedures and consideration of historical and structural factors."
             }
           ]
         },
         {
           id: "p2",
-          title: "Validity vs. Invalidity",
+          title: "Moral Reasoning Principles",
           points: 25,
           type: "multiple_choice",
           questions: [
             {
               id: "p2a",
-              question: "An argument is valid if:",
-              options: ["The premises are true", "The conclusion is true", "If all premises are true, the conclusion must be true", "The premises and conclusion are both true"],
+              question: "The principle of autonomy in ethics emphasizes:",
+              options: ["Following society's rules", "Maximizing happiness", "Respecting people's right to make their own decisions", "Achieving the best outcomes"],
               correct: 2,
-              explanation: "Validity is about the logical relationship between premises and conclusion, not their actual truth values."
+              explanation: "Autonomy respects individuals' capacity and right to make informed decisions about their own lives."
             },
             {
               id: "p2b",
-              question: "To prove an argument invalid, you need to:",
-              options: ["Show the premises are false", "Show the conclusion is false", "Find a model where premises are true but conclusion is false", "Prove the conclusion doesn't follow"],
-              correct: 2,
-              explanation: "A counterexample model demonstrates invalidity by showing the premises can be true while the conclusion is false."
+              question: "What is the main weakness of purely consequentialist ethics?",
+              options: ["It ignores outcomes", "It may justify harmful actions if they produce good results", "It's too rigid", "It doesn't consider individuals"],
+              correct: 1,
+              explanation: "Consequentialism can sometimes justify harmful means if they lead to beneficial ends."
             },
             {
               id: "p2c",
-              question: "If you cannot construct a model where the premises are true and conclusion false, this suggests:",
-              options: ["The argument is invalid", "The argument is valid", "The premises are inconsistent", "More models are needed"],
+              question: "The 'veil of ignorance' thought experiment is used to:",
+              options: ["Test logical validity", "Design fair social systems", "Evaluate consequences", "Determine virtues"],
               correct: 1,
-              explanation: "If no counterexample exists, the argument is likely valid (though this doesn't constitute a proof)."
+              explanation: "Rawls' veil of ignorance helps design fair institutions by removing knowledge of one's position in society."
             }
           ]
         },
         {
           id: "p3",
-          title: "Advanced Model Theory",
+          title: "Applied Ethics Cases",
           points: 25,
           type: "text_input",
           questions: [
             {
               id: "p3a",
-              question: "In domain {a,b,c}, construct a model for ∀x∃y R(x,y) where R is not reflexive",
-              answer: "R = {(a,b), (b,c), (c,a)}",
-              explanation: "Each element relates to some other element, but no element relates to itself."
+              question: "A pharmaceutical company can sell a life-saving drug at high profit or at cost. Analyze this using both utilitarian and deontological perspectives.",
+              answer: "Utilitarian: Consider total welfare, accessibility, incentives for future research. Deontological: Duty to save lives vs. property rights",
+              explanation: "Different ethical frameworks can lead to different conclusions about the same situation."
             },
             {
               id: "p3b",
-              question: "Can ∃x∀y R(x,y) and ∀x∃y ¬R(x,y) both be true in the same model? Explain.",
-              answer: "No, they contradict each other",
-              explanation: "If some x relates to all y, then that x cannot relate to some y that ¬R(x,y) holds for."
+              question: "Should social media companies be required to fact-check content? Consider multiple ethical perspectives.",
+              answer: "Balancing free speech rights, harm prevention, corporate responsibility, and democratic values",
+              explanation: "Complex ethical issues often involve competing values and require careful consideration of trade-offs."
             },
             {
               id: "p3c",
-              question: "What's the minimum domain size needed to satisfy: ∃x∃y∃z (x≠y ∧ y≠z ∧ x≠z)?",
-              answer: "3 elements",
-              explanation: "Need at least three distinct elements to satisfy the three inequality conditions."
+              question: "Is it ethical for employers to monitor employee social media? What factors should be considered?",
+              answer: "Privacy rights, workplace safety, public representation, relevant vs. irrelevant content, proportionality",
+              explanation: "Workplace ethics requires balancing employer interests with employee rights and privacy."
             }
           ]
         }
@@ -616,95 +619,95 @@ export const presetPracticeHomework = {
     }
   },
   7: {
-    title: "Week 7 Practice Homework: Number Systems & Statement Classes",
+    title: "Week 7 Practice Homework: Creative & Analytical Thinking",
     content: {
-      instructions: "Practice working with recursive number systems, natural numbers, and statement classes. Focus on mathematical foundations and logical classification.",
+      instructions: "Practice applying creative problem-solving techniques and analytical thinking strategies. Focus on innovative approaches and systematic analysis methods.",
       totalPoints: 95,
       problems: [
         {
           id: "p1",
-          title: "Recursive Number Systems",
+          title: "Creative Problem-Solving Techniques",
           points: 40,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Define the successor function S(n) in a recursive number system starting with 0",
-              answer: "S(0) = 1, S(1) = 2, S(2) = 3, ..., S(n) = n+1",
-              explanation: "The successor function maps each natural number to the next one in sequence."
+              question: "Describe the brainstorming process and explain why judgment should be suspended during idea generation.",
+              answer: "Generate many ideas without evaluation, build on others' ideas, suspend criticism to encourage creativity",
+              explanation: "Early judgment inhibits creative thinking by making people self-censor potentially valuable ideas."
             },
             {
               id: "p1b",
-              question: "Using recursion, define addition a + b where a, b ∈ ℕ",
-              answer: "a + 0 = a, a + S(b) = S(a + b)",
-              explanation: "Addition is defined recursively: adding zero gives the original number, adding a successor increments the result."
+              question: "Apply the 'Six Thinking Hats' method to evaluate a proposal to implement a four-day work week.",
+              answer: "White: facts/data, Red: emotions/feelings, Black: problems/risks, Yellow: benefits, Green: alternatives, Blue: process management",
+              explanation: "Different thinking perspectives help explore all aspects of a complex decision systematically."
             },
             {
               id: "p1c",
-              question: "What is the base case for proving ∀n ∈ ℕ (n + 0 = n) by induction?",
-              answer: "P(0): 0 + 0 = 0",
-              explanation: "The base case shows the property holds for the starting element (0) in the natural numbers."
+              question: "Explain how the 'Five Whys' technique helps identify root causes of problems.",
+              answer: "Repeatedly asking 'why' (typically 5 times) to dig deeper from symptoms to underlying causes",
+              explanation: "Surface problems often have deeper root causes that require systematic exploration to discover."
             },
             {
               id: "p1d",
-              question: "Express 'every natural number has a unique successor' formally",
-              answer: "∀n ∈ ℕ ∃!m (m = S(n))",
-              explanation: "For each natural number, there exists exactly one successor."
+              question: "Describe lateral thinking and give an example of how it differs from logical thinking.",
+              answer: "Lateral thinking seeks alternative approaches and perspectives, not just logical steps forward",
+              explanation: "Lateral thinking breaks conventional patterns to find creative solutions that logic alone might miss."
             }
           ]
         },
         {
           id: "p2",
-          title: "Natural Numbers (ℕ)",
+          title: "Analytical Thinking Strategies",
           points: 30,
           type: "multiple_choice",
           questions: [
             {
               id: "p2a",
-              question: "Which axiom states that 0 is not the successor of any natural number?",
-              options: ["Peano Axiom 1", "Peano Axiom 2", "Peano Axiom 3", "Peano Axiom 4"],
+              question: "What is the main purpose of breaking down complex problems into smaller parts?",
+              options: ["To make problems seem easier", "To understand relationships and tackle manageable pieces", "To avoid difficult thinking", "To impress others"],
               correct: 1,
-              explanation: "Peano Axiom 2 states that 0 is not in the range of the successor function."
+              explanation: "Decomposition helps understand problem structure and makes complex issues more manageable."
             },
             {
               id: "p2b",
-              question: "The principle of mathematical induction is based on:",
-              options: ["Peano Axiom 5", "The successor function", "The base case only", "Recursive definitions"],
-              correct: 0,
-              explanation: "Peano Axiom 5 provides the foundation for mathematical induction."
+              question: "When using analytical thinking, what should you do first?",
+              options: ["Start solving immediately", "Clearly define the problem", "Look for patterns", "Generate solutions"],
+              correct: 1,
+              explanation: "Problem definition ensures you're solving the right problem before investing effort in solutions."
             },
             {
               id: "p2c",
-              question: "In the construction of ℕ, what makes the successor function injective?",
-              options: ["Different numbers have different successors", "Every number has a successor", "0 has no predecessor", "Induction works"],
-              correct: 0,
-              explanation: "If S(a) = S(b), then a = b, making the successor function one-to-one."
+              question: "Which best describes systems thinking?",
+              options: ["Focusing on individual parts", "Understanding how parts interact within the whole", "Using computer systems", "Following systematic procedures"],
+              correct: 1,
+              explanation: "Systems thinking considers relationships and interactions between components, not just isolated parts."
             }
           ]
         },
         {
           id: "p3",
-          title: "Statement Classes",
+          title: "Innovation and Design Thinking",
           points: 25,
           type: "text_input",
           questions: [
             {
               id: "p3a",
-              question: "Classify: 'All ravens are black' (tautology, contradiction, or contingent)",
-              answer: "Contingent",
-              explanation: "This statement's truth depends on empirical facts about ravens in the world."
+              question: "Explain the difference between divergent and convergent thinking in the creative process.",
+              answer: "Divergent: generating many possibilities; Convergent: narrowing down to best solutions",
+              explanation: "Creative problem-solving requires both broad exploration and focused selection of ideas."
             },
             {
               id: "p3b",
-              question: "Give an example of a logical contradiction using predicates",
-              answer: "∃x(P(x) ∧ ¬P(x))",
-              explanation: "No object can both have and not have the same property simultaneously."
+              question: "Describe how empathy fits into the design thinking process.",
+              answer: "Understanding user needs, experiences, and pain points to design meaningful solutions",
+              explanation: "Empathy ensures solutions address real human needs rather than assumed problems."
             },
             {
               id: "p3c",
-              question: "Why is '∀x(P(x) ∨ ¬P(x))' a tautology?",
-              answer: "Every object either has property P or doesn't have property P",
-              explanation: "This follows from the law of excluded middle - there's no third option."
+              question: "What is prototyping and why is it valuable in problem-solving?",
+              answer: "Creating testable versions of ideas to learn quickly and iterate based on feedback",
+              explanation: "Prototyping allows rapid learning and improvement without huge resource investment."
             }
           ]
         }
@@ -712,102 +715,102 @@ export const presetPracticeHomework = {
     }
   },
   8: {
-    title: "Week 8 Practice Homework: Comprehensive Review & Advanced Topics",
+    title: "Week 8 Practice Homework: Advanced Critical Thinking & Integration",
     content: {
-      instructions: "Comprehensive review covering all major topics from the course plus advanced concepts. This homework prepares you for the final exam.",
+      instructions: "Comprehensive integration of critical thinking skills with advanced applications. This homework synthesizes all course concepts for real-world application.",
       totalPoints: 100,
       problems: [
         {
           id: "p1",
-          title: "Logic Foundations Review",
+          title: "Critical Thinking Integration",
           points: 35,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Translate and simplify: 'Not all students are both smart and hardworking' using S(x), M(x), H(x)",
-              answer: "¬∀x(S(x) → (M(x) ∧ H(x))) ≡ ∃x(S(x) ∧ ¬(M(x) ∧ H(x)))",
-              explanation: "Negate the universal, then apply De Morgan's law to the conjunction."
+              question: "Analyze this claim using multiple critical thinking skills: 'Studies show that people who drink coffee live longer.' What questions should you ask?",
+              answer: "Source credibility, sample size, control factors, correlation vs causation, study methodology, funding sources",
+              explanation: "Complex claims require systematic evaluation using multiple critical thinking tools."
             },
             {
               id: "p1b",
-              question: "Construct a truth table for (P → Q) ↔ (¬Q → ¬P)",
-              answer: "All rows evaluate to T (tautology)",
-              explanation: "This represents the logical equivalence between a conditional and its contrapositive."
+              question: "Apply the RADAR method to evaluate a news article claiming a new miracle weight-loss supplement.",
+              answer: "Relevance: health claims; Accuracy: scientific evidence; Depth: comprehensive analysis; Applicability: real-world effectiveness; Reasoning: logical conclusions",
+              explanation: "The RADAR method provides systematic evaluation of information quality and reasoning."
             },
             {
               id: "p1c",
-              question: "Prove using Boolean algebra: (P ∧ Q) ∨ (P ∧ ¬Q) ≡ P",
-              answer: "P ∧ (Q ∨ ¬Q) = P ∧ T = P",
-              explanation: "Factor out P, then use the law of excluded middle and identity."
+              question: "Design a decision-making process for choosing between three job offers, incorporating multiple critical thinking frameworks.",
+              answer: "Define criteria, gather information, apply decision matrix, consider ethical implications, test assumptions, plan for uncertainty",
+              explanation: "Complex decisions benefit from systematic approaches that integrate multiple thinking strategies."
             },
             {
               id: "p1d",
-              question: "What's wrong with this model? Domain: {1}, P = {1}, ∀x P(x) = false",
-              answer: "Contradiction: all elements satisfy P, but universal statement is false",
-              explanation: "If P(1) is true and 1 is the only element, then ∀x P(x) must be true."
+              question: "Synthesize critical thinking skills to analyze this scenario: A politician claims their policy will solve unemployment based on one successful example.",
+              answer: "Examine sample size, generalizability, confounding factors, alternative explanations, long-term effects",
+              explanation: "Single examples are insufficient evidence for broad policy claims; systematic analysis is needed."
             }
           ]
         },
         {
           id: "p2",
-          title: "Advanced Logic Concepts",
+          title: "Advanced Critical Analysis",
           points: 35,
           type: "multiple_choice",
           questions: [
             {
               id: "p2a",
-              question: "What is the difference between first-order and second-order logic?",
-              options: ["First-order has more quantifiers", "Second-order can quantify over predicates", "First-order is more expressive", "No significant difference"],
+              question: "What distinguishes expert thinking from novice thinking?",
+              options: ["Experts know more facts", "Experts recognize patterns and have organized knowledge structures", "Experts think faster", "Experts use more complex reasoning"],
               correct: 1,
-              explanation: "Second-order logic allows quantification over predicates and relations, not just individuals."
+              explanation: "Experts have well-organized knowledge that allows pattern recognition and efficient problem-solving."
             },
             {
               id: "p2b",
-              question: "In temporal logic, what does □P mean?",
-              options: ["P is always true", "P is sometimes true", "P is necessarily true", "P is possibly true"],
-              correct: 0,
-              explanation: "□P means 'P is always true' (globally/necessarily true in all future states)."
+              question: "In metacognition, what is the most important skill?",
+              options: ["Thinking faster", "Monitoring your own thinking process", "Memorizing information", "Following procedures exactly"],
+              correct: 1,
+              explanation: "Metacognition involves awareness and regulation of one's own thinking processes."
             },
             {
               id: "p2c",
-              question: "Which statement about completeness is correct?",
-              options: ["All true statements are provable", "All provable statements are true", "Some true statements aren't provable", "Logic is incomplete"],
-              correct: 0,
-              explanation: "Completeness means every semantically valid formula is syntactically provable."
+              question: "Which best describes systems thinking?",
+              options: ["Breaking problems into parts", "Understanding interconnections and feedback loops", "Using computer systems", "Following systematic procedures"],
+              correct: 1,
+              explanation: "Systems thinking focuses on relationships, interconnections, and how parts influence the whole."
             },
             {
               id: "p2d",
-              question: "Gödel's incompleteness theorem shows that:",
-              options: ["Logic is inconsistent", "Arithmetic has unprovable truths", "All systems are incomplete", "Mathematics is false"],
+              question: "What is the main purpose of devil's advocate thinking?",
+              options: ["To be negative", "To challenge assumptions and test ideas", "To win arguments", "To confuse discussions"],
               correct: 1,
-              explanation: "Any consistent system containing arithmetic has true statements that cannot be proven within the system."
+              explanation: "Devil's advocate thinking deliberately challenges ideas to test their strength and identify weaknesses."
             }
           ]
         },
         {
           id: "p3",
-          title: "Integrated Problem Solving",
+          title: "Real-World Application Synthesis",
           points: 30,
           type: "text_input",
           questions: [
             {
               id: "p3a",
-              question: "Design a logical system to represent 'Every team has exactly one captain who leads all members' using T(x), C(x,y), L(x,y), M(x,y)",
-              answer: "∀x(T(x) → ∃!y(M(y,x) ∧ C(y,x) ∧ ∀z(M(z,x) → L(y,z))))",
-              explanation: "For every team, there exists exactly one member who is captain and leads all other members."
+              question: "Design a comprehensive critical thinking approach to evaluate whether your company should adopt artificial intelligence for customer service.",
+              answer: "Define objectives, research AI capabilities/limitations, analyze costs/benefits, consider ethical implications, pilot test, gather stakeholder input, evaluate risks",
+              explanation: "Complex business decisions require systematic evaluation of multiple factors using various critical thinking frameworks."
             },
             {
               id: "p3b",
-              question: "Identify the logical error: 'If it rains, the ground is wet. The ground is wet. Therefore, it rained.'",
-              answer: "Affirming the consequent fallacy",
-              explanation: "This invalid inference form assumes that because Q is true and P→Q, then P must be true."
+              question: "You see a viral claim that a common household product causes cancer. Design a step-by-step process to evaluate this claim.",
+              answer: "Check original source, examine study methodology, look for peer review, check regulatory agencies, consider dose/exposure, verify with multiple sources",
+              explanation: "Health claims require careful verification using scientific thinking and source evaluation skills."
             },
             {
               id: "p3c",
-              question: "Express the halting problem informally: Can we determine if any program will halt?",
-              answer: "No algorithm can determine for all programs whether they will halt or run forever",
-              explanation: "This is a fundamental undecidability result in computer science and logic."
+              question: "Apply critical thinking to personal decision-making: How would you decide whether to pursue additional education while working full-time?",
+              answer: "Assess goals, evaluate time/financial costs, research program quality, consider opportunity costs, analyze career impact, plan for challenges",
+              explanation: "Personal decisions benefit from systematic analysis similar to professional problem-solving approaches."
             }
           ]
         }
@@ -818,70 +821,70 @@ export const presetPracticeHomework = {
 
 export const presetPracticeQuizzes = {
   1: {
-    title: "Week 1 Practice Quiz: Logical Operators & Basics",
+    title: "Week 1 Practice Quiz: Critical Thinking Foundations",
     content: {
-      instructions: "Quiz covering basic logical operators, statement translation, and fundamental concepts. You have unlimited attempts to practice.",
+      instructions: "Quiz covering fundamental critical thinking concepts, logical reasoning, and argument analysis. You have unlimited attempts to practice.",
       totalPoints: 40,
       problems: [
         {
           id: "p1",
-          title: "Operator Recognition",
+          title: "Critical Thinking Basics",
           points: 20,
           type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "What is the symbol for conjunction?",
-              options: ["∨", "∧", "→"],
+              question: "What is the primary goal of critical thinking?",
+              options: ["To win arguments", "To evaluate information and make reasoned judgments", "To be critical of everything"],
               correct: 1,
-              explanation: "∧ is the symbol for conjunction (and)."
+              explanation: "Critical thinking aims to analyze information systematically to make well-reasoned decisions."
             },
             {
               id: "p1b",
-              question: "Which symbol represents negation?",
-              options: ["¬", "∧", "∨"],
-              correct: 0,
-              explanation: "¬ is the standard symbol for negation (not)."
+              question: "Which best describes an assumption?",
+              options: ["A proven fact", "Something taken for granted without proof", "A logical conclusion"],
+              correct: 1,
+              explanation: "Assumptions are beliefs or ideas we accept without verification."
             },
             {
               id: "p1c",
-              question: "The conditional 'if P then Q' is symbolized as:",
-              options: ["P ∧ Q", "P → Q", "P ↔ Q"],
+              question: "What makes an argument strong?",
+              options: ["Emotional appeal", "Sound reasoning and good evidence", "Popular support"],
               correct: 1,
-              explanation: "→ represents the conditional relationship 'if...then'."
+              explanation: "Strong arguments combine logical reasoning with reliable evidence."
             },
             {
               id: "p1d",
-              question: "What does P ↔ Q mean?",
-              options: ["P if and only if Q", "P or Q", "P and Q"],
+              question: "Which question helps evaluate credibility?",
+              options: ["Who is making the claim?", "Is it popular?", "Does it sound right?"],
               correct: 0,
-              explanation: "↔ represents the biconditional 'if and only if'."
+              explanation: "Source credibility is crucial for evaluating the reliability of information."
             }
           ]
         },
         {
           id: "p2",
-          title: "Quick Translation",
+          title: "Logical Analysis",
           points: 20,
           type: "text_input",
           questions: [
             {
               id: "p2a",
-              question: "Translate 'not P' into symbols:",
-              answer: "¬P",
-              explanation: "Negation is represented by ¬ before the proposition."
+              question: "What type of reasoning moves from specific observations to general conclusions?",
+              answer: "Inductive reasoning",
+              explanation: "Inductive reasoning builds general principles from specific examples."
             },
             {
               id: "p2b",
-              question: "Translate 'P and Q' into symbols:",
-              answer: "P ∧ Q",
-              explanation: "Conjunction uses the ∧ symbol between propositions."
+              question: "What is a premise in an argument?",
+              answer: "A statement that provides support or evidence for a conclusion",
+              explanation: "Premises are the supporting statements that lead to a conclusion in an argument."
             },
             {
               id: "p2c",
-              question: "Translate 'P or Q' into symbols:",
-              answer: "P ∨ Q",
-              explanation: "Disjunction uses the ∨ symbol between propositions."
+              question: "What is the difference between a fact and an opinion?",
+              answer: "Facts can be verified objectively; opinions are subjective judgments",
+              explanation: "Facts are verifiable statements while opinions reflect personal views or interpretations."
             }
           ]
         }
@@ -889,23 +892,23 @@ export const presetPracticeQuizzes = {
     }
   },
   2: {
-    title: "Week 2 Practice Quiz: One Question Test",
+    title: "Week 2 Practice Quiz: Argument Analysis",
     content: {
-      instructions: "Practice quiz with one question to test the system.",
+      instructions: "Practice quiz focusing on argument evaluation and reasoning skills.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Truth Tables Quiz",
+          title: "Argument Structure Quiz",
           points: 10,
           type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "When is P → Q false?",
-              options: ["When P is false", "When Q is false", "When P is true and Q is false"],
-              correct: 2,
-              explanation: "A conditional is false only when the antecedent is true and the consequent is false."
+              question: "What makes an argument valid?",
+              options: ["The premises are true", "The conclusion follows logically from the premises", "It's convincing"],
+              correct: 1,
+              explanation: "Validity depends on logical structure, not the truth of premises."
             }
           ]
         }
@@ -913,22 +916,22 @@ export const presetPracticeQuizzes = {
     }
   },
   3: {
-    title: "Week 3 Practice Quiz: One Question Test",
+    title: "Week 3 Practice Quiz: Decision Making",
     content: {
-      instructions: "Practice quiz with one question to test the system.",
+      instructions: "Practice quiz on decision-making frameworks and problem-solving strategies.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Boolean Algebra Quiz",
+          title: "Problem Solving Quiz",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What is the result of P ∨ ¬P?",
-              answer: "True",
-              explanation: "P ∨ ¬P is always true (law of excluded middle)."
+              question: "Name three steps in effective decision making.",
+              answer: "Define the problem, gather information, evaluate alternatives",
+              explanation: "Systematic decision-making follows a structured process."
             }
           ]
         }
@@ -936,23 +939,23 @@ export const presetPracticeQuizzes = {
     }
   },
   4: {
-    title: "Week 4 Practice Quiz: One Question Test",
+    title: "Week 4 Practice Quiz: Research & Evidence",
     content: {
-      instructions: "Practice quiz with one question to test the system.",
+      instructions: "Practice quiz on scientific thinking and research evaluation skills.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Quantifiers Quiz",
+          title: "Evidence Evaluation Quiz",
           points: 10,
           type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "What does ∀ mean?",
-              options: ["There exists", "For all", "If and only if"],
+              question: "What distinguishes correlation from causation?",
+              options: ["Correlation proves causation", "Correlation shows relationship but not cause", "They're the same thing"],
               correct: 1,
-              explanation: "∀ is the universal quantifier meaning 'for all'."
+              explanation: "Correlation indicates relationship but doesn't prove one thing causes another."
             }
           ]
         }
@@ -960,23 +963,23 @@ export const presetPracticeQuizzes = {
     }
   },
   5: {
-    title: "Week 5 Practice Quiz: One Question Test",
+    title: "Week 5 Practice Quiz: Media Literacy",
     content: {
-      instructions: "Practice quiz with one question to test the system.",
+      instructions: "Practice quiz on media evaluation and information literacy skills.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Predicate Logic Quiz",
+          title: "Source Credibility Quiz",
           points: 10,
           type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "What does ∃ mean?",
-              options: ["For all", "There exists", "Necessarily"],
+              question: "What's most important when evaluating online information?",
+              options: ["How recent it is", "Source credibility and evidence quality", "How many shares it has"],
               correct: 1,
-              explanation: "∃ is the existential quantifier meaning 'there exists'."
+              explanation: "Credible sources and quality evidence are fundamental to reliable information."
             }
           ]
         }
@@ -984,22 +987,22 @@ export const presetPracticeQuizzes = {
     }
   },
   6: {
-    title: "Week 6 Practice Quiz: One Question Test",
+    title: "Week 6 Practice Quiz: Ethical Reasoning",
     content: {
-      instructions: "Practice quiz with one question to test the system.",
+      instructions: "Practice quiz on ethical frameworks and moral reasoning skills.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Advanced Logic Quiz",
+          title: "Ethics Quiz",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What is proof by contradiction also called?",
-              answer: "Reductio ad absurdum",
-              explanation: "Proof by contradiction is also known as reductio ad absurdum."
+              question: "What ethical framework focuses on consequences and outcomes?",
+              answer: "Utilitarianism",
+              explanation: "Utilitarianism judges actions by their consequences and overall benefit."
             }
           ]
         }
@@ -1007,23 +1010,23 @@ export const presetPracticeQuizzes = {
     }
   },
   7: {
-    title: "Week 7 Practice Quiz: One Question Test",
+    title: "Week 7 Practice Quiz: Creative Thinking",
     content: {
-      instructions: "Practice quiz with one question to test the system.",
+      instructions: "Practice quiz on creative problem-solving and analytical thinking techniques.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Modal Logic Quiz",
+          title: "Innovation Quiz",
           points: 10,
           type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "What does ◊P mean?",
-              options: ["P is necessary", "P is possible", "P is true"],
+              question: "What is brainstorming designed to encourage?",
+              options: ["Immediate evaluation", "Quantity of ideas without judgment", "Perfect solutions"],
               correct: 1,
-              explanation: "◊ is the possibility operator in modal logic."
+              explanation: "Brainstorming emphasizes generating many ideas without early judgment to foster creativity."
             }
           ]
         }
@@ -1031,23 +1034,23 @@ export const presetPracticeQuizzes = {
     }
   },
   8: {
-    title: "Week 8 Practice Quiz: One Question Test",
+    title: "Week 8 Practice Quiz: Comprehensive Review",
     content: {
-      instructions: "Practice quiz with one question to test the system.",
+      instructions: "Practice quiz integrating all critical thinking skills learned throughout the course.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Review Quiz",
+          title: "Integration Quiz",
           points: 10,
           type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "Which is NOT a logical operator?",
-              options: ["∧", "∨", "√"],
-              correct: 2,
-              explanation: "√ is a mathematical symbol, not a logical operator."
+              question: "Which skill is most important for effective critical thinking?",
+              options: ["Memorizing facts", "Questioning assumptions", "Following rules strictly"],
+              correct: 1,
+              explanation: "Questioning assumptions is fundamental to examining beliefs and evaluating information critically."
             }
           ]
         }
@@ -1058,102 +1061,102 @@ export const presetPracticeQuizzes = {
 
 export const presetPracticeTests = {
   1: {
-    title: "Week 1 Practice Test: Comprehensive Logic Basics",
+    title: "Week 1 Practice Test: Critical Thinking Foundations",
     content: {
-      instructions: "Comprehensive practice test covering all Week 1 material: propositions, logical operators, translation, and basic reasoning. Take your time and show your work.",
+      instructions: "Comprehensive practice test covering all Week 1 material: critical thinking concepts, logical reasoning, and argument analysis. Take your time and show your work.",
       totalPoints: 100,
       problems: [
         {
           id: "p1",
-          title: "Definitions and Concepts",
+          title: "Critical Thinking Fundamentals",
           points: 25,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Define what a proposition is in logic.",
-              answer: "A statement that is either true or false",
-              explanation: "A proposition is a declarative statement that has exactly one truth value."
+              question: "Define critical thinking and explain its main components.",
+              answer: "Critical thinking is the objective analysis and evaluation of information to form judgments, involving analysis, interpretation, evaluation, and synthesis",
+              explanation: "Critical thinking requires systematic examination of information, reasoning, and evidence to make well-founded decisions."
             },
             {
               id: "p1b",
-              question: "What is the difference between a proposition and a sentence?",
-              answer: "Not all sentences are propositions; only declarative statements that can be true or false are propositions",
-              explanation: "Sentences can be questions, commands, or exclamations, but propositions must be declarative and have a truth value."
+              question: "What is the difference between an argument and an assertion?",
+              answer: "An argument provides reasons (premises) to support a conclusion, while an assertion is simply a statement without supporting evidence",
+              explanation: "Arguments have logical structure with supporting evidence, while assertions are unsupported claims."
             },
             {
               id: "p1c",
-              question: "Explain what a truth table shows.",
-              answer: "A truth table shows all possible truth value combinations for a logical formula",
-              explanation: "Truth tables systematically display how the truth value of a complex statement depends on the truth values of its components."
+              question: "Explain what makes a source credible.",
+              answer: "Credible sources have expertise, objectivity, currency, accuracy, and transparency about methods and potential conflicts of interest",
+              explanation: "Source credibility depends on multiple factors including author qualifications, publication standards, and methodological rigor."
             }
           ]
         },
         {
           id: "p2",
-          title: "Operator Applications",
+          title: "Argument Analysis",
           points: 35,
           type: "multiple_choice",
           questions: [
             {
               id: "p2a",
-              question: "Which of the following is logically equivalent to ¬(P ∧ Q)?",
-              options: ["¬P ∧ ¬Q", "¬P ∨ ¬Q", "P ∨ Q", "¬P → ¬Q"],
+              question: "What makes an argument logically valid?",
+              options: ["The premises are true", "The conclusion follows necessarily from the premises", "It's convincing", "It uses good evidence"],
               correct: 1,
-              explanation: "By De Morgan's law, ¬(P ∧ Q) = ¬P ∨ ¬Q."
+              explanation: "Validity concerns logical structure - whether the conclusion follows necessarily from the premises."
             },
             {
               id: "p2b",
-              question: "When is P → Q logically equivalent to ¬P ∨ Q?",
-              options: ["Never", "Always", "Only when P is true", "Only when Q is false"],
+              question: "Which statement about assumptions is correct?",
+              options: ["Assumptions are always false", "Assumptions should be identified and examined", "Assumptions don't matter", "Assumptions are the same as facts"],
               correct: 1,
-              explanation: "P → Q is always logically equivalent to ¬P ∨ Q by the definition of material conditional."
+              explanation: "Critical thinking requires identifying and examining our underlying assumptions."
             },
             {
               id: "p2c",
-              question: "If P ∨ Q is false, what can we conclude?",
-              options: ["P is false", "Q is false", "Both P and Q are false", "Either P or Q is false"],
-              correct: 2,
-              explanation: "A disjunction is false only when both disjuncts are false."
+              question: "What is the main difference between deductive and inductive reasoning?",
+              options: ["Deductive is always correct", "Deductive moves from general to specific, inductive from specific to general", "They're the same", "Inductive is better"],
+              correct: 1,
+              explanation: "Deductive reasoning goes from general principles to specific conclusions; inductive goes from specific observations to general principles."
             },
             {
               id: "p2d",
-              question: "The statement 'P if and only if Q' is false when:",
-              options: ["P and Q are both true", "P and Q are both false", "P is true and Q is false", "P and Q have different truth values"],
-              correct: 3,
-              explanation: "A biconditional is false when the two sides have different truth values."
+              question: "Which best describes a logical fallacy?",
+              options: ["Any mistake in reasoning", "A specific type of flawed reasoning pattern", "An opinion someone disagrees with", "A complex argument"],
+              correct: 1,
+              explanation: "Logical fallacies are specific, identifiable patterns of flawed reasoning."
             }
           ]
         },
         {
           id: "p3",
-          title: "Complex Translations",
+          title: "Applied Critical Analysis",
           points: 40,
           type: "text_input",
           questions: [
             {
               id: "p3a",
-              question: "Translate: 'If the weather is nice, then we will go to the park, but if it rains, we will stay home.' Use W for nice weather, P for go to park, R for rains, H for stay home.",
-              answer: "(W → P) ∧ (R → H)",
-              explanation: "This combines two conditional statements with conjunction."
+              question: "Analyze this argument: 'All successful people work hard. Sarah works hard. Therefore, Sarah will be successful.' What logical issue exists?",
+              answer: "This commits the fallacy of affirming the consequent - just because successful people work hard doesn't mean all hard workers become successful",
+              explanation: "The argument incorrectly assumes that if P leads to Q, then Q must lead to P."
             },
             {
               id: "p3b",
-              question: "Translate: 'We will go swimming unless it is too cold.' Use S for go swimming, C for too cold.",
-              answer: "¬C → S",
-              explanation: "'Unless' typically means 'if not', so 'unless it is too cold' means 'if it is not too cold'."
+              question: "Evaluate this claim: 'Studies show coffee prevents heart disease.' What questions should you ask?",
+              answer: "What type of study? Sample size? Control groups? Funding source? How much coffee? Other lifestyle factors?",
+              explanation: "Scientific claims require examination of methodology, sample characteristics, and potential confounding variables."
             },
             {
               id: "p3c",
-              question: "Translate: 'Either both John and Mary will come to the party, or neither will come.' Use J for John comes, M for Mary comes.",
-              answer: "(J ∧ M) ∨ (¬J ∧ ¬M)",
-              explanation: "This is an exclusive choice between both coming or both not coming."
+              question: "Identify the bias in: 'Everyone knows that brand X is the best phone because it's the most popular.' What makes this reasoning flawed?",
+              answer: "This shows appeal to popularity (bandwagon fallacy) - popularity doesn't necessarily indicate quality or superiority",
+              explanation: "The argument assumes that popular opinion equals objective truth or quality."
             },
             {
               id: "p3d",
-              question: "What is the negation of 'If I study hard, then I will pass the exam'? Use S for study hard, P for pass exam.",
-              answer: "S ∧ ¬P",
-              explanation: "The negation of P → Q is P ∧ ¬Q (study hard but don't pass)."
+              question: "What's problematic about this reasoning: 'We should ban violent video games because they might cause aggressive behavior in some people.'",
+              answer: "This relies on weak causal claims ('might cause') and doesn't consider evidence, alternative causes, or proportionality of response",
+              explanation: "Strong policy decisions require strong evidence, not mere possibilities or correlations."
             }
           ]
         }
@@ -1161,22 +1164,22 @@ export const presetPracticeTests = {
     }
   },
   2: {
-    title: "Week 2 Practice Test: One Question Test",
+    title: "Week 2 Practice Test: Argument Structure",
     content: {
-      instructions: "Practice test with one question to test the system.",
+      instructions: "Practice test focusing on argument analysis and logical reasoning skills.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Truth Tables Test",
+          title: "Reasoning Skills Test",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "How many rows are needed for a truth table with 3 variables?",
-              answer: "8",
-              explanation: "With n variables, you need 2^n rows. For 3 variables: 2^3 = 8 rows."
+              question: "What are the three main components of a strong argument?",
+              answer: "Clear premises, logical structure, and a well-supported conclusion",
+              explanation: "Strong arguments have good evidence (premises), valid logical connections, and conclusions that follow from the evidence."
             }
           ]
         }
@@ -1184,22 +1187,22 @@ export const presetPracticeTests = {
     }
   },
   3: {
-    title: "Week 3 Practice Test: One Question Test",
+    title: "Week 3 Practice Test: Decision Making",
     content: {
-      instructions: "Practice test with one question to test the system.",
+      instructions: "Practice test on decision-making frameworks and problem-solving strategies.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Boolean Algebra Test",
+          title: "Problem Solving Test",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What is De Morgan's Law for negation of conjunction?",
-              answer: "¬(P ∧ Q) = ¬P ∨ ¬Q",
-              explanation: "De Morgan's Law states that the negation of a conjunction equals the disjunction of the negations."
+              question: "Name and explain three key steps in effective problem-solving.",
+              answer: "1) Define the problem clearly, 2) Generate and evaluate alternatives, 3) Implement and monitor the solution",
+              explanation: "Systematic problem-solving requires clear problem definition, thorough option evaluation, and follow-through."
             }
           ]
         }
@@ -1207,22 +1210,22 @@ export const presetPracticeTests = {
     }
   },
   4: {
-    title: "Week 4 Practice Test: One Question Test",
+    title: "Week 4 Practice Test: Research & Evidence",
     content: {
-      instructions: "Practice test with one question to test the system.",
+      instructions: "Practice test on scientific thinking and research evaluation skills.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Quantifier Logic Test",
+          title: "Evidence Analysis Test",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What is the negation of ∀x P(x)?",
-              answer: "∃x ¬P(x)",
-              explanation: "The negation of 'for all x, P(x)' is 'there exists an x such that not P(x)'."
+              question: "Explain the difference between correlation and causation with an example.",
+              answer: "Correlation shows relationship but not cause. Example: Ice cream sales and drowning deaths both increase in summer, but ice cream doesn't cause drowning - both are caused by warm weather",
+              explanation: "Understanding this distinction is crucial for evaluating scientific claims and research findings."
             }
           ]
         }
@@ -1230,22 +1233,22 @@ export const presetPracticeTests = {
     }
   },
   5: {
-    title: "Week 5 Practice Test: One Question Test",
+    title: "Week 5 Practice Test: Media Literacy",
     content: {
-      instructions: "Practice test with one question to test the system.",
+      instructions: "Practice test on media evaluation and information literacy skills.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Predicate Logic Test",
+          title: "Information Analysis Test",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What is the difference between a predicate and a proposition?",
-              answer: "A predicate contains variables and becomes a proposition when variables are bound",
-              explanation: "Predicates are functions of variables that become propositions when the variables are quantified or assigned values."
+              question: "What are three key factors to consider when evaluating the credibility of an online source?",
+              answer: "Author expertise and credentials, publication date and currency, evidence quality and citations",
+              explanation: "Credible online sources require verification of author qualifications, current information, and supporting evidence."
             }
           ]
         }
@@ -1253,22 +1256,22 @@ export const presetPracticeTests = {
     }
   },
   6: {
-    title: "Week 6 Practice Test: One Question Test",
+    title: "Week 6 Practice Test: Ethical Reasoning",
     content: {
-      instructions: "Practice test with one question to test the system.",
+      instructions: "Practice test on ethical frameworks and moral reasoning skills.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Advanced Logic Test",
+          title: "Ethics Application Test",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What is the principle of explosion in logic?",
-              answer: "From a contradiction, anything follows",
-              explanation: "The principle of explosion states that from a contradiction (P ∧ ¬P), any statement can be derived."
+              question: "Compare how utilitarian and deontological ethics would approach the trolley problem.",
+              answer: "Utilitarian: Pull lever to save five lives (greatest good). Deontological: Don't pull lever because using someone as means to an end is wrong regardless of consequences",
+              explanation: "Different ethical frameworks can lead to different conclusions about the same moral dilemma."
             }
           ]
         }
@@ -1276,22 +1279,22 @@ export const presetPracticeTests = {
     }
   },
   7: {
-    title: "Week 7 Practice Test: One Question Test",
+    title: "Week 7 Practice Test: Creative Thinking",
     content: {
-      instructions: "Practice test with one question to test the system.",
+      instructions: "Practice test on creative problem-solving and analytical thinking techniques.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Modal Logic Test",
+          title: "Innovation Skills Test",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What is the modal logic formula for 'P is possibly necessary'?",
-              answer: "◊□P",
-              explanation: "◊□P means it is possible that P is necessary."
+              question: "Describe the difference between divergent and convergent thinking and when each is most useful.",
+              answer: "Divergent thinking generates many creative possibilities (brainstorming phase). Convergent thinking narrows down to best solutions (evaluation phase). Use divergent first, then convergent.",
+              explanation: "Effective creative problem-solving requires both broad idea generation and focused solution selection."
             }
           ]
         }
@@ -1299,22 +1302,22 @@ export const presetPracticeTests = {
     }
   },
   8: {
-    title: "Week 8 Practice Test: One Question Test",
+    title: "Week 8 Practice Test: Comprehensive Integration",
     content: {
-      instructions: "Practice test with one question to test the system.",
+      instructions: "Practice test integrating all critical thinking skills learned throughout the course.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Comprehensive Review Test",
+          title: "Critical Thinking Integration Test",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What is soundness in logical systems?",
-              answer: "All provable statements are true",
-              explanation: "A logical system is sound if every theorem (provable statement) is also a tautology (always true)."
+              question: "Design a comprehensive approach to evaluate a complex real-world claim that combines multiple critical thinking skills.",
+              answer: "1) Identify assumptions and biases, 2) Evaluate source credibility, 3) Examine evidence quality, 4) Consider alternative explanations, 5) Check for logical fallacies, 6) Apply relevant ethical frameworks",
+              explanation: "Complex claims require systematic evaluation using multiple critical thinking tools and frameworks."
             }
           ]
         }
@@ -1325,23 +1328,23 @@ export const presetPracticeTests = {
 
 export const presetPracticeExams = {
   midterm: {
-    title: "Midterm Practice Exam: One Question Test",
+    title: "Midterm Practice Exam: Critical Thinking Integration",
     content: {
-      instructions: "Practice midterm with one question to test the system.",
+      instructions: "Practice midterm exam covering the first half of critical thinking concepts and skills.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Midterm Logic Test",
+          title: "Midterm Critical Thinking Test",
           points: 10,
           type: "multiple_choice",
           questions: [
             {
               id: "p1a",
-              question: "Which is the most fundamental concept in logic?",
-              options: ["Proposition", "Argument", "Syllogism"],
-              correct: 0,
-              explanation: "Propositions are the basic building blocks of all logical reasoning."
+              question: "Which is the most fundamental skill in critical thinking?",
+              options: ["Memorizing facts", "Questioning assumptions", "Following procedures"],
+              correct: 1,
+              explanation: "Questioning assumptions is the foundation of all critical thinking - it opens the door to examining beliefs and evaluating information objectively."
             }
           ]
         }
@@ -1349,22 +1352,22 @@ export const presetPracticeExams = {
     }
   },
   final: {
-    title: "Final Practice Exam: One Question Test",
+    title: "Final Practice Exam: Comprehensive Critical Thinking",
     content: {
-      instructions: "Practice final with one question to test the system.",
+      instructions: "Practice final exam covering all critical thinking skills and their real-world applications.",
       totalPoints: 10,
       problems: [
         {
           id: "p1",
-          title: "Final Logic Test",
+          title: "Final Integration Test",
           points: 10,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What are the main branches of symbolic logic?",
-              answer: "Propositional logic and predicate logic",
-              explanation: "These are the two fundamental branches that form the foundation of symbolic logic."
+              question: "What are the main components of effective critical thinking?",
+              answer: "Analysis, evaluation, inference, interpretation, explanation, and self-regulation",
+              explanation: "These six core skills work together to enable systematic examination and evaluation of information and reasoning."
             }
           ]
         }
