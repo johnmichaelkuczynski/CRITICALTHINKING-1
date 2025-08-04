@@ -230,12 +230,40 @@ export function InteractivePractice({
     return comp1.size === comp2.size && Array.from(comp1).every(c => comp2.has(c));
   };
 
-  const calculateScore = () => {
+  // Semantic evaluation function for text-based answers
+  const evaluateAnswerSemantically = async (userAnswer: string, correctAnswer: string): Promise<number> => {
+    try {
+      const response = await fetch('/api/evaluate-answer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userAnswer: userAnswer.trim(),
+          correctAnswer: correctAnswer.trim(),
+          model: 'openai'
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Failed to evaluate answer semantically');
+        return 0;
+      }
+
+      const data = await response.json();
+      return data.similarity || 0;
+    } catch (error) {
+      console.error('Error evaluating answer:', error);
+      return 0;
+    }
+  };
+
+  const calculateScore = async () => {
     let totalCorrect = 0;
     let totalQuestions = 0;
 
-    content.problems.forEach(problem => {
-      problem.questions.forEach(question => {
+    for (const problem of content.problems) {
+      for (const question of problem.questions) {
         totalQuestions++;
         const userAnswer = answers[question.id];
         
@@ -245,30 +273,22 @@ export function InteractivePractice({
           }
         } else if (problem.type === 'text_input' || problem.type === 'calculation') {
           if (userAnswer && question.answer) {
-            // Enhanced logic comparison for symbolic logic
-            const normalizedUser = normalizeLogicExpression(userAnswer);
-            const normalizedCorrect = normalizeLogicExpression(question.answer);
-            
-            // Check for exact match first
-            if (normalizedUser === normalizedCorrect) {
+            // Use semantic evaluation for Critical Thinking answers
+            const semanticScore = await evaluateAnswerSemantically(userAnswer, question.answer);
+            if (semanticScore >= 0.75) { // 75% similarity threshold for correctness
               totalCorrect++;
-            } else {
-              // Check for logically equivalent expressions
-              if (areLogicallyEquivalent(normalizedUser, normalizedCorrect)) {
-                totalCorrect++;
-              }
             }
           }
         }
         // TODO: Add truth table scoring logic
-      });
-    });
+      }
+    }
 
     return Math.round((totalCorrect / totalQuestions) * 100);
   };
 
-  const handleSubmit = () => {
-    const finalScore = calculateScore();
+  const handleSubmit = async () => {
+    const finalScore = await calculateScore();
     const timeSpent = Math.round((Date.now() - startTime) / 1000);
     
     setScore(finalScore);

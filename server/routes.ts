@@ -81,6 +81,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   };
 
+  // Semantic answer evaluation endpoint
+  app.post('/api/evaluate-answer', async (req, res) => {
+    try {
+      const { userAnswer, correctAnswer, model = 'openai' } = req.body;
+      
+      if (!userAnswer || !correctAnswer) {
+        return res.status(400).json({ error: 'Both userAnswer and correctAnswer are required' });
+      }
+
+      let similarity = 0;
+
+      if (model === 'openai') {
+        if (!process.env.OPENAI_API_KEY) {
+          return res.status(500).json({ error: 'OpenAI API key not configured' });
+        }
+
+        const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+            messages: [{
+              role: 'system',
+              content: `You are evaluating whether two answers to a Critical Thinking question mean the same thing, even if worded differently. You should focus on semantic meaning, reasoning correctness, and conceptual understanding rather than exact wording.
+
+Return a JSON object with a "similarity" score between 0.0 and 1.0:
+- 1.0 = Answers mean exactly the same thing (perfect semantic match)
+- 0.8-0.9 = Very similar meaning with minor differences in phrasing
+- 0.6-0.7 = Same core concept but expressed differently
+- 0.4-0.5 = Some conceptual overlap but significant differences
+- 0.0-0.3 = Different meanings or incorrect reasoning
+
+Focus on:
+- Does the user understand the core concept?
+- Is their reasoning sound?
+- Do they demonstrate critical thinking skills?
+- Are they expressing the same ideas in different words?
+
+Do NOT penalize for:
+- Different wording or sentence structure
+- Paraphrasing or summarizing
+- Different examples that illustrate the same point
+- Minor grammatical differences`
+            }, {
+              role: 'user',
+              content: `Evaluate the semantic similarity between these two answers:
+
+Expected Answer: "${correctAnswer}"
+
+User Answer: "${userAnswer}"
+
+Return only a JSON object with the similarity score.`
+            }],
+            response_format: { type: "json_object" },
+            max_tokens: 100
+          })
+        });
+
+        const openaiData = await openaiResponse.json();
+        if (!openaiResponse.ok) {
+          throw new Error(`OpenAI API error: ${openaiData.error?.message || 'Unknown error'}`);
+        }
+        
+        const result = JSON.parse(openaiData.choices[0].message.content);
+        similarity = result.similarity || 0;
+      }
+
+      res.json({ similarity });
+    } catch (error) {
+      console.error('Error evaluating answer:', error);
+      res.status(500).json({ error: 'Failed to evaluate answer' });
+    }
+  });
+
   // Generate lecture endpoint
   app.post('/api/lecture/generate', async (req, res) => {
     try {
@@ -106,20 +183,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
             max_tokens: 3000,
             messages: [{
               role: 'user',
-              content: `You are a professor creating a comprehensive lecture summary for a symbolic logic course. Create an engaging, educational summary that covers key concepts, examples, and learning objectives.
+              content: `You are a professor creating a comprehensive lecture summary for a Critical Thinking course. Create an engaging, educational summary that covers key concepts, examples, and learning objectives.
 
 Course Context: This is Week ${weekNumber} covering "${topic}".
 
 Create a lecture summary that includes:
 1. Learning objectives for the week
 2. Key concepts and definitions
-3. Practical examples with explanations
-4. Important theorems or principles
-5. Common mistakes to avoid
+3. Practical examples with real-world applications
+4. Important principles and frameworks
+5. Common reasoning mistakes to avoid
 6. Connections to previous weeks
 7. Preview of next week's topics
 
-Format as structured content with clear headings and bullet points. Make it comprehensive but accessible for university students.
+Format as structured content with clear headings and bullet points. Make it comprehensive but accessible for university students. Focus on practical critical thinking skills, reasoning analysis, decision-making, and real-world applications.
 
 Create lecture summary for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}`
             }]
@@ -147,20 +224,20 @@ Create lecture summary for Week ${weekNumber}: ${topic}. Include relevant course
             model: 'llama-3.1-sonar-small-128k-online',
             messages: [{
               role: 'user',
-              content: `You are a professor creating a comprehensive lecture summary for a symbolic logic course. Create an engaging, educational summary that covers key concepts, examples, and learning objectives.
+              content: `You are a professor creating a comprehensive lecture summary for a Critical Thinking course. Create an engaging, educational summary that covers key concepts, examples, and learning objectives.
 
 Course Context: This is Week ${weekNumber} covering "${topic}".
 
 Create a lecture summary that includes:
 1. Learning objectives for the week
 2. Key concepts and definitions
-3. Practical examples with explanations
-4. Important theorems or principles
-5. Common mistakes to avoid
+3. Practical examples with real-world applications
+4. Important principles and frameworks
+5. Common reasoning mistakes to avoid
 6. Connections to previous weeks
 7. Preview of next week's topics
 
-Format as structured content with clear headings and bullet points. Make it comprehensive but accessible for university students.
+Format as structured content with clear headings and bullet points. Make it comprehensive but accessible for university students. Focus on practical critical thinking skills, reasoning analysis, decision-making, and real-world applications.
 
 Create lecture summary for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}`
             }],
@@ -192,7 +269,7 @@ Create lecture summary for Week ${weekNumber}: ${topic}. Include relevant course
             messages: [
               {
                 role: 'system',
-                content: 'You are a professor creating comprehensive lecture summaries for a symbolic logic course. Create engaging, educational content that covers key concepts, examples, and learning objectives.'
+                content: 'You are a professor creating comprehensive lecture summaries for a Critical Thinking course. Create engaging, educational content that covers key concepts, examples, and learning objectives with practical real-world applications.'
               },
               {
                 role: 'user',
