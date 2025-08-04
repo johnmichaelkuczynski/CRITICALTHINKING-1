@@ -20,8 +20,13 @@ import PaymentModal from "@/components/payment-modal";
 
 
 import { initializeMathRenderer } from "@/lib/math-renderer";
-import { bookContent, getFullDocumentContent } from "@shared/book-content";
+import { bookContent } from "@shared/book-content";
 import { useAuth } from "@/hooks/use-auth";
+
+// Create local helper function
+const getFullDocumentContent = (): string => {
+  return bookContent.sections.map((section: any) => `${section.title}\n\n${section.content}`).join('\n\n');
+};
 import type { AIModel } from "@shared/schema";
 
 interface LivingBookProps {

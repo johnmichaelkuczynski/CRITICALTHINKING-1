@@ -1,74 +1,87 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { bookContent as paperContent } from "@shared/book-content";
 
-// Create a table of contents based on the Critical Thinking course content
+// Create a table of contents based on the actual Critical Thinking content structure
 const createTableOfContents = () => {
   const tableOfContents: Array<{ id: string; title: string; level: number }> = [
-    // Week 1: Foundations of Critical Thinking
-    { id: "section-1", title: "Week 1: Foundations of Critical Thinking", level: 0 },
-    { id: "introduction-to-critical-thinking", title: "Introduction to Critical Thinking", level: 1 },
-    { id: "critical-thinking-foundations", title: "What is Critical Thinking?", level: 1 },
-    { id: "reasoning-process", title: "The Process of Reasoning", level: 1 },
-    { id: "common-misconceptions", title: "Common Misconceptions", level: 1 },
-    { id: "critical-thinker-toolkit", title: "The Critical Thinker's Toolkit", level: 1 },
-    { id: "homework-1", title: "Homework 1: Critical Thinking Foundations", level: 1 },
+    // Main Section (as it appears in the content)
+    { id: "section-1", title: "Critical Thinking: A Comprehensive Guide", level: 0 },
     
-    // Week 2: Argument Structure and Analysis
-    { id: "section-2", title: "Week 2: Argument Structure and Analysis", level: 0 },
-    { id: "argument-components", title: "Components of Arguments", level: 1 },
-    { id: "premises-conclusions", title: "Premises and Conclusions", level: 1 },
-    { id: "validity-soundness", title: "Validity and Soundness", level: 1 },
-    { id: "argument-evaluation", title: "Evaluating Arguments", level: 1 },
-    { id: "homework-2", title: "Homework 2: Argument Analysis", level: 1 },
+    // Chapter 1: Introduction to Critical Thinking
+    { id: "chapter-1", title: "Chapter 1: Introduction to Critical Thinking", level: 0 },
+    { id: "foundations", title: "1.1 Foundations", level: 1 },
+    { id: "what-is-critical-thinking", title: "1.1.1 What is Critical Thinking?", level: 2 },
+    { id: "why-critical-thinking-matters", title: "1.1.2 Why Critical Thinking Matters", level: 2 },
+    { id: "common-misconceptions", title: "1.1.3 Common Misconceptions", level: 2 },
+    { id: "critical-thinker-toolkit", title: "1.1.4 The Critical Thinker's Toolkit", level: 2 },
+    { id: "process-of-reasoning", title: "1.2 The Process of Reasoning", level: 1 },
+    { id: "steps-in-critical-analysis", title: "1.2.1 Steps in Critical Analysis", level: 2 },
+    { id: "asking-right-questions", title: "1.2.2 Asking the Right Questions", level: 2 },
+    { id: "evidence-evaluation", title: "1.2.3 Evidence Evaluation", level: 2 },
+    { id: "structured-problem-solving", title: "1.2.4 Structured Problem-Solving", level: 2 },
+    { id: "information-literacy", title: "1.3 Information Literacy", level: 1 },
+    { id: "evaluating-sources", title: "1.3.1 Evaluating Sources", level: 2 },
+    { id: "digital-literacy", title: "1.3.2 Digital Literacy", level: 2 },
+    { id: "fact-vs-opinion", title: "1.3.3 Fact vs. Opinion", level: 2 },
+    { id: "managing-information-overload", title: "1.3.4 Managing Information Overload", level: 2 },
+    { id: "human-vs-machine-reasoning", title: "1.4.1 Human vs. Machine Reasoning", level: 2 },
+    { id: "ai-capabilities-limitations", title: "1.4.2 AI Capabilities and Limitations", level: 2 },
+    { id: "critical-thinking-ai-tools", title: "1.4.3 Critical Thinking with AI Tools", level: 2 },
+    { id: "algorithmic-literacy-basics", title: "1.4.4 Algorithmic Literacy Basics", level: 2 },
     
-    // Week 3: Decision Making and Problem Solving
-    { id: "section-3", title: "Week 3: Decision Making and Problem Solving", level: 0 },
-    { id: "decision-frameworks", title: "Decision-Making Frameworks", level: 1 },
-    { id: "problem-solving-steps", title: "Systematic Problem Solving", level: 1 },
-    { id: "evaluating-options", title: "Evaluating Options and Alternatives", level: 1 },
-    { id: "risk-assessment", title: "Risk Assessment and Analysis", level: 1 },
-    { id: "homework-3", title: "Homework 3: Decision Making", level: 1 },
+    // Chapter 2: Understanding Arguments
+    { id: "chapter-2", title: "Chapter 2: Understanding Arguments", level: 0 },
+    { id: "claims-conclusions", title: "2.1.1 Claims and Conclusions", level: 2 },
+    { id: "types-of-evidence", title: "2.1.2 Types of Evidence", level: 2 },
+    { id: "implicit-explicit-premises", title: "2.1.3 Implicit vs. Explicit Premises", level: 2 },
+    { id: "argument-mapping", title: "2.1.4 Argument Mapping", level: 2 },
+    { id: "deductive-reasoning", title: "2.2.1 Deductive Reasoning", level: 2 },
+    { id: "inductive-reasoning", title: "2.2.2 Inductive Reasoning", level: 2 },
+    { id: "abductive-reasoning", title: "2.2.3 Abductive Reasoning", level: 2 },
+    { id: "valid-vs-sound", title: "2.2.4 Valid vs. Sound Arguments", level: 2 },
+    { id: "algorithmic-reasoning", title: "2.2.5 Algorithmic Reasoning", level: 2 },
+    { id: "computational-thinking", title: "2.2.6 Computational Thinking Basics", level: 2 },
+    { id: "boolean-logic", title: "2.2.7 Boolean Logic and Decision Trees", level: 2 },
+    { id: "formal-fallacies", title: "2.3.1 Formal Fallacies", level: 2 },
+    { id: "informal-fallacies", title: "2.3.2 Informal Fallacies", level: 2 },
+    { id: "cognitive-biases", title: "2.3.3 Cognitive Biases", level: 2 },
+    { id: "common-reasoning-mistakes", title: "2.3.4 Common Reasoning Mistakes", level: 2 },
     
-    // Week 4: Research and Evidence Evaluation
-    { id: "section-4", title: "Week 4: Research and Evidence Evaluation", level: 0 },
-    { id: "scientific-method", title: "Scientific Method and Research", level: 1 },
-    { id: "evidence-types", title: "Types of Evidence", level: 1 },
-    { id: "correlation-causation", title: "Correlation vs. Causation", level: 1 },
-    { id: "research-evaluation", title: "Evaluating Research Studies", level: 1 },
-    { id: "homework-4", title: "Homework 4: Research Evaluation", level: 1 },
+    // Chapter 3: Scientific and Empirical Reasoning
+    { id: "chapter-3", title: "Chapter 3: Scientific and Empirical Reasoning", level: 0 },
+    { id: "hypothesis-formation", title: "3.1.1 Hypothesis Formation", level: 2 },
+    { id: "research-design", title: "3.1.2 Research Design", level: 2 },
+    { id: "data-collection", title: "3.1.3 Data Collection", level: 2 },
+    { id: "theory-building", title: "3.1.4 Theory Building", level: 2 },
+    { id: "correlation-vs-causation", title: "3.2.1 Correlation vs. Causation", level: 2 },
+    { id: "experimental-design", title: "3.2.2 Experimental Design", level: 2 },
+    { id: "control-variables", title: "3.2.3 Control Variables", level: 2 },
+    { id: "confounding-factors", title: "3.2.4 Confounding Factors", level: 2 },
+    { id: "reading-scientific-papers", title: "3.3.1 Reading Scientific Papers", level: 2 },
+    { id: "understanding-methodology", title: "3.3.2 Understanding Methodology", level: 2 },
+    { id: "interpreting-results", title: "3.3.3 Interpreting Results", level: 2 },
+    { id: "research-ethics", title: "3.3.4 Research Ethics", level: 2 },
+    { id: "how-ai-systems-learn", title: "3.4.1 How AI Systems Learn", level: 2 },
+    { id: "training-data-bias", title: "3.4.2 Training Data and Bias", level: 2 },
+    { id: "model-evaluation", title: "3.4.3 Model Evaluation", level: 2 },
+    { id: "ai-analysis-limitations", title: "3.4.4 Limitations of AI Analysis", level: 2 },
     
-    // Week 5: Media Literacy and Information Analysis
-    { id: "section-5", title: "Week 5: Media Literacy and Information Analysis", level: 0 },
-    { id: "information-sources", title: "Evaluating Information Sources", level: 1 },
-    { id: "media-bias", title: "Recognizing Media Bias", level: 1 },
-    { id: "fact-checking", title: "Fact-Checking Techniques", level: 1 },
-    { id: "homework-5", title: "Homework 5: Media Literacy", level: 1 },
+    // Chapter 4: Statistical Thinking
+    { id: "chapter-4", title: "Chapter 4: Statistical Thinking", level: 0 },
+    { id: "data-types", title: "4.1.1 Data Types", level: 2 },
+    { id: "descriptive-statistics", title: "4.1.2 Descriptive Statistics", level: 2 },
+    { id: "probability-basics", title: "4.1.3 Probability Basics", level: 2 },
     
-    // Week 6: Ethical Reasoning and Moral Frameworks
-    { id: "section-6", title: "Week 6: Ethical Reasoning and Moral Frameworks", level: 0 },
-    { id: "ethical-frameworks", title: "Major Ethical Frameworks", level: 1 },
-    { id: "moral-reasoning", title: "Moral Reasoning Process", level: 1 },
-    { id: "ethical-dilemmas", title: "Analyzing Ethical Dilemmas", level: 1 },
-    { id: "homework-6", title: "Homework 6: Ethical Reasoning", level: 1 },
+    // Chapter 5: Decision Making
+    { id: "chapter-5", title: "Chapter 5: Decision Making", level: 0 },
+    { id: "decision-analysis", title: "5.1 Decision Analysis", level: 1 },
+    { id: "risk-uncertainty", title: "5.2 Risk and Uncertainty", level: 1 },
+    { id: "group-decision-making", title: "5.3 Group Decision Making", level: 1 },
     
-    // Week 7: Creative Thinking and Innovation
-    { id: "section-7", title: "Week 7: Creative Thinking and Innovation", level: 0 },
-    { id: "creative-processes", title: "Creative Thinking Processes", level: 1 },
-    { id: "brainstorming-techniques", title: "Brainstorming and Ideation", level: 1 },
-    { id: "innovation-methods", title: "Innovation and Design Thinking", level: 1 },
-    { id: "homework-7", title: "Homework 7: Creative Thinking", level: 1 },
-    
-    // Week 8: Integration and Real-World Applications
-    { id: "section-8", title: "Week 8: Integration and Real-World Applications", level: 0 },
-    { id: "critical-thinking-integration", title: "Integrating Critical Thinking Skills", level: 1 },
-    { id: "real-world-applications", title: "Real-World Applications", level: 1 },
-    { id: "workplace-scenarios", title: "Workplace and Academic Scenarios", level: 1 },
-    { id: "continuous-improvement", title: "Continuous Improvement", level: 1 },
-    
-    // Week 9: Comprehensive Review
-    { id: "section-9", title: "Week 9: Comprehensive Review and Assessment", level: 0 },
-    { id: "course-synthesis", title: "Course Synthesis", level: 1 },
-    { id: "final-projects", title: "Final Projects and Assessment", level: 1 }
+    // Chapter 6: Applied Critical Reasoning
+    { id: "chapter-6", title: "Chapter 6: Applied Critical Reasoning", level: 0 },
+    { id: "media-analysis", title: "6.1 Media Analysis", level: 1 },
+    { id: "professional-applications", title: "6.2 Professional Applications", level: 1 }
   ];
   
   return tableOfContents;
