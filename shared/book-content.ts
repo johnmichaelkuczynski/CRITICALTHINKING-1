@@ -1,5 +1,5 @@
 export const bookContent: BookContent = {
-  title: "Preface: Using This Book",
+  title: "Critical Thinking: A Comprehensive Guide",
   author: "Zhi Systems",
   sections: [
     {

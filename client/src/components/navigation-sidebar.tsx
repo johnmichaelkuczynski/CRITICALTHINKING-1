@@ -1,74 +1,74 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { bookContent as paperContent } from "@shared/book-content";
 
-// Create a table of contents based on the Symbolic Logic course content
+// Create a table of contents based on the Critical Thinking course content
 const createTableOfContents = () => {
   const tableOfContents: Array<{ id: string; title: string; level: number }> = [
-    // Week 1: Basic Concepts
-    { id: "section-1", title: "Week 1: Basic Concepts, Notation, and Logical Operators", level: 0 },
-    { id: "introduction-to-logic", title: "Introduction to Logic", level: 1 },
-    { id: "basic-concepts", title: "Basic Concepts", level: 1 },
-    { id: "basic-logical-symbols", title: "Basic Logical Symbols", level: 1 },
-    { id: "material-vs-strict-implication", title: "Material vs. Strict Implication", level: 1 },
-    { id: "translation-practice", title: "Translation Practice", level: 1 },
-    { id: "homework-1", title: "Homework 1: Basic Concepts", level: 1 },
+    // Week 1: Foundations of Critical Thinking
+    { id: "section-1", title: "Week 1: Foundations of Critical Thinking", level: 0 },
+    { id: "introduction-to-critical-thinking", title: "Introduction to Critical Thinking", level: 1 },
+    { id: "critical-thinking-foundations", title: "What is Critical Thinking?", level: 1 },
+    { id: "reasoning-process", title: "The Process of Reasoning", level: 1 },
+    { id: "common-misconceptions", title: "Common Misconceptions", level: 1 },
+    { id: "critical-thinker-toolkit", title: "The Critical Thinker's Toolkit", level: 1 },
+    { id: "homework-1", title: "Homework 1: Critical Thinking Foundations", level: 1 },
     
-    // Week 2: Truth Tables
-    { id: "section-2", title: "Week 2: Truth Tables and Elementary Proofs", level: 0 },
-    { id: "propositional-calculus", title: "The Propositional Calculus", level: 1 },
-    { id: "truth-tables", title: "Truth Tables", level: 1 },
-    { id: "elementary-proofs", title: "Elementary Proofs", level: 1 },
-    { id: "de-morgans-laws", title: "De Morgan's Laws", level: 1 },
-    { id: "homework-2", title: "Homework 2: Truth Tables and Proofs", level: 1 },
+    // Week 2: Argument Structure and Analysis
+    { id: "section-2", title: "Week 2: Argument Structure and Analysis", level: 0 },
+    { id: "argument-components", title: "Components of Arguments", level: 1 },
+    { id: "premises-conclusions", title: "Premises and Conclusions", level: 1 },
+    { id: "validity-soundness", title: "Validity and Soundness", level: 1 },
+    { id: "argument-evaluation", title: "Evaluating Arguments", level: 1 },
+    { id: "homework-2", title: "Homework 2: Argument Analysis", level: 1 },
     
-    // Week 3: Boolean Algebra
-    { id: "section-3", title: "Week 3: Boolean Operations and Laws", level: 0 },
-    { id: "boolean-algebra", title: "Introduction to Boolean Algebra", level: 1 },
-    { id: "boolean-operations", title: "Basic Operations", level: 1 },
-    { id: "boolean-laws", title: "Fundamental Laws of Boolean Algebra", level: 1 },
-    { id: "boolean-functions", title: "Boolean Functions and Truth Tables", level: 1 },
-    { id: "homework-3", title: "Homework 3: Boolean Algebra", level: 1 },
+    // Week 3: Decision Making and Problem Solving
+    { id: "section-3", title: "Week 3: Decision Making and Problem Solving", level: 0 },
+    { id: "decision-frameworks", title: "Decision-Making Frameworks", level: 1 },
+    { id: "problem-solving-steps", title: "Systematic Problem Solving", level: 1 },
+    { id: "evaluating-options", title: "Evaluating Options and Alternatives", level: 1 },
+    { id: "risk-assessment", title: "Risk Assessment and Analysis", level: 1 },
+    { id: "homework-3", title: "Homework 3: Decision Making", level: 1 },
     
-    // Week 4: Quantifier Logic
-    { id: "section-4", title: "Week 4: Quantifier Logic and Translation", level: 0 },
-    { id: "quantification-concepts", title: "Basic Concepts of Quantification", level: 1 },
-    { id: "universal-quantifier", title: "Universal Quantifier (∀)", level: 1 },
-    { id: "existential-quantifier", title: "Existential Quantifier (∃)", level: 1 },
-    { id: "complex-quantification", title: "Complex Quantification", level: 1 },
-    { id: "homework-4", title: "Homework 4: Quantifier Logic", level: 1 },
+    // Week 4: Research and Evidence Evaluation
+    { id: "section-4", title: "Week 4: Research and Evidence Evaluation", level: 0 },
+    { id: "scientific-method", title: "Scientific Method and Research", level: 1 },
+    { id: "evidence-types", title: "Types of Evidence", level: 1 },
+    { id: "correlation-causation", title: "Correlation vs. Causation", level: 1 },
+    { id: "research-evaluation", title: "Evaluating Research Studies", level: 1 },
+    { id: "homework-4", title: "Homework 4: Research Evaluation", level: 1 },
     
-    // Week 5: Complex Translation
-    { id: "section-5", title: "Week 5: Complex Translation and Mathematical Logic", level: 0 },
-    { id: "advanced-translation", title: "Advanced Translation Patterns", level: 1 },
-    { id: "uniqueness-quantifier", title: "Uniqueness Quantifier (∃!)", level: 1 },
-    { id: "mathematical-logic", title: "Mathematical Logic Applications", level: 1 },
-    { id: "homework-5", title: "Homework 5: Complex Translation", level: 1 },
+    // Week 5: Media Literacy and Information Analysis
+    { id: "section-5", title: "Week 5: Media Literacy and Information Analysis", level: 0 },
+    { id: "information-sources", title: "Evaluating Information Sources", level: 1 },
+    { id: "media-bias", title: "Recognizing Media Bias", level: 1 },
+    { id: "fact-checking", title: "Fact-Checking Techniques", level: 1 },
+    { id: "homework-5", title: "Homework 5: Media Literacy", level: 1 },
     
-    // Week 6: Models
-    { id: "section-6", title: "Week 6: Using Models to Prove Invalidity and Consistency", level: 0 },
-    { id: "models-introduction", title: "Introduction to Models", level: 1 },
-    { id: "model-definition", title: "Definition of a Model", level: 1 },
-    { id: "proving-invalidity", title: "Proving Invalidity with Models", level: 1 },
-    { id: "homework-6", title: "Homework 6: Models and Validity", level: 1 },
+    // Week 6: Ethical Reasoning and Moral Frameworks
+    { id: "section-6", title: "Week 6: Ethical Reasoning and Moral Frameworks", level: 0 },
+    { id: "ethical-frameworks", title: "Major Ethical Frameworks", level: 1 },
+    { id: "moral-reasoning", title: "Moral Reasoning Process", level: 1 },
+    { id: "ethical-dilemmas", title: "Analyzing Ethical Dilemmas", level: 1 },
+    { id: "homework-6", title: "Homework 6: Ethical Reasoning", level: 1 },
     
-    // Week 7: Number Systems
-    { id: "section-7", title: "Week 7: From Number Systems to Statement Classes", level: 0 },
-    { id: "recursive-number-systems", title: "Recursive Number Systems", level: 1 },
-    { id: "natural-numbers", title: "Natural Numbers (ℕ)", level: 1 },
-    { id: "statement-classes", title: "Statement Classes", level: 1 },
-    { id: "homework-7", title: "Homework 7: Number Systems", level: 1 },
+    // Week 7: Creative Thinking and Innovation
+    { id: "section-7", title: "Week 7: Creative Thinking and Innovation", level: 0 },
+    { id: "creative-processes", title: "Creative Thinking Processes", level: 1 },
+    { id: "brainstorming-techniques", title: "Brainstorming and Ideation", level: 1 },
+    { id: "innovation-methods", title: "Innovation and Design Thinking", level: 1 },
+    { id: "homework-7", title: "Homework 7: Creative Thinking", level: 1 },
     
-    // Week 8: Comprehensive Overview
-    { id: "section-8", title: "Week 8: Comprehensive Overview and Exam Preparation", level: 0 },
-    { id: "basic-concepts-review", title: "Basic Concepts Review", level: 1 },
-    { id: "truth-tables-review", title: "Truth Tables Review", level: 1 },
-    { id: "quantifier-logic-review", title: "Quantifier Logic Review", level: 1 },
-    { id: "exam-preparation", title: "Exam Preparation", level: 1 },
+    // Week 8: Integration and Real-World Applications
+    { id: "section-8", title: "Week 8: Integration and Real-World Applications", level: 0 },
+    { id: "critical-thinking-integration", title: "Integrating Critical Thinking Skills", level: 1 },
+    { id: "real-world-applications", title: "Real-World Applications", level: 1 },
+    { id: "workplace-scenarios", title: "Workplace and Academic Scenarios", level: 1 },
+    { id: "continuous-improvement", title: "Continuous Improvement", level: 1 },
     
-    // Week 9: Final Exam
-    { id: "section-9", title: "Week 9: Final Exam and Course Conclusion", level: 0 },
-    { id: "final-exam", title: "Final Exam", level: 1 },
-    { id: "course-conclusion", title: "Course Conclusion", level: 1 }
+    // Week 9: Comprehensive Review
+    { id: "section-9", title: "Week 9: Comprehensive Review and Assessment", level: 0 },
+    { id: "course-synthesis", title: "Course Synthesis", level: 1 },
+    { id: "final-projects", title: "Final Projects and Assessment", level: 1 }
   ];
   
   return tableOfContents;
