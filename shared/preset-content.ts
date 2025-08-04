@@ -424,22 +424,95 @@ export const presetPracticeHomework = {
     }
   },
   5: {
-    title: "Week 5 Practice Homework: One Question Test",
+    title: "Week 5 Practice Homework: Complex Translation & Mathematical Logic",
     content: {
-      instructions: "Practice homework with one question to test the system.",
-      totalPoints: 10,
+      instructions: "Practice advanced translation patterns and mathematical logic applications. Focus on complex quantification, uniqueness, and mathematical statements.",
+      totalPoints: 85,
       problems: [
         {
           id: "p1",
-          title: "Predicate Logic",
-          points: 10,
+          title: "Advanced Translation Patterns",
+          points: 35,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Translate: 'Some dogs are friendly' using D(x) for dog, F(x) for friendly",
-              answer: "∃x(D(x) ∧ F(x))",
-              explanation: "Existential quantification with conjunction: there exists an x such that x is a dog and x is friendly."
+              question: "Translate: 'There is exactly one person who loves everyone' using L(x,y) for 'x loves y', P(x) for 'x is a person'",
+              answer: "∃x(P(x) ∧ ∀y(P(y) → L(x,y)) ∧ ∀z((P(z) ∧ ∀w(P(w) → L(z,w))) → z = x))",
+              explanation: "This requires existential quantification with uniqueness condition."
+            },
+            {
+              id: "p1b",
+              question: "Translate: 'Every student has at least one friend who is also a student' using S(x) for student, F(x,y) for 'x is friends with y'",
+              answer: "∀x(S(x) → ∃y(S(y) ∧ F(x,y)))",
+              explanation: "Universal quantification over students, then existential for friends who are also students."
+            },
+            {
+              id: "p1c",
+              question: "Translate: 'No one likes everyone' using L(x,y) for 'x likes y'",
+              answer: "¬∃x∀y L(x,y)",
+              explanation: "Negated existential: there is no person who likes everyone."
+            },
+            {
+              id: "p1d",
+              question: "Translate: 'If someone is happy, then everyone around them is happy' using H(x) for happy, A(x,y) for 'x is around y'",
+              answer: "∀x(H(x) → ∀y(A(y,x) → H(y)))",
+              explanation: "Universal conditional: if anyone is happy, then all people around them are happy."
+            }
+          ]
+        },
+        {
+          id: "p2",
+          title: "Uniqueness Quantifier (∃!)",
+          points: 25,
+          type: "multiple_choice",
+          questions: [
+            {
+              id: "p2a",
+              question: "What does ∃!x P(x) mean?",
+              options: ["There exists at least one x such that P(x)", "There exists exactly one x such that P(x)", "There exists no x such that P(x)", "For all x, P(x)"],
+              correct: 1,
+              explanation: "∃! is the uniqueness quantifier meaning 'there exists exactly one'."
+            },
+            {
+              id: "p2b",
+              question: "How do you express ∃!x P(x) using standard quantifiers?",
+              options: ["∃x P(x)", "∃x(P(x) ∧ ∀y(P(y) → y = x))", "∀x P(x)", "¬∃x P(x)"],
+              correct: 1,
+              explanation: "Uniqueness requires existence plus the condition that any other element with the property equals the first."
+            },
+            {
+              id: "p2c",
+              question: "Which statement uses uniqueness correctly?",
+              options: ["∃!x(x > 5)", "∃!x(x = x)", "∃!x(x is the president)", "∃!x(x is a number)"],
+              correct: 2,
+              explanation: "There is exactly one president (assuming a specific context/country)."
+            }
+          ]
+        },
+        {
+          id: "p3",
+          title: "Mathematical Logic Applications",
+          points: 25,
+          type: "text_input",
+          questions: [
+            {
+              id: "p3a",
+              question: "Translate: 'For every positive number, there exists a smaller positive number' using P(x) for positive, L(x,y) for 'x < y'",
+              answer: "∀x(P(x) → ∃y(P(y) ∧ L(y,x)))",
+              explanation: "Universal quantification over positive numbers, then existential for smaller positive numbers."
+            },
+            {
+              id: "p3b",
+              question: "Express: 'The square root of 2 is irrational' using R(x) for rational, S(x,y) for 'x is the square root of y'",
+              answer: "∃x(S(x,2) ∧ ¬R(x))",
+              explanation: "There exists a number that is the square root of 2 and is not rational."
+            },
+            {
+              id: "p3c",
+              question: "What is the negation of ∀x∃y(x < y)?",
+              answer: "∃x∀y(x ≥ y)",
+              explanation: "Negating universal and existential quantifiers and flipping the relation."
             }
           ]
         }
@@ -447,22 +520,95 @@ export const presetPracticeHomework = {
     }
   },
   6: {
-    title: "Week 6 Practice Homework: One Question Test",
+    title: "Week 6 Practice Homework: Models & Validity Proofs",
     content: {
-      instructions: "Practice homework with one question to test the system.",
-      totalPoints: 10,
+      instructions: "Practice using models to prove invalidity and demonstrate consistency. Focus on constructing counterexamples and understanding model theory.",
+      totalPoints: 90,
       problems: [
         {
           id: "p1",
-          title: "Complex Translation",
-          points: 10,
+          title: "Model Construction",
+          points: 40,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "Translate: 'No cats are dogs' using C(x) for cat, D(x) for dog",
-              answer: "∀x(C(x) → ¬D(x))",
-              explanation: "Universal negative: for all x, if x is a cat then x is not a dog."
+              question: "Construct a model to prove that ∀x P(x) ⊬ ∃x (P(x) ∧ Q(x)) (domain: {1,2}, show P and Q interpretations)",
+              answer: "Domain: {1,2}, P = {1,2}, Q = {} (empty set)",
+              explanation: "All elements satisfy P(x), but no element satisfies both P(x) and Q(x), making the conclusion false."
+            },
+            {
+              id: "p1b",
+              question: "Create a model where ∃x (P(x) ∧ Q(x)) is true but ∀x (P(x) → Q(x)) is false",
+              answer: "Domain: {1,2}, P = {1,2}, Q = {1}",
+              explanation: "Element 1 satisfies both P and Q, but element 2 satisfies P but not Q, making the universal false."
+            },
+            {
+              id: "p1c",
+              question: "Show that ∀x P(x), ∃x ¬P(x) is inconsistent by attempting to construct a model",
+              answer: "No model possible - contradiction",
+              explanation: "Cannot have both 'all x satisfy P' and 'some x doesn't satisfy P' in the same model."
+            },
+            {
+              id: "p1d",
+              question: "Construct a model for: ∃x P(x), ∀x (P(x) → Q(x)), ∃x ¬Q(x)",
+              answer: "Domain: {1,2}, P = {1}, Q = {1}",
+              explanation: "Element 1 satisfies P and Q, element 2 satisfies neither P nor Q, making all statements true."
+            }
+          ]
+        },
+        {
+          id: "p2",
+          title: "Validity vs. Invalidity",
+          points: 25,
+          type: "multiple_choice",
+          questions: [
+            {
+              id: "p2a",
+              question: "An argument is valid if:",
+              options: ["The premises are true", "The conclusion is true", "If all premises are true, the conclusion must be true", "The premises and conclusion are both true"],
+              correct: 2,
+              explanation: "Validity is about the logical relationship between premises and conclusion, not their actual truth values."
+            },
+            {
+              id: "p2b",
+              question: "To prove an argument invalid, you need to:",
+              options: ["Show the premises are false", "Show the conclusion is false", "Find a model where premises are true but conclusion is false", "Prove the conclusion doesn't follow"],
+              correct: 2,
+              explanation: "A counterexample model demonstrates invalidity by showing the premises can be true while the conclusion is false."
+            },
+            {
+              id: "p2c",
+              question: "If you cannot construct a model where the premises are true and conclusion false, this suggests:",
+              options: ["The argument is invalid", "The argument is valid", "The premises are inconsistent", "More models are needed"],
+              correct: 1,
+              explanation: "If no counterexample exists, the argument is likely valid (though this doesn't constitute a proof)."
+            }
+          ]
+        },
+        {
+          id: "p3",
+          title: "Advanced Model Theory",
+          points: 25,
+          type: "text_input",
+          questions: [
+            {
+              id: "p3a",
+              question: "In domain {a,b,c}, construct a model for ∀x∃y R(x,y) where R is not reflexive",
+              answer: "R = {(a,b), (b,c), (c,a)}",
+              explanation: "Each element relates to some other element, but no element relates to itself."
+            },
+            {
+              id: "p3b",
+              question: "Can ∃x∀y R(x,y) and ∀x∃y ¬R(x,y) both be true in the same model? Explain.",
+              answer: "No, they contradict each other",
+              explanation: "If some x relates to all y, then that x cannot relate to some y that ¬R(x,y) holds for."
+            },
+            {
+              id: "p3c",
+              question: "What's the minimum domain size needed to satisfy: ∃x∃y∃z (x≠y ∧ y≠z ∧ x≠z)?",
+              answer: "3 elements",
+              explanation: "Need at least three distinct elements to satisfy the three inequality conditions."
             }
           ]
         }
@@ -470,22 +616,95 @@ export const presetPracticeHomework = {
     }
   },
   7: {
-    title: "Week 7 Practice Homework: One Question Test",
+    title: "Week 7 Practice Homework: Number Systems & Statement Classes",
     content: {
-      instructions: "Practice homework with one question to test the system.",
-      totalPoints: 10,
+      instructions: "Practice working with recursive number systems, natural numbers, and statement classes. Focus on mathematical foundations and logical classification.",
+      totalPoints: 95,
       problems: [
         {
           id: "p1",
-          title: "Modal Logic",
-          points: 10,
+          title: "Recursive Number Systems",
+          points: 40,
           type: "text_input",
           questions: [
             {
               id: "p1a",
-              question: "What does □P mean in modal logic?",
-              answer: "P is necessarily true",
-              explanation: "The box symbol □ represents necessity in modal logic."
+              question: "Define the successor function S(n) in a recursive number system starting with 0",
+              answer: "S(0) = 1, S(1) = 2, S(2) = 3, ..., S(n) = n+1",
+              explanation: "The successor function maps each natural number to the next one in sequence."
+            },
+            {
+              id: "p1b",
+              question: "Using recursion, define addition a + b where a, b ∈ ℕ",
+              answer: "a + 0 = a, a + S(b) = S(a + b)",
+              explanation: "Addition is defined recursively: adding zero gives the original number, adding a successor increments the result."
+            },
+            {
+              id: "p1c",
+              question: "What is the base case for proving ∀n ∈ ℕ (n + 0 = n) by induction?",
+              answer: "P(0): 0 + 0 = 0",
+              explanation: "The base case shows the property holds for the starting element (0) in the natural numbers."
+            },
+            {
+              id: "p1d",
+              question: "Express 'every natural number has a unique successor' formally",
+              answer: "∀n ∈ ℕ ∃!m (m = S(n))",
+              explanation: "For each natural number, there exists exactly one successor."
+            }
+          ]
+        },
+        {
+          id: "p2",
+          title: "Natural Numbers (ℕ)",
+          points: 30,
+          type: "multiple_choice",
+          questions: [
+            {
+              id: "p2a",
+              question: "Which axiom states that 0 is not the successor of any natural number?",
+              options: ["Peano Axiom 1", "Peano Axiom 2", "Peano Axiom 3", "Peano Axiom 4"],
+              correct: 1,
+              explanation: "Peano Axiom 2 states that 0 is not in the range of the successor function."
+            },
+            {
+              id: "p2b",
+              question: "The principle of mathematical induction is based on:",
+              options: ["Peano Axiom 5", "The successor function", "The base case only", "Recursive definitions"],
+              correct: 0,
+              explanation: "Peano Axiom 5 provides the foundation for mathematical induction."
+            },
+            {
+              id: "p2c",
+              question: "In the construction of ℕ, what makes the successor function injective?",
+              options: ["Different numbers have different successors", "Every number has a successor", "0 has no predecessor", "Induction works"],
+              correct: 0,
+              explanation: "If S(a) = S(b), then a = b, making the successor function one-to-one."
+            }
+          ]
+        },
+        {
+          id: "p3",
+          title: "Statement Classes",
+          points: 25,
+          type: "text_input",
+          questions: [
+            {
+              id: "p3a",
+              question: "Classify: 'All ravens are black' (tautology, contradiction, or contingent)",
+              answer: "Contingent",
+              explanation: "This statement's truth depends on empirical facts about ravens in the world."
+            },
+            {
+              id: "p3b",
+              question: "Give an example of a logical contradiction using predicates",
+              answer: "∃x(P(x) ∧ ¬P(x))",
+              explanation: "No object can both have and not have the same property simultaneously."
+            },
+            {
+              id: "p3c",
+              question: "Why is '∀x(P(x) ∨ ¬P(x))' a tautology?",
+              answer: "Every object either has property P or doesn't have property P",
+              explanation: "This follows from the law of excluded middle - there's no third option."
             }
           ]
         }
@@ -493,22 +712,102 @@ export const presetPracticeHomework = {
     }
   },
   8: {
-    title: "Week 8 Practice Homework: One Question Test",
+    title: "Week 8 Practice Homework: Comprehensive Review & Advanced Topics",
     content: {
-      instructions: "Practice homework with one question to test the system.",
-      totalPoints: 10,
+      instructions: "Comprehensive review covering all major topics from the course plus advanced concepts. This homework prepares you for the final exam.",
+      totalPoints: 100,
       problems: [
         {
           id: "p1",
-          title: "Advanced Logic",
-          points: 10,
+          title: "Logic Foundations Review",
+          points: 35,
           type: "text_input",
           questions: [
             {
               id: "p1a",
+              question: "Translate and simplify: 'Not all students are both smart and hardworking' using S(x), M(x), H(x)",
+              answer: "¬∀x(S(x) → (M(x) ∧ H(x))) ≡ ∃x(S(x) ∧ ¬(M(x) ∧ H(x)))",
+              explanation: "Negate the universal, then apply De Morgan's law to the conjunction."
+            },
+            {
+              id: "p1b",
+              question: "Construct a truth table for (P → Q) ↔ (¬Q → ¬P)",
+              answer: "All rows evaluate to T (tautology)",
+              explanation: "This represents the logical equivalence between a conditional and its contrapositive."
+            },
+            {
+              id: "p1c",
+              question: "Prove using Boolean algebra: (P ∧ Q) ∨ (P ∧ ¬Q) ≡ P",
+              answer: "P ∧ (Q ∨ ¬Q) = P ∧ T = P",
+              explanation: "Factor out P, then use the law of excluded middle and identity."
+            },
+            {
+              id: "p1d",
+              question: "What's wrong with this model? Domain: {1}, P = {1}, ∀x P(x) = false",
+              answer: "Contradiction: all elements satisfy P, but universal statement is false",
+              explanation: "If P(1) is true and 1 is the only element, then ∀x P(x) must be true."
+            }
+          ]
+        },
+        {
+          id: "p2",
+          title: "Advanced Logic Concepts",
+          points: 35,
+          type: "multiple_choice",
+          questions: [
+            {
+              id: "p2a",
               question: "What is the difference between first-order and second-order logic?",
-              answer: "Second-order logic can quantify over predicates and relations",
-              explanation: "Second-order logic extends first-order logic by allowing quantification over predicates, not just individuals."
+              options: ["First-order has more quantifiers", "Second-order can quantify over predicates", "First-order is more expressive", "No significant difference"],
+              correct: 1,
+              explanation: "Second-order logic allows quantification over predicates and relations, not just individuals."
+            },
+            {
+              id: "p2b",
+              question: "In temporal logic, what does □P mean?",
+              options: ["P is always true", "P is sometimes true", "P is necessarily true", "P is possibly true"],
+              correct: 0,
+              explanation: "□P means 'P is always true' (globally/necessarily true in all future states)."
+            },
+            {
+              id: "p2c",
+              question: "Which statement about completeness is correct?",
+              options: ["All true statements are provable", "All provable statements are true", "Some true statements aren't provable", "Logic is incomplete"],
+              correct: 0,
+              explanation: "Completeness means every semantically valid formula is syntactically provable."
+            },
+            {
+              id: "p2d",
+              question: "Gödel's incompleteness theorem shows that:",
+              options: ["Logic is inconsistent", "Arithmetic has unprovable truths", "All systems are incomplete", "Mathematics is false"],
+              correct: 1,
+              explanation: "Any consistent system containing arithmetic has true statements that cannot be proven within the system."
+            }
+          ]
+        },
+        {
+          id: "p3",
+          title: "Integrated Problem Solving",
+          points: 30,
+          type: "text_input",
+          questions: [
+            {
+              id: "p3a",
+              question: "Design a logical system to represent 'Every team has exactly one captain who leads all members' using T(x), C(x,y), L(x,y), M(x,y)",
+              answer: "∀x(T(x) → ∃!y(M(y,x) ∧ C(y,x) ∧ ∀z(M(z,x) → L(y,z))))",
+              explanation: "For every team, there exists exactly one member who is captain and leads all other members."
+            },
+            {
+              id: "p3b",
+              question: "Identify the logical error: 'If it rains, the ground is wet. The ground is wet. Therefore, it rained.'",
+              answer: "Affirming the consequent fallacy",
+              explanation: "This invalid inference form assumes that because Q is true and P→Q, then P must be true."
+            },
+            {
+              id: "p3c",
+              question: "Express the halting problem informally: Can we determine if any program will halt?",
+              answer: "No algorithm can determine for all programs whether they will halt or run forever",
+              explanation: "This is a fundamental undecidability result in computer science and logic."
             }
           ]
         }
