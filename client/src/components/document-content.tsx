@@ -155,6 +155,11 @@ export default function DocumentContent({
         return content || '';
       }
       
+      // Check if content already contains HTML tags - if so, render directly
+      if (content.includes('<div') || content.includes('<h') || content.includes('<p')) {
+        return content; // Return HTML content as-is for direct rendering
+      }
+      
       // Convert plain text to HTML with proper formatting
       let processedContent = content
         // First, escape any existing HTML to prevent double processing
