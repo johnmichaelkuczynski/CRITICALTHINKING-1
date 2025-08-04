@@ -29,25 +29,17 @@ Chapter 1: Introduction to Critical Thinking
 
 Homework 1.1.1: What is Critical Thinking?
 
-Answer Key: Homework 1.1.1
-
 1.1.2 Why Critical Thinking Matters
 
 Homework 1.1.2: Why Critical Thinking Matters
-
-Answer Key: Homework 1.1.2
 
 1.1.3 Common Misconceptions
 
 Homework 1.1.3: Common Misconceptions
 
-Answer Key: Homework 1.1.3
-
 1.1.4 The Critical Thinker's Toolkit
 
 Homework 1.1.4: The Critical Thinker's Toolkit
-
-Answer Key: Homework 1.1.4
 
 1.2 The Process of Reasoning
 
@@ -55,25 +47,17 @@ Answer Key: Homework 1.1.4
 
 Homework 1.2.1: Steps in Critical Analysis
 
-Answer Key: Homework 1.2.1
-
 1.2.2 Asking the Right Questions
 
 Homework 1.2.2: Asking the Right Questions
-
-Answer Key: Homework 1.2.2
 
 1.2.3 Evidence Evaluation
 
 Homework 1.2.3: Evidence Evaluation
 
-Answer Key: Homework 1.2.3
-
 1.2.4 Structured Problem-Solving
 
 Homework 1.2.4: Structured Problem-Solving
-
-Answer Key: Homework 1.2.4
 
 1.3 Information Literacy
 
@@ -81,37 +65,25 @@ Answer Key: Homework 1.2.4
 
 Homework 1.3.1: Evaluating Sources
 
-Answer Key: Homework 1.3.1
-
 1.3.2 Digital Literacy
 
 Homework 1.3.2: Digital Literacy
-
-Answer Key: Homework 1.3.2
 
 1.3.3 Fact vs. Opinion
 
 Homework 1.3.3: Fact vs. Opinion
 
-Answer Key: Homework 1.3.3
-
 1.3.4 Managing Information Overload
 
 Homework 1.3.4: Managing Information Overload
-
-Answer Key: Homework 1.3.4
 
 1.4.1 Human vs. Machine Reasoning
 
 Homework 1.4.1: Human vs. Machine Reasoning
 
-Answer Key: Homework 1.4.1
-
 1.4.2 AI Capabilities and Limitations
 
 Homework 1.4.2: AI Capabilities and Limitations
-
-Answer Key: Homework 1.4.2
 
 1.4.3 Critical Thinking with AI Tools
 
@@ -121,99 +93,82 @@ Homework 1.4.3: Critical Thinking with AI Tools
 
 Homework 1.4.4: Algorithmic Literacy Basics
 
-Answer Key: Homework 1.4.4
-
 Chapter 2: Understanding Arguments
 
 2.1.1 Claims and Conclusions
 
 Homework 2.1.1: Claims and Conclusions
 
-Answer Key: Homework 2.1.1
 
 2.1.2 Types of Evidence
 
 Homework 2.1.2: Types of Evidence
 
-Answer Key: Homework 2.1.2
 
 2.1.3 Implicit vs. Explicit Premises
 
 Homework 2.1.3: Implicit vs. Explicit Premises
 
-Answer Key: Homework 2.1.3
 
 2.1.4 Argument Mapping
 
 Homework 2.1.4: Argument Mapping
 
-Answer Key: Homework 2.1.4
 
 2.2.1 Deductive Reasoning
 
 Homework 2.2.1: Deductive Reasoning
 
-Answer Key: Homework 2.2.1
 
 2.2.2 Inductive Reasoning
 
 Homework 2.2.2: Inductive Reasoning
 
-Answer Key: Homework 2.2.2
 
 2.2.3 Abductive Reasoning
 
 Homework 2.2.3: Abductive Reasoning
 
-Answer Key: Homework 2.2.3
 
 2.2.4 Valid vs. Sound Arguments
 
 Homework 2.2.4: Valid vs. Sound Arguments
 
-Answer Key: Homework 2.2.4
 
 2.2.5 Algorithmic Reasoning
 
 Homework 2.2.5: Algorithmic Reasoning
 
-Answer Key: Homework 2.2.5
 
 2.2.6 Computational Thinking Basics
 
 Homework 2.2.6: Computational Thinking Basics
 
-Answer Key: Homework 2.2.6
 
 2.2.7 Boolean Logic and Decision Trees
 
 Homework 2.2.7: Boolean Logic and Decision Trees
 
-Answer Key: Homework 2.2.7
 
 2.3.1 Formal Fallacies
 
 Homework 2.3.1: Formal Fallacies
 
-Answer Key: Homework 2.3.1
 
 2.3.2 Informal Fallacies
 
 Homework 2.3.2: Informal Fallacies
 
-Answer Key: Homework 2.3.2
 
 2.3.3 Cognitive Biases
 
 Homework 2.3.3: Cognitive Biases
 
-Answer Key: Homework 2.3.3
 
 2.3.4 Common Reasoning Mistakes
 
 Homework 2.3.4: Common Reasoning Mistakes
 
-Answer Key: Homework 2.3.4
 
 Chapter 3: Scientific and Empirical Reasoning
 
@@ -221,97 +176,81 @@ Chapter 3.1.1: Hypothesis Formation
 
 Homework 3.1.1: Hypothesis Formation
 
-Answer Key: Homework 3.1.1 - Hypothesis Formation
 
 Chapter 3.1.2: Research Design
 
 Homework 3.1.2: Research Design
 
-Answer Key: Homework 3.1.2
 
 Chapter 3.1.3: Data Collection
 
 Homework 3.1.3: Data Collection
 
-Answer Key: Homework 3.1.3
 
 Chapter 3.1.4: Theory Building
 
 Homework 3.1.4: Theory Building
 
-Answer Key: Homework 3.1.4
 
 Chapter 3.2.1: Correlation vs. Causation
 
 Homework 3.2.1: Correlation vs. Causation
 
-Answer Key: Homework 3.2.1
 
 Chapter 3.2.2: Experimental Design
 
 Homework 3.2.2: Experimental Design
 
-Answer Key: Homework 3.2.2
 
 Chapter 3.2.3: Control Variables
 
 Homework 3.2.3: Control Variables
 
-Answer Key: Homework 3.2.3
 
 Chapter 3.2.4: Confounding Factors
 
 Homework 3.2.4: Confounding Factors
 
-Answer Key: Homework 3.2.4
 
 Chapter 3.3.1: Reading Scientific Papers
 
 Homework 3.3.1: Reading Scientific Papers
 
-Answer Key: Homework 3.3.1
 
 Chapter 3.3.2: Understanding Methodology
 
 Homework 3.3.2: Understanding Methodology
 
-Answer Key: Homework 3.3.2
 
 Chapter 3.3.3: Interpreting Results
 
 Homework 3.3.3: Interpreting Results
 
-Answer Key: Homework 3.3.3
 
 Chapter 3.3.4: Research Ethics
 
 Homework 3.3.4: Research Ethics
 
-Answer Key: Homework 3.3.4
 
 Chapter 3.4.1: How AI Systems Learn
 
 Homework 3.4.1: How AI Systems Learn
 
-Answer Key: Homework 3.4.1
 
 Chapter 3.4.2: Training Data and Bias
 
 Homework 3.4.2: Training Data and Bias
 
-Answer Key: Homework 3.4.2
 
 Chapter 3.4.3: Model Evaluation
 
 Homework 3.4.3: Model Evaluation
 
-Answer Key: Homework 3.4.3
 
 Chapter 3.4.4: Limitations of AI Analysis
 
 Homework 3.4.4: Limitations of AI Analysis
 
-Answer Key: Homework 3.4.4
 
 Chapter 4: Statistical Thinking
 
@@ -319,31 +258,26 @@ Chapter 4.1.1: Data Types
 
 Homework 4.1.1: Data Types
 
-Answer Key: Homework 4.1.1: Data Types
 
 Chapter 4.1.2: Descriptive Statistics
 
 Homework 4.1.2: Descriptive Statistics
 
-Answer Key: Homework 4.1.2: Descriptive Statistics
 
 Chapter 4.1.3: Probability Basics
 
 Homework 4.1.3: Probability Basics
 
-Answer Key: Homework 4.1.3: Probability Basics
 
 Chapter 4.1.4: Visual Representation
 
 Homework 4.1.4: Visual Representation
 
-Answer Key: Homework 4.1.4: Visual Representation
 
 Chapter 4.2.1: Sampling
 
 Homework 4.2.1: Sampling
 
-Answer Key: Homework 4.2.1: Sampling
 
 4.2.2 Confidence Intervals
 
@@ -417,7 +351,6 @@ Chapter 5.3: Group Decision Making
 
 Homework 5.3: Group Decision Making
 
-Answer Key: Homework 5.3
 
 Chapter 6: Applied Critical Reasoning
 
@@ -425,19 +358,16 @@ Chapter 6.1: Media Analysis
 
 Homework 6.1: Media Analysis
 
-Answer Key: Homework 6.1
 
 Chapter 6.2: Professional Applications
 
 Homework 6.2: Professional Applications
 
-Answer Key: Homework 6.2
 
 Chapter 6.3: Personal Decision Making
 
 Homework 6.3: Personal Decision Making
 
-Answer Key: Homework 6.3
 
 Appendices
 
@@ -445,19 +375,16 @@ Appendix A: Mathematical Foundations
 
 Homework A: Mathematical Foundations
 
-Answer Key: Homework A
 
 Appendix B: Logic Symbols and Notation
 
 Homework B: Logic Symbols and Notation
 
-Answer Key: Homework B
 
 Appendix C: Statistical Tables
 
 Homework C: Statistical Tables
 
-Answer Key: Homework C
 
 Appendix D: Glossary
 
@@ -751,7 +678,6 @@ Short Answer Questions (15 points each)
 
 3. Describe a real-world situation where you might need to use critical thinking skills. Explain how each of the five components of critical thinking (analysis, evaluation, inference, interpretation, and explanation) would apply in this situation.
 
-Answer Key: Homework 1.1.1
 
 Multiple Choice Answers (5 points each)
 
@@ -1052,7 +978,6 @@ d) By teaching you to trust your emotions only`
 
 3. In our current digital age, why is critical thinking particularly important for evaluating information? Provide specific examples of how critical thinking helps navigate modern information challenges.
 
-Answer Key: Homework 1.1.2
 
 Multiple Choice Answers (5 points each)
 
@@ -1329,7 +1254,6 @@ Short Answer Questions (15 points each)
 
 3. Identify a common misconception about critical thinking that you once held. What made you realize it was a misconception, and how has your understanding changed?
 
-Answer Key: Homework 1.1.3
 
 Multiple Choice Answers (5 points each)
 
@@ -1698,7 +1622,6 @@ Short Answer Questions (15 points each)
 
 - What strategies could be used to mitigate this bias in the future
 
-Answer Key: Homework 1.1.4
 
 Multiple Choice Answers (5 points each)
 
@@ -2106,7 +2029,6 @@ Short Answer Questions (15 points each)
 
 3. Choose any controversial current event. Explain how you would apply the contextual analysis step to understand it better. Include specific examples of historical, current, and future context considerations.
 
-Answer Key: Homework 1.2.1
 
 Multiple Choice Answers (5 points each)
 
@@ -2523,7 +2445,6 @@ Short Answer Questions (15 points each)
 
 3. Select a current controversial issue. Using the Levels of Inquiry framework, write one factual question, one interpretive question, and one evaluative question about this issue. Explain why each question belongs in its respective category.
 
-Answer Key: Homework 1.2.2
 
 Multiple Choice Answers (5 points each)
 
@@ -2962,7 +2883,6 @@ Short Answer Questions (15 points each)
 
 3. Identify three red flags in this research claim: "A study by Dr. Smith found that his new supplement cured 100% of participants' ailments in just one week. The study was conducted privately and the results are available for purchase." Explain why each is problematic and what better evidence would look like.
 
-Answer Key: Homework 1.2.3
 
 Multiple Choice Answers (5 points each)
 
@@ -3385,7 +3305,6 @@ Short Answer Questions (15 points each)
 
 3. Choose a current societal problem (e.g., traffic congestion, food waste, etc.). Using the problem analysis techniques discussed in class, develop a structured approach to understanding and addressing this problem. Include at least two specific tools or methods in your analysis.
 
-Answer Key: Homework 1.2.4
 
 Multiple Choice Answers (5 points each)
 
@@ -3818,7 +3737,6 @@ Short Answer Questions (15 points each)
 
 3. Identify and analyze potential biases in this statement from a website: "Our revolutionary new supplement, backed by countless satisfied customers and extensive research, is the only solution you'll ever need for weight loss." What specific elements indicate bias, and how would you go about verifying the claims made?
 
-Answer Key: Homework 1.3.1
 
 Multiple Choice Answers (5 points each)
 
@@ -4255,7 +4173,6 @@ Provide specific examples for each element.
 
 3. You find a compelling image on social media related to a current event. Outline the step-by-step process you would use to verify its authenticity and context. Include specific tools and techniques you would use.
 
-Answer Key: Homework 1.3.2
 
 Multiple Choice Answers (5 points each)
 
@@ -4674,7 +4591,6 @@ Statement 2: "Climate data shows changing weather patterns over the past century
 
 3. You're reading a restaurant review that states: "This is the finest Italian restaurant in the city, with authentically prepared dishes using traditional recipes. Their pasta is cooked perfectly every time, and their prices are reasonable for the quality." Identify which parts of this review are fact vs. opinion, and explain how you would verify any factual claims.
 
-Answer Key: Homework 1.3.3
 
 Multiple Choice Answers (5 points each)
 
@@ -5089,7 +5005,6 @@ Short Answer Questions (15 points each)
 
 3. You've been asked to help a friend who feels overwhelmed by their social media consumption and news intake. Using the concepts from this chapter, create a specific plan to help them manage their information flow. Include both immediate actions and long-term strategies.
 
-Answer Key: Homework 1.3.4
 
 Multiple Choice Answers (5 points each)
 
@@ -5528,7 +5443,6 @@ Short Answer Questions (15 points each)
 
 - What potential challenges might arise
 
-Answer Key: Homework 1.4.1
 
 Multiple Choice Answers (5 points each)
 
@@ -5995,7 +5909,6 @@ Explain the strengths and limitations of each approach, referencing specific con
 
 - Potential risks and how to manage them
 
-Answer Key: Homework 1.4.2
 
 Multiple Choice Answers (5 points each)
 
@@ -6440,7 +6353,6 @@ Analyze the strengths and weaknesses of each approach, considering both critical
       title: "Section 16",
       content: `Include specific examples relevant to a professional setting.
 
-Answer Key: Homework 1.4.3
 
 Multiple Choice Answers (5 points each)
 
@@ -6906,7 +6818,6 @@ Provide specific examples.
 
 - Describe how to maintain critical awareness while using recommendation systems
 
-Answer Key: Homework 1.4.4
 
 Multiple Choice Answers (5 points each)
 
@@ -7373,7 +7284,6 @@ Identify:
 
 - Identify what evidence would be required for these claims
 
-Answer Key: Homework 2.1.1
 
 Multiple Choice Answers (5 points each)
 
@@ -7908,7 +7818,6 @@ Explain:
 
 - How the evidence collection could be improved
 
-Answer Key: Homework 2.1.2
 
 Multiple Choice Answers (5 points each)
 
@@ -8379,7 +8288,6 @@ Identify:
 
 - Suggest how to make implicit premises explicit for stronger argumentation
 
-Answer Key: Homework 2.1.3
 
 Multiple Choice Answers (5 points each)
 
@@ -8882,7 +8790,6 @@ Explain:
 
 - How to reorganize it effectively
 
-Answer Key: Homework 2.1.4
 
 Multiple Choice Answers (5 points each)
 
@@ -9369,7 +9276,6 @@ For each:
 
 - Show how the conclusion necessarily follows (or doesn't)
 
-Answer Key: Homework 2.2.1
 
 Multiple Choice Answers (5 points each)
 
@@ -9842,7 +9748,6 @@ For each:
 
 - Recognition of limitations
 
-Answer Key: Homework 2.2.2
 
 Multiple Choice Answers (5 points each)
 
@@ -10371,7 +10276,6 @@ Provide specific examples of each type of reasoning in a criminal investigation 
 
 - Explain how you would revise your hypothesis based on new evidence
 
-Answer Key: Homework 2.2.3
 
 Multiple Choice Answers (5 points each)
 
@@ -10910,7 +10814,6 @@ Provide:
 
 - Real-world applications of this type of reasoning
 
-Answer Key: Homework 2.2.4
 
 Multiple Choice Answers (5 points each)
 
@@ -11441,7 +11344,6 @@ Analyze:
 
 - Validation methods
 
-Answer Key: Homework 2.2.5
 
 Multiple Choice Answers (5 points each)
 
@@ -11980,7 +11882,6 @@ For a specific scenario (planning a city's public transportation routes), analyz
 
 - Monitoring system
 
-Answer Key: Homework 2.2.6
 
 Multiple Choice Answers (5 points each)
 
@@ -12535,7 +12436,6 @@ Show:
 
 - Exception handling
 
-Answer Key: Homework 2.2.7
 
 Multiple Choice Answers (5 points each)
 
@@ -13042,7 +12942,6 @@ Provide:`
 
 - Real-world implications
 
-Answer Key: Homework 2.3.1
 
 Multiple Choice Answers (5 points each)
 
@@ -13574,7 +13473,6 @@ Then:
 
 - Discuss why people find these fallacies persuasive
 
-Answer Key: Homework 2.3.2
 
 Multiple Choice Answers (5 points each)
 
@@ -14097,7 +13995,6 @@ For each:
 
 - Quality controls
 
-Answer Key: Homework 2.3.3
 
 Multiple Choice Answers (5 points each)
 
@@ -14576,7 +14473,6 @@ For each:
 
 - Recovery procedures
 
-Answer Key: Homework 2.3.4
 
 Multiple Choice Answers (5 points each)
 
@@ -14872,7 +14768,6 @@ Address the following in your response:
 
 - How will you ensure both internal and external validity?
 
-Answer Key: Homework 3.1.1 - Hypothesis Formation
 
 Multiple Choice Answers (5 points each)
 
@@ -15113,7 +15008,6 @@ For each:
 
 - Solutions for ethical concerns
 
-Answer Key: Homework 3.1.2
 
 Multiple Choice Answers (5 points each)
 
@@ -15483,7 +15377,6 @@ Provide correction methods
 
 Discuss long-term solutions
 
-Answer Key: Homework 3.1.3
 
 Multiple Choice Answers (5 points each)
 
@@ -15916,7 +15809,6 @@ Short Answer Questions (15 points each)
 
 - Propose next research steps
 
-Answer Key: Homework 3.1.4
 
 Multiple Choice Answers (5 points each)
 
@@ -16375,7 +16267,6 @@ For each:
 
 - Suggest how to communicate this to non-scientists
 
-Answer Key: Homework 3.2.1
 
 Multiple Choice Answers (5 points each)
 
@@ -16911,9 +16802,7 @@ Identify:
     {
       id: "section-39",
       title: "Section 39",
-      content: `Answer Key: Homework 3.2.2
-
-Multiple Choice Answers (5 points each)
+      content: `Multiple Choice Answers (5 points each)
 
 1. c) Randomization
 
@@ -17418,7 +17307,6 @@ Identify:
 
 - Better methodology
 
-Answer Key: Homework 3.2.3
 
 Multiple Choice Answers (5 points each)
 
@@ -17933,7 +17821,6 @@ For each:
 
 - Limitation recognition
 
-Answer Key: Homework 3.2.4
 
 Multiple Choice Answers (5 points each)
 
@@ -18460,7 +18347,6 @@ For each:
 
 - Time management
 
-Answer Key: Homework 3.3.1
 
 Multiple Choice Answers (5 points each)
 
@@ -18973,7 +18859,6 @@ Identify:
 
 - Analysis plan
 
-Answer Key: Homework 3.3.2
 
 Multiple Choice Answers (5 points each)
 
@@ -19614,7 +19499,6 @@ For each comparison:
 
 Show your work and explain the role of conditional probability in this scenario.
 
-Answer Key: Homework 4.1.3: Probability Basics
 
 Multiple Choice Answers (5 points each)
 
@@ -20167,7 +20051,6 @@ Identify:
 
 - Implementation recommendations
 
-Answer Key: Homework 4.1.4: Visual Representation
 
 Multiple Choice Answers (5 points each)
 
@@ -20776,7 +20659,6 @@ Address:
 
 - Implementation recommendations
 
-Answer Key: Homework 4.2.1: Sampling
 
 Multiple Choice Answers (5 points each)
 
@@ -22958,7 +22840,6 @@ Show:
 
 - Alternative proof method
 
-Answer Key: Homework B
 
 Multiple Choice Answers (5 points each)
 
@@ -23299,11 +23180,9 @@ Short Answer Questions (15 points each)
 
 1. Using statistical tables, find:
 
-- P(Z > 1.645)
+- P(Z > 1.645) = 0.05
 
-- P(-1.96 1.645) = 1 - 0.95 = 0.05
-
-P(-1.96`
+- P(-1.96 < Z < 1.96) = 0.95`
     }
   ]
 };

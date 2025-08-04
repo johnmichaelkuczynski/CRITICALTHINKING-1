@@ -97,9 +97,7 @@ export default function QuizModal({ isOpen, onClose, sourceText, chunkIndex, sel
     content += `Instructions: ${instructions}\n\n`;
     content += `${currentQuiz.testContent}\n\n`;
     
-    if (currentQuiz.answerKey) {
-      content += `ANSWER KEY:\n${currentQuiz.answerKey}`;
-    }
+    // NO ANSWER KEYS - PURE GPT GRADING SYSTEM
     
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);

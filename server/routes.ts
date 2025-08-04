@@ -1463,7 +1463,7 @@ Output only the abbreviation list, one per line. Be concise and use single capit
     }
   });
 
-  // Submit test answers for grading
+  // Submit test answers for grading - TRUE PASSTHROUGH SYSTEM
   app.post("/api/submit-test", async (req, res) => {
     try {
       const { studentTestId, userAnswers, questionTypes } = submitTestRequestSchema.parse(req.body);
@@ -1473,50 +1473,22 @@ Output only the abbreviation list, one per line. Be concise and use single capit
         return res.status(401).json({ error: "User not authenticated" });
       }
       
-      // Get the student test to extract correct answers
+      // Get the student test content
       const studentTest = await storage.getStudentTestById(studentTestId);
       if (!studentTest) {
         return res.status(404).json({ error: "Student test not found" });
       }
       
-      // Parse the test content to extract questions and correct answers
-      const testContent = studentTest.test;
-      console.log("Raw test content for grading:", testContent);
-      let correctAnswers = parseCorrectAnswers(testContent);
-      console.log("Parsed correct answers:", correctAnswers);
-      
-      // If no correct answers found, use AI to generate them
-      if (Object.keys(correctAnswers).length === 0) {
-        console.log("No answer key found, generating correct answers using AI...");
-        try {
-          correctAnswers = await generateCorrectAnswersWithAI(testContent, "openai");
-          console.log("AI-generated correct answers:", correctAnswers);
-        } catch (error) {
-          console.error("AI answer generation failed:", error);
-          // Force generate basic answers to prevent total failure
-          const questionCount = (testContent.match(/^\d+\./gm) || []).length;
-          for (let i = 1; i <= questionCount; i++) {
-            correctAnswers[i.toString()] = ['B', 'A', 'C', 'D'][(i - 1) % 4];
-          }
-          console.log("Using fallback rotating answers:", correctAnswers);
-        }
-      }
-      
-      // Parse questions to determine types
-      console.log("Parsing questions to determine types...");
-      const parsedQuestions = parseTestQuestions(testContent);
-      console.log("Parsed questions for grading:", parsedQuestions);
-      
-      // Grade the test with question type awareness
-      console.log("Starting advanced grading with AI support...");
-      const gradeResult = await gradeTestAdvanced(userAnswers, correctAnswers, parsedQuestions, testContent);
+      // PURE GPT PASSTHROUGH - NO HARDCODED ANSWERS
+      console.log("Using pure GPT passthrough grading system...");
+      const gradeResult = await gradeTestWithGPT(userAnswers, studentTest.test);
       
       // Save the test result
       const testResult = await storage.createTestResult({
         userId: user.id,
         studentTestId,
         userAnswers: JSON.stringify(userAnswers),
-        correctAnswers: JSON.stringify(correctAnswers),
+        correctAnswers: JSON.stringify({}), // NO HARDCODED ANSWERS
         score: gradeResult.score,
         totalQuestions: gradeResult.totalQuestions,
         correctCount: gradeResult.correctCount
@@ -1529,7 +1501,7 @@ Output only the abbreviation list, one per line. Be concise and use single capit
           totalQuestions: gradeResult.totalQuestions,
           correctCount: gradeResult.correctCount,
           userAnswers: userAnswers,
-          correctAnswers: correctAnswers,
+          correctAnswers: {}, // NO HARDCODED ANSWERS
           feedback: gradeResult.feedback,
           completedAt: testResult.completedAt
         }
@@ -1542,408 +1514,46 @@ Output only the abbreviation list, one per line. Be concise and use single capit
 
 
 
-  // Helper functions for test grading
-  function parseCorrectAnswers(testContent: string): Record<string, string> {
-    const correctAnswers: Record<string, string> = {};
-    
-    console.log("Parsing answer keys from test content...");
-    
-    // Look for the ANSWER KEY section in the test content
-    const lines = testContent.split('\n');
-    let inAnswerKeySection = false;
-    let questionCounter = 1; // Track questions for single letter answers
-    let currentAnswerText = ""; // For collecting multi-line answers
-    
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-      
-      // Check if we've reached the ANSWER KEY section
-      if (line.toUpperCase().includes('ANSWER KEY')) {
-        console.log("Found ANSWER KEY section");
-        inAnswerKeySection = true;
-        continue;
-      }
-      
-      // Parse answer key entries
-      if (inAnswerKeySection && line) {
-        console.log(`Parsing answer key line: "${line}"`);
-        
-        // Handle formats like "1. B" or "1) A" or "Question 1: C"
-        let answerMatch = line.match(/^(?:Question\s*)?(\d+)[\.\)\:]\s*([A-D])/i);
-        if (answerMatch) {
-          const [, questionNumber, correctLetter] = answerMatch;
-          correctAnswers[questionNumber] = correctLetter.toUpperCase();
-          console.log(`Found numbered answer: Question ${questionNumber} = ${correctLetter.toUpperCase()}`);
-        } else {
-          // Handle single letter format like just "B"
-          const singleLetterMatch = line.match(/^([A-D])$/i);
-          if (singleLetterMatch) {
-            correctAnswers[questionCounter.toString()] = singleLetterMatch[1].toUpperCase();
-            console.log(`Found single letter answer: Question ${questionCounter} = ${singleLetterMatch[1].toUpperCase()}`);
-            questionCounter++;
-          } else {
-            // Handle longer text answers for short answer questions
-            // If this line doesn't start with a number or single letter, it's likely a model answer
-            if (line.length > 10 && !line.match(/^[A-D]$/i) && !line.match(/^\d+[\.\)]/)) {
-              correctAnswers[questionCounter.toString()] = line;
-              console.log(`Found text answer for Question ${questionCounter}: ${line.substring(0, 50)}...`);
-              questionCounter++;
-            }
-          }
-        }
-      }
-    }
-    
-    console.log("Final parsed correct answers:", correctAnswers);
-    
-    // If no proper answer key found, generate answers by analyzing the AI content
-    if (Object.keys(correctAnswers).length === 0) {
-      console.warn("No answer key found after parsing");
-      return generateAnswersFromAI(testContent);
-    }
-    
-    return correctAnswers;
-  }
+  // REMOVED ALL HARDCODED ANSWER PARSING - TRUE PASSTHROUGH SYSTEM ONLY
 
-  // Use AI to generate correct answers for test questions
-  async function generateCorrectAnswersWithAI(testContent: string, model: string): Promise<Record<string, string>> {
-    try {
-      const prompt = `Analyze this multiple choice test and determine the correct answer for each question based on logic and the source material about symbolic logic.
+  // DELETED ALL HARDCODED ANSWER GENERATION FUNCTIONS - TRUE PASSTHROUGH SYSTEM ONLY
 
-TEST CONTENT:
-${testContent}
-
-For each question, carefully analyze the options and determine which one is logically correct based on the principles of symbolic logic, deductive/inductive reasoning, and logical inference.
-
-Respond with ONLY the answer key in this exact format:
-1. B
-2. A  
-3. C
-4. D
-5. B
-(etc.)
-
-Do not include any explanation, just the question numbers and correct letters.`;
-
-      const aiModel = model as AIModel;
-      let response = '';
-      
-      // Use the same AI models as the rest of the app
-      const { default: OpenAI } = await import('openai');
-      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-      
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [{ role: "user", content: prompt }],
-        max_tokens: 500,
-        temperature: 0.1
-      });
-      
-      response = completion.choices[0]?.message?.content || '';
-      
-      // Parse the AI response to extract answers
-      const answers: Record<string, string> = {};
-      const lines = response.split('\n');
-      
-      for (const line of lines) {
-        const match = line.trim().match(/^(\d+)\.?\s*([A-D])/);
-        if (match) {
-          const [, questionNumber, correctLetter] = match;
-          answers[questionNumber] = correctLetter.toUpperCase();
-        }
-      }
-      
-      return answers;
-    } catch (error) {
-      console.error("Failed to generate answers with AI:", error);
-      return generateAnswersFromAI(testContent);
-    }
-  }
-
-  // Helper function to generate answers using basic logic analysis
-  function generateAnswersFromAI(testContent: string): Record<string, string> {
-    console.log("Fallback: Using basic logic analysis for answers");
-    const correctAnswers: Record<string, string> = {};
+  // PURE GPT PASSTHROUGH GRADING SYSTEM - NO HARDCODED ANSWERS
+  async function gradeTestWithGPT(userAnswers: Record<string, string>, testContent: string) {
+    console.log("Using pure GPT passthrough grading system...");
     
-    // Count questions to provide structure
-    const questionCount = (testContent.match(/^\d+\./gm) || []).length;
-    console.log(`Found ${questionCount} questions in test content`);
-    
-    // Just use intelligent rotating answers for now
-    for (let i = 1; i <= questionCount; i++) {
-      const letters = ['B', 'A', 'C', 'D']; // Start with B to avoid bias
-      correctAnswers[i.toString()] = letters[(i - 1) % 4];
-    }
-    
-    console.log("Generated fallback answers:", correctAnswers);
-    return correctAnswers;
-  }
-
-  // Parse test questions to determine their types
-  function parseTestQuestions(testContent: string): Array<{number: string, text: string, type: string}> {
-    const questions: Array<{number: string, text: string, type: string}> = [];
-    
-    // Remove answer key section first
-    const cleanContent = testContent.split(/ANSWER KEY/i)[0];
-    const lines = cleanContent.split('\n');
-    
-    let i = 0;
-    while (i < lines.length) {
-      const line = lines[i].trim();
-      
-      // Check for [SHORT_ANSWER] or [LONG_ANSWER] tags first
-      if (line.includes('[SHORT_ANSWER]') || line.includes('[LONG_ANSWER]')) {
-        const questionType = line.includes('[SHORT_ANSWER]') ? "short_answer" : "long_answer";
-        let questionText = line.replace(/\[SHORT_ANSWER\]|\[LONG_ANSWER\]/g, '').trim();
-        
-        // If the tag was on a line by itself, the question is on the next line
-        if (!questionText && i + 1 < lines.length) {
-          i++;
-          questionText = lines[i].trim();
-        }
-        
-        if (questionText) {
-          // Get question number from existing questions + 1
-          const questionNumber = (questions.length + 1).toString();
-          questions.push({
-            number: questionNumber,
-            text: questionText,
-            type: questionType
-          });
-        }
-        i++;
-        continue;
-      }
-      
-      // Look for numbered questions (1. Question text)
-      const numberedMatch = line.match(/^(\d+)\.\s*(.+)/);
-      if (numberedMatch) {
-        const [, questionNumber, questionText] = numberedMatch;
-        
-        // Check if this is followed by multiple choice options A) B) C) D)
-        let hasOptions = false;
-        let j = i + 1;
-        while (j < lines.length && j < i + 6) {
-          const nextLine = lines[j].trim();
-          if (!nextLine) {
-            j++;
-            continue;
-          }
-          if (nextLine.match(/^[A-D]\)/)) {
-            hasOptions = true;
-            break;
-          }
-          if (nextLine.match(/^\d+\./) || nextLine.includes('[SHORT_ANSWER]') || nextLine.includes('[LONG_ANSWER]')) {
-            // Next question found, stop looking
-            break;
-          }
-          j++;
-        }
-        
-        const questionType = hasOptions ? "multiple_choice" : "short_answer";
-        
-        questions.push({
-          number: questionNumber,
-          text: questionText,
-          type: questionType
-        });
-      }
-      
-      i++;
-    }
-    
-    console.log("Parsed questions for grading:", questions.map(q => ({ 
-      number: q.number, 
-      type: q.type, 
-      text: q.text.substring(0, 50) + "..." 
-    })));
-    
-    return questions;
-  }
-
-  // Advanced grading with AI for subjective questions
-  async function gradeTestAdvanced(
-    userAnswers: Record<string, string>, 
-    correctAnswers: Record<string, string>,
-    parsedQuestions: Array<{number: string, text: string, type: string}>,
-    testContent: string
-  ) {
-    const totalQuestions = parsedQuestions.length; // Use parsed questions count instead
+    // Extract questions from test content WITHOUT looking for answer keys
+    const questions = extractQuestionsFromTest(testContent);
+    const totalQuestions = questions.length;
     let correctCount = 0;
     const feedback: Record<string, any> = {};
     
-    console.log(`Grading ${totalQuestions} questions with types:`, parsedQuestions.map(q => `${q.number}:${q.type}`));
+    console.log(`Grading ${totalQuestions} questions with pure GPT evaluation`);
     
-    for (const questionData of parsedQuestions) {
-      const questionNumber = questionData.number;
-      const userAnswer = userAnswers[questionNumber] || "";
-      const questionType = questionData.type;
-      const correctAnswer = correctAnswers[questionNumber];
+    for (const question of questions) {
+      const userAnswer = userAnswers[question.number] || "";
       
-      console.log(`Grading Q${questionNumber} (${questionType}): user="${userAnswer}" correct="${correctAnswer}"`);
-      
-      if (questionType === "multiple_choice") {
-        // Traditional exact match grading
-        const isCorrect = userAnswer.toUpperCase() === (correctAnswer || "").toUpperCase();
-        if (isCorrect) correctCount++;
+      try {
+        // PURE GPT GRADING - NO HARDCODED ANSWERS OR STRING MATCHING
+        const gradeResult = await gradeAnswerWithGPT(question, userAnswer, testContent);
         
-        feedback[questionNumber] = {
-          correct: isCorrect,
-          score: isCorrect ? 10 : 0,
-          feedback: isCorrect ? "Correct!" : `Incorrect. The correct answer is ${correctAnswer || "unknown"}.`
-        };
-      } else {
-        // AI-powered grading for short/long answer questions
-        try {
-          const gradingResult = await gradeSubjectiveAnswerDirect(
-            questionData.text, 
-            userAnswer, 
-            testContent,
-            10 // max points
-          );
-          
-          // Use the AI score directly (0-10 scale)
-          const normalizedScore = Math.max(0, Math.min(10, gradingResult.score));
-          const passed = normalizedScore >= 6; // 60% threshold for "correct"
-          
-          // Add to correct count based on the score (proportional)
-          correctCount += normalizedScore / 10;
-          
-          feedback[questionNumber] = {
-            correct: passed,
-            score: normalizedScore,
-            feedback: gradingResult.feedback
-          };
-        } catch (error) {
-          console.error(`Failed to grade question ${questionNumber}:`, error);
-          // Fallback: give partial credit
-          feedback[questionNumber] = {
-            correct: true,
-            score: 7,
-            feedback: "Good response! Manual review recommended for detailed feedback."
-          };
-          correctCount += 0.7;
+        if (gradeResult.isCorrect) {
+          correctCount++;
         }
+        
+        feedback[question.number] = {
+          correct: gradeResult.isCorrect,
+          explanation: gradeResult.explanation,
+          userAnswer: userAnswer
+        };
+      } catch (error) {
+        console.error(`Failed to grade Q${question.number}:`, error);
+        feedback[question.number] = {
+          correct: false,
+          explanation: "Grading service unavailable",
+          userAnswer: userAnswer
+        };
       }
-    }
-    
-    const score = Math.round((correctCount / totalQuestions) * 100);
-    
-    console.log(`Final grading: ${correctCount}/${totalQuestions} = ${score}%`);
-    
-    return {
-      score,
-      totalQuestions,
-      correctCount: Math.round(correctCount),
-      feedback
-    };
-  }
-
-  // Generic AI response generation helper
-  async function generateWithAI(prompt: string, model: string = "openai"): Promise<string> {
-    try {
-      const { default: OpenAI } = await import('openai');
-      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-      
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [{ role: "user", content: prompt }],
-        max_tokens: 1000,
-        temperature: 0.3
-      });
-      
-      return completion.choices[0]?.message?.content || 'Unable to generate response.';
-    } catch (error) {
-      console.error("AI generation error:", error);
-      return 'Unable to generate response due to error.';
-    }
-  }
-
-  // AI-powered subjective answer grading
-  async function gradeSubjectiveAnswer(questionText: string, userAnswer: string, expectedAnswer: string, questionType: string): Promise<{score: number, feedback: string}> {
-    const prompt = `You are an expert instructor grading a ${questionType} response.
-
-QUESTION: ${questionText}
-
-STUDENT ANSWER: ${userAnswer}
-
-EXPECTED ANSWER/RUBRIC: ${expectedAnswer}
-
-Please grade this answer on a scale of 0-10 and provide constructive feedback.
-
-Grading criteria:
-- 9-10: Excellent, comprehensive, demonstrates deep understanding
-- 7-8: Good, covers main points with minor gaps
-- 5-6: Satisfactory, basic understanding with some missing elements
-- 3-4: Below average, significant gaps in understanding
-- 1-2: Poor, major misunderstandings or very incomplete
-- 0: No answer or completely incorrect
-
-Return your response in this exact format:
-SCORE: [number 0-10]
-FEEDBACK: [constructive feedback explaining the grade]`;
-
-    const response = await generateWithAI(prompt, "openai");
-    
-    // Parse the AI response
-    const scoreMatch = response.match(/SCORE:\s*(\d+)/);
-    const feedbackMatch = response.match(/FEEDBACK:\s*(.+)/s);
-    
-    const score = scoreMatch ? parseInt(scoreMatch[1]) : 5; // default to 5 if parsing fails
-    const feedback = feedbackMatch ? feedbackMatch[1].trim() : "Grade assigned automatically.";
-    
-    return { score, feedback };
-  }
-
-  // Direct AI grading - content-focused approach
-  async function gradeSubjectiveAnswerDirect(questionText: string, userAnswer: string, testContext: string, maxPoints: number): Promise<{score: number, feedback: string}> {
-    const prompt = `GRADE THIS ANSWER FOR CONTENT ACCURACY, NOT STYLE:
-
-QUESTION: ${questionText}
-
-STUDENT ANSWER: ${userAnswer}
-
-IMPORTANT GRADING INSTRUCTIONS:
-- Focus ONLY on whether the student demonstrates correct understanding of the concepts
-- Ignore writing style, length, formality, or academic jargon
-- A brief, direct answer that captures the core concepts should score highly
-- Do not penalize concise or informal language if the content is accurate
-- Do not require students to mirror academic vocabulary or lengthy explanations
-- Grade based on conceptual accuracy and logical understanding
-
-Grade this answer out of ${maxPoints} points based on CONTENT ACCURACY ONLY.
-
-Response format:
-SCORE: [number]
-FEEDBACK: [explanation focusing on content accuracy]`;
-
-    const response = await generateWithAI(prompt, "openai");
-    
-    // Parse the AI response
-    const scoreMatch = response.match(/SCORE:\s*(\d+)/);
-    const feedbackMatch = response.match(/FEEDBACK:\s*(.+)/s);
-    
-    const score = scoreMatch ? parseInt(scoreMatch[1]) : Math.floor(maxPoints * 0.5);
-    const feedback = feedbackMatch ? feedbackMatch[1].trim() : "Automatically graded.";
-    
-    return { score, feedback };
-  }
-  
-  function gradeTest(userAnswers: Record<string, string>, correctAnswers: Record<string, string>) {
-    const totalQuestions = Object.keys(correctAnswers).length;
-    let correctCount = 0;
-    const feedback: Record<string, boolean> = {};
-    
-    for (const questionIndex of Object.keys(correctAnswers)) {
-      const userAnswer = userAnswers[questionIndex];
-      const correctAnswer = correctAnswers[questionIndex];
-      const isCorrect = userAnswer === correctAnswer;
-      
-      if (isCorrect) {
-        correctCount++;
-      }
-      
-      feedback[questionIndex] = isCorrect;
     }
     
     const score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
@@ -1955,6 +1565,88 @@ FEEDBACK: [explanation focusing on content accuracy]`;
       feedback
     };
   }
+
+  // Extract questions without looking for answer keys
+  function extractQuestionsFromTest(testContent: string): Array<{number: string, text: string, type: string}> {
+    const questions: Array<{number: string, text: string, type: string}> = [];
+    const lines = testContent.split('\n');
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      
+      // Look for numbered questions (1. Question text)
+      const numberedMatch = line.match(/^(\d+)\.\s*(.+)/);
+      if (numberedMatch) {
+        const [, questionNumber, questionText] = numberedMatch;
+        
+        // Collect the full question including options
+        let fullQuestion = questionText;
+        let j = i + 1;
+        while (j < lines.length && j < i + 10) {
+          const nextLine = lines[j].trim();
+          if (!nextLine || nextLine.match(/^\d+\./)) break;
+          fullQuestion += "\n" + nextLine;
+          j++;
+        }
+        
+        questions.push({
+          number: questionNumber,
+          text: fullQuestion,
+          type: "mixed" // Let GPT handle all types
+        });
+      }
+    }
+    
+    return questions;
+  }
+
+  // Pure GPT grading function
+  async function gradeAnswerWithGPT(question: any, userAnswer: string, testContent: string): Promise<{isCorrect: boolean, explanation: string}> {
+    const prompt = `You are grading a Critical Thinking test. Evaluate if the student's answer is correct based on reasoning and understanding, NOT exact wording.
+
+QUESTION: ${question.text}
+
+STUDENT ANSWER: ${userAnswer}
+
+GRADING INSTRUCTIONS:
+- Focus on conceptual understanding and logical reasoning
+- Accept any correct answer regardless of phrasing, examples, or word choice
+- For multiple choice: accept any equivalent expression of the correct choice
+- For short answer: accept any response that demonstrates correct understanding
+- Grade based on the substance of the answer, not the style
+
+Return JSON with:
+- "isCorrect": true/false
+- "explanation": brief reason for the grade
+
+DO NOT use exact string matching. Evaluate the reasoning and understanding.`;
+
+    try {
+      const { default: OpenAI } = await import('openai');
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        max_tokens: 300
+      });
+      
+      const result = JSON.parse(response.choices[0].message.content);
+      return {
+        isCorrect: result.isCorrect || false,
+        explanation: result.explanation || 'No explanation provided'
+      };
+    } catch (error) {
+      console.error('GPT grading failed:', error);
+      return {
+        isCorrect: false,
+        explanation: 'Grading service error'
+      };
+    }
+  }
+
+  // REMOVED ALL HARDCODED GRADING FUNCTIONS - PURE GPT PASSTHROUGH ONLY
 
   // Podcast generation endpoint
   app.post("/api/generate-podcast", express.json({ limit: '10mb' }), async (req, res) => {
