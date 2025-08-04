@@ -6,7 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Clock, Calculator, ToggleLeft, ToggleRight, Keyboard, Eye } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { CheckCircle, XCircle, Clock, Calculator, ToggleLeft, ToggleRight, Keyboard, Eye, AlertTriangle, Flag } from 'lucide-react';
 
 interface Question {
   id: string;
@@ -40,6 +41,11 @@ interface InteractivePracticeProps {
   onComplete: (score: number, answers: Record<string, any>, timeSpent: number) => void;
 }
 
+interface GradeResult {
+  isCorrect: boolean;
+  explanation: string;
+}
+
 export function InteractivePractice({ 
   title, 
   content, 
@@ -59,6 +65,10 @@ export function InteractivePractice({
   const [showLogicKeyboard, setShowLogicKeyboard] = useState<Record<string, boolean>>({});
   const [activeTextarea, setActiveTextarea] = useState<string | null>(null);
   const textareaRefs = useRef<Record<string, HTMLTextAreaElement | null>>({});
+  const [selectedModel, setSelectedModel] = useState<string>('openai');
+  const [gradeResults, setGradeResults] = useState<Record<string, GradeResult>>({});
+  const [disputedGrades, setDisputedGrades] = useState<Record<string, boolean>>({});
+  const [isGrading, setIsGrading] = useState(false);
 
   const updateAnswer = (questionId: string, answer: any) => {
     setAnswers(prev => ({
@@ -119,6 +129,22 @@ export function InteractivePractice({
     setShowIndividualAnswers(prev => ({
       ...prev,
       [questionId]: true
+    }));
+  };
+
+  const disputeGrade = async (questionId: string, userAnswer: string, correctAnswer: string, question: string) => {
+    setDisputedGrades(prev => ({ ...prev, [questionId]: true }));
+    
+    // Re-evaluate with a different model for dispute resolution
+    const disputeModel = selectedModel === 'openai' ? 'anthropic' : 'openai';
+    const disputeResult = await evaluateAnswerWithLLM(userAnswer, correctAnswer, question + " [GRADE DISPUTE: Please review this answer carefully]");
+    
+    setGradeResults(prev => ({
+      ...prev,
+      [questionId]: {
+        ...disputeResult,
+        explanation: `DISPUTE RESULT: ${disputeResult.explanation}`
+      }
     }));
   };
 
@@ -230,8 +256,8 @@ export function InteractivePractice({
     return comp1.size === comp2.size && Array.from(comp1).every(c => comp2.has(c));
   };
 
-  // Semantic evaluation function for text-based answers
-  const evaluateAnswerSemantically = async (userAnswer: string, correctAnswer: string): Promise<number> => {
+  // TRUE PASSTHROUGH GRADING - Let LLM decide if answer is correct
+  const evaluateAnswerWithLLM = async (userAnswer: string, correctAnswer: string, question: string): Promise<GradeResult> => {
     try {
       const response = await fetch('/api/evaluate-answer', {
         method: 'POST',
@@ -241,26 +267,32 @@ export function InteractivePractice({
         body: JSON.stringify({
           userAnswer: userAnswer.trim(),
           correctAnswer: correctAnswer.trim(),
-          model: 'openai'
+          question: question,
+          model: selectedModel
         }),
       });
 
       if (!response.ok) {
-        console.error('Failed to evaluate answer semantically');
-        return 0;
+        console.error('Failed to evaluate answer with LLM');
+        return { isCorrect: false, explanation: 'Grading service unavailable' };
       }
 
       const data = await response.json();
-      return data.similarity || 0;
+      return {
+        isCorrect: data.isCorrect || false,
+        explanation: data.explanation || 'No explanation provided'
+      };
     } catch (error) {
       console.error('Error evaluating answer:', error);
-      return 0;
+      return { isCorrect: false, explanation: 'Error occurred during grading' };
     }
   };
 
   const calculateScore = async () => {
+    setIsGrading(true);
     let totalCorrect = 0;
     let totalQuestions = 0;
+    const newGradeResults: Record<string, GradeResult> = {};
 
     for (const problem of content.problems) {
       for (const question of problem.questions) {
@@ -268,22 +300,31 @@ export function InteractivePractice({
         const userAnswer = answers[question.id];
         
         if (problem.type === 'multiple_choice') {
-          if (userAnswer === question.correct) {
-            totalCorrect++;
-          }
+          const isCorrect = userAnswer === question.correct;
+          totalCorrect += isCorrect ? 1 : 0;
+          newGradeResults[question.id] = {
+            isCorrect,
+            explanation: isCorrect ? 'Correct choice selected' : 'Incorrect choice selected'
+          };
         } else if (problem.type === 'text_input' || problem.type === 'calculation') {
           if (userAnswer && question.answer) {
-            // Use semantic evaluation for Critical Thinking answers
-            const semanticScore = await evaluateAnswerSemantically(userAnswer, question.answer);
-            if (semanticScore >= 0.75) { // 75% similarity threshold for correctness
-              totalCorrect++;
-            }
+            // TRUE PASSTHROUGH: Let LLM decide if answer is correct
+            const gradeResult = await evaluateAnswerWithLLM(userAnswer, question.answer, question.question);
+            newGradeResults[question.id] = gradeResult;
+            totalCorrect += gradeResult.isCorrect ? 1 : 0;
+          } else {
+            newGradeResults[question.id] = {
+              isCorrect: false,
+              explanation: 'No answer provided'
+            };
           }
         }
         // TODO: Add truth table scoring logic
       }
     }
 
+    setGradeResults(newGradeResults);
+    setIsGrading(false);
     return Math.round((totalCorrect / totalQuestions) * 100);
   };
 
@@ -490,41 +531,57 @@ export function InteractivePractice({
                     <div className="text-sm text-blue-600 dark:text-blue-400">{question.explanation}</div>
                   </div>
                 )}
-                {showResults && answers[questionKey] && (
+                {showResults && answers[questionKey] && gradeResults[questionKey] && (
                   <div className="space-y-2">
-                    <div className="flex items-center space-x-2">
-                      {(() => {
-                        if (!question.answer) {
-                          return (
-                            <Badge variant="secondary">
-                              <Clock className="h-3 w-3 mr-1" />
-                              Answer Pending
+                    {/* LLM GRADING RESULT */}
+                    <div className="p-3 border rounded-lg bg-gray-50 dark:bg-gray-800">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          {gradeResults[questionKey].isCorrect ? (
+                            <Badge variant="default" className="bg-green-500">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Correct
                             </Badge>
-                          );
-                        }
+                          ) : (
+                            <Badge variant="destructive">
+                              <XCircle className="h-3 w-3 mr-1" />
+                              Incorrect
+                            </Badge>
+                          )}
+                          <span className="text-xs text-gray-500">Graded by {selectedModel.toUpperCase()}</span>
+                        </div>
                         
-                        const normalizedUser = normalizeLogicExpression(answers[questionKey]);
-                        const normalizedCorrect = normalizeLogicExpression(question.answer);
-                        const isCorrect = normalizedUser === normalizedCorrect || areLogicallyEquivalent(normalizedUser, normalizedCorrect);
+                        {/* DISPUTE GRADE BUTTON */}
+                        {!gradeResults[questionKey].isCorrect && !disputedGrades[questionKey] && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => disputeGrade(questionKey, answers[questionKey], question.answer!, question.question)}
+                            className="flex items-center space-x-1 text-xs text-red-600 border-red-300 hover:bg-red-50"
+                          >
+                            <Flag className="w-3 h-3" />
+                            <span>Dispute Grade</span>
+                          </Button>
+                        )}
                         
-                        return isCorrect ? (
-                          <Badge variant="default" className="bg-green-500">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            Correct
+                        {disputedGrades[questionKey] && (
+                          <Badge variant="outline" className="text-orange-600 border-orange-300">
+                            <AlertTriangle className="w-3 h-3 mr-1" />
+                            Under Review
                           </Badge>
-                        ) : (
-                          <Badge variant="destructive">
-                            <XCircle className="h-3 w-3 mr-1" />
-                            Incorrect
-                          </Badge>
-                        );
-                      })()}
-                    </div>
-                    {showResults && !answers[questionKey] && (
-                      <div className="p-2 bg-gray-50 dark:bg-gray-900/20 rounded text-xs text-gray-600 dark:text-gray-400">
-                        Your answer: <span className="font-mono">{answers[questionKey] || '(no answer)'}</span>
+                        )}
                       </div>
-                    )}
+                      
+                      <div className="text-sm">
+                        <div className="font-medium text-gray-700 dark:text-gray-300">AI Explanation:</div>
+                        <div className="text-gray-600 dark:text-gray-400 mt-1">{gradeResults[questionKey].explanation}</div>
+                      </div>
+                      
+                      <div className="mt-2 p-2 bg-white dark:bg-gray-900 rounded text-xs">
+                        <div className="font-medium">Your Answer:</div>
+                        <div className="font-mono text-gray-600 dark:text-gray-400">{answers[questionKey]}</div>
+                      </div>
+                    </div>
                   </div>
                 )}
                 {showSolutions && !showResults && (
@@ -588,6 +645,27 @@ export function InteractivePractice({
         </CardHeader>
         
         <CardContent className="space-y-6">
+          {/* LLM MODEL SELECTOR */}
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm font-medium text-blue-700 dark:text-blue-300">AI Grading Model</div>
+                <div className="text-xs text-blue-600 dark:text-blue-400">Choose which AI model will grade your answers</div>
+              </div>
+              <Select value={selectedModel} onValueChange={setSelectedModel}>
+                <SelectTrigger className="w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="openai">OpenAI GPT-4</SelectItem>
+                  <SelectItem value="anthropic">Claude 4</SelectItem>
+                  <SelectItem value="deepseek">DeepSeek</SelectItem>
+                  <SelectItem value="perplexity">Perplexity</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           {!submitted && (
             <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
               <div className="text-sm font-medium">Progress: {answeredQuestions}/{totalQuestions} questions answered</div>
@@ -596,6 +674,17 @@ export function InteractivePractice({
                   className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${(answeredQuestions / totalQuestions) * 100}%` }}
                 />
+              </div>
+            </div>
+          )}
+
+          {isGrading && (
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+              <div className="flex items-center space-x-2">
+                <Clock className="h-4 w-4 text-yellow-600 animate-spin" />
+                <span className="text-sm font-medium text-yellow-700 dark:text-yellow-300">
+                  AI is grading your answers using {selectedModel.toUpperCase()}...
+                </span>
               </div>
             </div>
           )}
@@ -657,9 +746,26 @@ export function InteractivePractice({
                   <div className="text-sm text-green-600 dark:text-green-400">
                     Your performance has been logged for analysis. Keep practicing to improve!
                   </div>
+                  
+                  {/* AI GRADING SUMMARY */}
+                  <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-3">
+                    <div className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                      🤖 AI Grading Summary
+                    </div>
+                    <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                      Your answers were evaluated by {selectedModel.toUpperCase()} AI model using semantic understanding, not exact word matching.
+                      {Object.values(disputedGrades).some(Boolean) && 
+                        " Some grades were disputed and re-evaluated for accuracy."
+                      }
+                    </div>
+                  </div>
+                  
                   <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 mt-3">
                     <div className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                      📝 Answers and explanations are now shown above for review and learning.
+                      📝 Detailed AI feedback and explanations are shown above for each question.
+                    </div>
+                    <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                      Review the AI's reasoning for each answer to improve your understanding.
                     </div>
                   </div>
                 </div>

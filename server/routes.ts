@@ -81,16 +81,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   };
 
-  // Semantic answer evaluation endpoint
+  // TRUE PASSTHROUGH GRADING ENDPOINT - Let LLM decide if answer is correct
   app.post('/api/evaluate-answer', async (req, res) => {
     try {
-      const { userAnswer, correctAnswer, model = 'openai' } = req.body;
+      const { userAnswer, correctAnswer, question, model = 'openai' } = req.body;
       
       if (!userAnswer || !correctAnswer) {
         return res.status(400).json({ error: 'Both userAnswer and correctAnswer are required' });
       }
 
-      let similarity = 0;
+      let isCorrect = false;
+      let explanation = '';
 
       if (model === 'openai') {
         if (!process.env.OPENAI_API_KEY) {
@@ -104,41 +105,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+            model: 'gpt-4o',
             messages: [{
               role: 'system',
-              content: `You are evaluating whether two answers to a Critical Thinking question mean the same thing, even if worded differently. You should focus on semantic meaning, reasoning correctness, and conceptual understanding rather than exact wording.
+              content: `You are grading a Critical Thinking assignment. Your job is to determine if the student's answer demonstrates correct understanding and reasoning, regardless of exact wording.
 
-Return a JSON object with a "similarity" score between 0.0 and 1.0:
-- 1.0 = Answers mean exactly the same thing (perfect semantic match)
-- 0.8-0.9 = Very similar meaning with minor differences in phrasing
-- 0.6-0.7 = Same core concept but expressed differently
-- 0.4-0.5 = Some conceptual overlap but significant differences
-- 0.0-0.3 = Different meanings or incorrect reasoning
+Return a JSON object with:
+- "isCorrect": true/false (is the student's reasoning sound and correct?)
+- "explanation": brief explanation of your grading decision
 
-Focus on:
-- Does the user understand the core concept?
-- Is their reasoning sound?
-- Do they demonstrate critical thinking skills?
-- Are they expressing the same ideas in different words?
-
-Do NOT penalize for:
-- Different wording or sentence structure
-- Paraphrasing or summarizing
-- Different examples that illustrate the same point
-- Minor grammatical differences`
+Grade generously - focus on whether the student understands the concept and demonstrates good reasoning. Accept paraphrasing, different examples, and alternative explanations as long as they show correct understanding.`
             }, {
               role: 'user',
-              content: `Evaluate the semantic similarity between these two answers:
+              content: `Question: ${question || 'Critical thinking question'}
 
 Expected Answer: "${correctAnswer}"
 
-User Answer: "${userAnswer}"
+Student Answer: "${userAnswer}"
 
-Return only a JSON object with the similarity score.`
+Is the student's answer correct? Focus on reasoning and understanding, not exact wording.`
             }],
             response_format: { type: "json_object" },
-            max_tokens: 100
+            max_tokens: 200
           })
         });
 
@@ -148,10 +136,121 @@ Return only a JSON object with the similarity score.`
         }
         
         const result = JSON.parse(openaiData.choices[0].message.content);
-        similarity = result.similarity || 0;
+        isCorrect = result.isCorrect || false;
+        explanation = result.explanation || '';
+
+      } else if (model === 'anthropic') {
+        if (!process.env.ANTHROPIC_API_KEY) {
+          return res.status(500).json({ error: 'Anthropic API key not configured' });
+        }
+
+        const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': process.env.ANTHROPIC_API_KEY,
+            'Content-Type': 'application/json',
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 200,
+            messages: [{
+              role: 'user',
+              content: `You are grading a Critical Thinking assignment. Determine if the student's answer demonstrates correct understanding.
+
+Question: ${question || 'Critical thinking question'}
+Expected Answer: "${correctAnswer}"
+Student Answer: "${userAnswer}"
+
+Return JSON with "isCorrect" (true/false) and "explanation". Focus on reasoning and understanding, not exact wording.`
+            }]
+          })
+        });
+
+        const anthropicData = await anthropicResponse.json();
+        if (!anthropicResponse.ok) {
+          throw new Error(`Anthropic API error: ${anthropicData.error?.message || 'Unknown error'}`);
+        }
+        
+        const result = JSON.parse(anthropicData.content[0].text);
+        isCorrect = result.isCorrect || false;
+        explanation = result.explanation || '';
+
+      } else if (model === 'deepseek') {
+        if (!process.env.DEEPSEEK_API_KEY) {
+          return res.status(500).json({ error: 'DeepSeek API key not configured' });
+        }
+
+        const deepseekResponse = await fetch('https://api.deepseek.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'deepseek-chat',
+            messages: [{
+              role: 'system',
+              content: 'You are grading a Critical Thinking assignment. Focus on reasoning and understanding, not exact wording. Return JSON with "isCorrect" and "explanation".'
+            }, {
+              role: 'user',
+              content: `Question: ${question || 'Critical thinking question'}
+Expected: "${correctAnswer}"
+Student: "${userAnswer}"
+Is the student correct?`
+            }],
+            response_format: { type: "json_object" },
+            max_tokens: 200
+          })
+        });
+
+        const deepseekData = await deepseekResponse.json();
+        if (!deepseekResponse.ok) {
+          throw new Error(`DeepSeek API error: ${deepseekData.error?.message || 'Unknown error'}`);
+        }
+        
+        const result = JSON.parse(deepseekData.choices[0].message.content);
+        isCorrect = result.isCorrect || false;
+        explanation = result.explanation || '';
+
+      } else if (model === 'perplexity') {
+        if (!process.env.PERPLEXITY_API_KEY) {
+          return res.status(500).json({ error: 'Perplexity API key not configured' });
+        }
+
+        const perplexityResponse = await fetch('https://api.perplexity.ai/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'llama-3.1-sonar-small-128k-online',
+            messages: [{
+              role: 'user',
+              content: `Grade this Critical Thinking answer. Focus on reasoning, not exact wording.
+
+Question: ${question || 'Critical thinking question'}
+Expected: "${correctAnswer}"
+Student: "${userAnswer}"
+
+Return JSON: {"isCorrect": true/false, "explanation": "brief reason"}`
+            }],
+            max_tokens: 200
+          })
+        });
+
+        const perplexityData = await perplexityResponse.json();
+        if (!perplexityResponse.ok) {
+          throw new Error(`Perplexity API error: ${perplexityData.error?.message || 'Unknown error'}`);
+        }
+        
+        const result = JSON.parse(perplexityData.choices[0].message.content);
+        isCorrect = result.isCorrect || false;
+        explanation = result.explanation || '';
       }
 
-      res.json({ similarity });
+      res.json({ isCorrect, explanation });
     } catch (error) {
       console.error('Error evaluating answer:', error);
       res.status(500).json({ error: 'Failed to evaluate answer' });
