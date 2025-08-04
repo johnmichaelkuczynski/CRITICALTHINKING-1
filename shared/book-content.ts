@@ -4,66 +4,187 @@ export const bookContent: BookContent = {
   sections: [
     {
       id: "section-1",
-      title: "Section 1",
-      content: `Adapting the Material for Different Academic Levels
+      title: "Week 1: Foundations of Critical Thinking",
+      content: `<div id="introduction-to-critical-thinking">
+<h2>Introduction to Critical Thinking</h2>
 
-Core vs. Advanced Topics
+<div id="critical-thinking-foundations">
+<h3>1.1 What is Critical Thinking?</h3>
 
-Navigation Guide for Instructors
+Critical thinking is the objective analysis and evaluation of an issue in order to form a judgment. It's a disciplined way of thinking that involves actively and skillfully conceptualizing, applying, analyzing, synthesizing, and evaluating information gathered from observation, experience, reflection, reasoning, or communication.
 
-Chapter 1: Introduction to Critical Thinking
+<div id="reasoning-process">
+<h3>1.2 The Process of Reasoning</h3>
 
-1.1 Foundations
+The process of reasoning involves several key steps:
+1. Identifying the problem or question
+2. Gathering relevant information
+3. Analyzing the information objectively
+4. Considering multiple perspectives
+5. Drawing logical conclusions
+6. Evaluating the validity of conclusions
 
-1.1.1 What is Critical Thinking?
+<div id="common-misconceptions">
+<h3>1.3 Common Misconceptions</h3>
 
-Homework 1.1.1: What is Critical Thinking?
+Many people have misconceptions about critical thinking:
+- It's not about being negative or critical in a destructive way
+- It's not just about finding flaws in arguments
+- It doesn't mean being skeptical about everything
+- It's not the same as intelligence or having opinions
 
-Answer Key: Homework 1.1.1
+<div id="critical-thinker-toolkit">
+<h3>1.4 The Critical Thinker's Toolkit</h3>
 
-1.1.2 Why Critical Thinking Matters
+Essential tools for critical thinking include:
+- Questioning assumptions
+- Evaluating evidence
+- Recognizing bias
+- Considering alternative explanations
+- Making reasoned judgments
+- Reflecting on your own thinking process
 
-Homework 1.1.2: Why Critical Thinking Matters
+<div id="homework-1">
+<h3>Homework 1: Critical Thinking Foundations</h3>
 
-Answer Key: Homework 1.1.2
+Practice exercises to develop foundational critical thinking skills.
+</div>
+</div>
+</div>
+</div>
+</div>`
+    },
+    {
+      id: "section-2", 
+      title: "Week 2: Argument Structure and Analysis",
+      content: `<div id="argument-components">
+<h2>Components of Arguments</h2>
 
-1.1.3 Common Misconceptions
+<div id="premises-conclusions">
+<h3>2.1 Premises and Conclusions</h3>
 
-Homework 1.1.3: Common Misconceptions
+An argument consists of:
+- Premises: statements that provide evidence or reasons
+- Conclusion: the statement being supported by the premises
 
-Answer Key: Homework 1.1.3
+<div id="validity-soundness">
+<h3>2.2 Validity and Soundness</h3>
 
-1.1.4 The Critical Thinker's Toolkit
+- Validity: the conclusion follows logically from the premises
+- Soundness: the argument is valid AND the premises are true
 
-Homework 1.1.4: The Critical Thinker's Toolkit
+<div id="argument-evaluation">
+<h3>2.3 Evaluating Arguments</h3>
 
-Answer Key: Homework 1.1.4
+Steps to evaluate arguments:
+1. Identify the conclusion
+2. Identify the premises
+3. Check if the conclusion follows from the premises
+4. Evaluate the truth of the premises
+5. Consider alternative explanations
 
-1.2 The Process of Reasoning
+<div id="homework-2">
+<h3>Homework 2: Argument Analysis</h3>
 
-1.2.1 Steps in Critical Analysis
+Practice identifying and evaluating different types of arguments.
+</div>
+</div>
+</div>
+</div>
+</div>`
+    },
+    {
+      id: "section-3",
+      title: "Week 3: Decision Making and Problem Solving", 
+      content: `<div id="decision-frameworks">
+<h2>Decision-Making Frameworks</h2>
 
-Homework 1.2.1: Steps in Critical Analysis
+<div id="problem-solving-steps">
+<h3>3.1 Systematic Problem Solving</h3>
 
-Answer Key: Homework 1.2.1
+Effective problem-solving follows these steps:
+1. Define the problem clearly
+2. Generate multiple solutions
+3. Evaluate each option
+4. Choose the best solution
+5. Implement and monitor
 
-1.2.2 Asking the Right Questions
+<div id="evaluating-options">
+<h3>3.2 Evaluating Options and Alternatives</h3>
 
-Homework 1.2.2: Asking the Right Questions
+When evaluating options, consider:
+- Feasibility and practicality
+- Potential consequences
+- Resource requirements
+- Stakeholder impact
+- Ethical implications
 
-Answer Key: Homework 1.2.2
+<div id="risk-assessment">
+<h3>3.3 Risk Assessment and Analysis</h3>
 
-1.2.3 Evidence Evaluation
+Assessing risks involves:
+- Identifying potential risks
+- Evaluating probability and impact
+- Developing mitigation strategies
+- Monitoring and adjusting
 
-Homework 1.2.3: Evidence Evaluation
+<div id="homework-3">
+<h3>Homework 3: Decision Making</h3>
 
-Answer Key: Homework 1.2.3
+Apply decision-making frameworks to real-world scenarios.
+</div>
+</div>
+</div>
+</div>
+</div>`
+    },
+    {
+      id: "section-4",
+      title: "Week 4: Research and Evidence Evaluation",
+      content: `<div id="scientific-method">
+<h2>Scientific Method and Research</h2>
 
-1.2.4 Structured Problem-Solving
+<div id="evidence-types">
+<h3>4.1 Types of Evidence</h3>
 
-Homework 1.2.4: Structured Problem-Solving
+Different types of evidence include:
+- Empirical evidence from observation
+- Statistical data and analysis
+- Expert testimony and opinions
+- Historical and case studies
+- Logical reasoning and theoretical frameworks
 
-Answer Key: Homework 1.2.4
+<div id="correlation-causation">
+<h3>4.2 Correlation vs. Causation</h3>
+
+Understanding the difference:
+- Correlation: variables change together
+- Causation: one variable causes change in another
+- Confounding variables can create false correlations
+
+<div id="research-evaluation">
+<h3>4.3 Evaluating Research Studies</h3>
+
+When evaluating research:
+- Check sample size and methodology
+- Look for peer review and replication
+- Consider funding sources and potential bias
+- Evaluate statistical significance
+
+<div id="homework-4">
+<h3>Homework 4: Research Evaluation</h3>
+
+Practice evaluating different types of research and evidence.
+</div>
+</div>
+</div>
+</div>
+</div>`
+    },
+    {
+      id: "section-5",
+      title: "Week 5: Media Literacy and Information Analysis",
+      content: `Continue with remaining weeks...
 
 1.3 Information Literacy
 

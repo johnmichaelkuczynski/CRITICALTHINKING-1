@@ -37,56 +37,56 @@ export default function Syllabus({ onNavigateToLivingBook, onNavigateToHomework 
     const topics: WeeklyTopic[] = [
       {
         week: 1,
-        title: "Basic Concepts, Notation, and Logical Operators",
+        title: "Foundations of Critical Thinking",
         livingBookSection: "section-1",
         assignments: [
           {
             type: "homework",
-            title: "Homework 1: Basic Concepts and Notation",
+            title: "Homework 1: Critical Thinking Foundations",
             dueDate: new Date(startDate.getTime() + 6 * 24 * 60 * 60 * 1000), // End of week 1
-            points: 50,
+            points: 60,
             status: "not-due"
           }
         ]
       },
       {
         week: 2,
-        title: "Truth Tables and Proof Methods",
+        title: "Argument Structure and Analysis",
         livingBookSection: "section-2",
         assignments: [
           {
             type: "homework",
-            title: "Homework 2: Truth Tables and Proofs",
+            title: "Homework 2: Argument Analysis",
             dueDate: new Date(startDate.getTime() + 13 * 24 * 60 * 60 * 1000), // End of week 2
-            points: 50,
+            points: 70,
             status: "not-due"
           }
         ]
       },
       {
         week: 3,
-        title: "Boolean Algebra and Functions",
+        title: "Decision Making and Problem Solving",
         livingBookSection: "section-3",
         assignments: [
           {
             type: "homework",
-            title: "Homework 3: Boolean Algebra",
+            title: "Homework 3: Decision Making",
             dueDate: new Date(startDate.getTime() + 20 * 24 * 60 * 60 * 1000), // End of week 3
-            points: 50,
+            points: 75,
             status: "not-due"
           }
         ]
       },
       {
         week: 4,
-        title: "Quantifier Logic and Translation",
+        title: "Research and Evidence Evaluation",
         livingBookSection: "section-4",
         assignments: [
           {
             type: "homework",
-            title: "Homework 4: Quantifier Logic",
+            title: "Homework 4: Research Evaluation",
             dueDate: new Date(startDate.getTime() + 27 * 24 * 60 * 60 * 1000), // End of week 4
-            points: 50,
+            points: 80,
             status: "not-due"
           },
           {
@@ -100,35 +100,63 @@ export default function Syllabus({ onNavigateToLivingBook, onNavigateToHomework 
       },
       {
         week: 5,
-        title: "Complex Translation and Mathematical Logic",
+        title: "Media Literacy and Information Analysis",
         livingBookSection: "section-5",
         assignments: [
           {
             type: "homework",
-            title: "Homework 5: Complex Translation",
+            title: "Homework 5: Media Literacy",
             dueDate: new Date(startDate.getTime() + 34 * 24 * 60 * 60 * 1000), // End of week 5
-            points: 50,
+            points: 85,
             status: "not-due"
           }
         ]
       },
       {
         week: 6,
-        title: "Using Models to Prove Invalidity and Consistency",
+        title: "Ethical Reasoning and Moral Frameworks",
         livingBookSection: "section-6",
         assignments: [
           {
             type: "homework",
-            title: "Homework 6: Models and Proofs",
+            title: "Homework 6: Ethical Reasoning",
             dueDate: new Date(startDate.getTime() + 41 * 24 * 60 * 60 * 1000), // End of week 6
-            points: 50,
+            points: 90,
+            status: "not-due"
+          }
+        ]
+      },
+      {
+        week: 7,
+        title: "Creative Thinking and Innovation",
+        livingBookSection: "section-7",
+        assignments: [
+          {
+            type: "homework",
+            title: "Homework 7: Creative Thinking",
+            dueDate: new Date(startDate.getTime() + 48 * 24 * 60 * 60 * 1000), // End of week 7
+            points: 95,
+            status: "not-due"
+          }
+        ]
+      },
+      {
+        week: 8,
+        title: "Integration and Real-World Applications",
+        livingBookSection: "section-8",
+        assignments: [
+          {
+            type: "homework",
+            title: "Homework 8: Real-World Applications",
+            dueDate: new Date(startDate.getTime() + 55 * 24 * 60 * 60 * 1000), // End of week 8
+            points: 100,
             status: "not-due"
           },
           {
             type: "final",
             title: "Final Exam",
-            dueDate: new Date(startDate.getTime() + 43 * 24 * 60 * 60 * 1000), // Wednesday of week 7
-            points: 150,
+            dueDate: new Date(startDate.getTime() + 57 * 24 * 60 * 60 * 1000), // Tuesday of week 9
+            points: 200,
             status: "not-due"
           }
         ]
@@ -165,7 +193,7 @@ export default function Syllabus({ onNavigateToLivingBook, onNavigateToHomework 
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Course Syllabus</h1>
         <p className="text-lg text-muted-foreground">
-          Introduction to Symbolic Logic - 6 Week Course
+          Critical Thinking - 8 Week Course
         </p>
       </div>
 
