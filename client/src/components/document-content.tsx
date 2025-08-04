@@ -262,19 +262,26 @@ export default function DocumentContent({
           
           // Detect homework patterns and make them clickable
           processedParagraph = processedParagraph.replace(
-            /Homework\s+(\d+\.?\d*\.?\d*\.?\d*):\s*([^.\n]+)/gi,
-            (match, homeworkNumber, title) => {
-              const weekNumber = Math.ceil(parseFloat(homeworkNumber.replace(/\./g, '')));
+            /Homework\s+(\d+)\.(\d+)\.(\d+):\s*([^.\n]+)/gi,
+            (match, chapter, section, subsection, title) => {
+              const weekNumber = parseInt(chapter);
+              return `<a href="#" class="homework-link text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-medium" data-week="${weekNumber}" data-type="homework" data-title="${title.trim()}">${match}</a>`;
+            }
+          );
+          
+          // Also detect simpler homework patterns
+          processedParagraph = processedParagraph.replace(
+            /Homework\s+(\d+):\s*([^.\n]+)/gi,
+            (match, weekNumber, title) => {
               return `<a href="#" class="homework-link text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline font-medium" data-week="${weekNumber}" data-type="homework" data-title="${title.trim()}">${match}</a>`;
             }
           );
           
           // Detect answer key patterns
           processedParagraph = processedParagraph.replace(
-            /Answer\s+Key:?\s*(Homework\s+\d+\.?\d*\.?\d*\.?\d*|[^.\n]+)/gi,
-            (match, reference) => {
-              const weekMatch = reference.match(/\d+/);
-              const weekNumber = weekMatch ? parseInt(weekMatch[0]) : 1;
+            /Answer\s+Key:?\s*(Homework\s+(\d+)\.(\d+)\.(\d+)|Homework\s+(\d+)|[^.\n]+)/gi,
+            (match, reference, ch1, sec1, sub1, week2) => {
+              const weekNumber = ch1 ? parseInt(ch1) : (week2 ? parseInt(week2) : 1);
               return `<a href="#" class="answer-key-link text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 underline font-medium" data-week="${weekNumber}" data-type="answer-key" data-title="${reference.trim()}">${match}</a>`;
             }
           );

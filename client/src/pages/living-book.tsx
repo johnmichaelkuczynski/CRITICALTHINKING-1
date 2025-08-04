@@ -271,7 +271,10 @@ export default function LivingBook({ openSection, onNavigateToModules }: LivingB
   const handleNavigateToModules = (weekNumber?: number, section?: string) => {
     console.log(`Navigating to Modules tab: Week ${weekNumber}, Section: ${section}`);
     if (onNavigateToModules && weekNumber) {
+      console.log(`Calling onNavigateToModules with week ${weekNumber} and section ${section || 'homework'}`);
       onNavigateToModules(weekNumber, section || 'homework');
+    } else {
+      console.log(`Navigation failed: onNavigateToModules=${!!onNavigateToModules}, weekNumber=${weekNumber}`);
     }
   };
 

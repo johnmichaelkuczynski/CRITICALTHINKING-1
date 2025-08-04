@@ -25,6 +25,7 @@ export default function CourseApp() {
 
   // Handle navigation to homework/assignments
   const handleNavigateToHomework = (weekNumber: number, assignmentType: string) => {
+    console.log(`handleNavigateToHomework called with week ${weekNumber}, type ${assignmentType}`);
     setActiveTab("modules");
     // If it's midterm or final, navigate to special modules
     if (assignmentType === "midterm") {
@@ -34,6 +35,7 @@ export default function CourseApp() {
     } else {
       setSelectedWeek(weekNumber); // Navigate to specific week module
     }
+    console.log(`Tab switched to modules, selected week set to ${assignmentType === "midterm" ? 7 : assignmentType === "final" ? 8 : weekNumber}`);
   };
 
   return (
