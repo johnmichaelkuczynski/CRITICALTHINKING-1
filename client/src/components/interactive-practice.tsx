@@ -7,7 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CheckCircle, XCircle, Clock, Calculator, ToggleLeft, ToggleRight, Keyboard, Eye, AlertTriangle, Flag } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Calculator, ToggleLeft, ToggleRight, Keyboard, Eye, AlertTriangle, Flag, RefreshCw } from 'lucide-react';
 
 interface Question {
   id: string;
@@ -39,6 +39,7 @@ interface InteractivePracticeProps {
   practiceType: 'homework' | 'quiz' | 'test';
   weekNumber: number;
   onComplete: (score: number, answers: Record<string, any>, timeSpent: number) => void;
+  onGenerateNew?: () => void;
 }
 
 interface GradeResult {
@@ -51,7 +52,8 @@ export function InteractivePractice({
   content, 
   practiceType, 
   weekNumber, 
-  onComplete 
+  onComplete,
+  onGenerateNew
 }: InteractivePracticeProps) {
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [showResults, setShowResults] = useState(false);
@@ -768,6 +770,20 @@ export function InteractivePractice({
                       Review the AI's reasoning for each answer to improve your understanding.
                     </div>
                   </div>
+                  
+                  {/* GENERATE NEW PRACTICE BUTTON */}
+                  {onGenerateNew && practiceType === 'homework' && (
+                    <div className="flex justify-center mt-6">
+                      <Button 
+                        onClick={onGenerateNew}
+                        className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white"
+                        size="lg"
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                        <span>Generate New Practice Homework</span>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

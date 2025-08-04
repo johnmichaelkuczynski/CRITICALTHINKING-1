@@ -457,6 +457,13 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     
     setGeneratingPracticeHomework(true);
     
+    // Reset the practice session to show loading state
+    setPracticeHomeworkStarted(prev => ({ ...prev, [weekNumber]: false }));
+    setGeneratedPracticeHomework(prev => ({
+      ...prev,
+      [weekNumber]: ''
+    }));
+    
     try {
       const response = await fetch('/api/homework/generate', {
         method: 'POST',
@@ -466,7 +473,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
         body: JSON.stringify({
           weekNumber: weekNumber,
           topic: modules.find(m => m.week === weekNumber)?.title || '',
-          courseMaterial: `Week ${weekNumber} Practice Session. This is part of a 6-week symbolic logic course.`,
+          courseMaterial: `Week ${weekNumber} Critical Thinking Practice Session. This is part of an 8-week Critical Thinking course covering logical reasoning, argument analysis, decision-making, and problem-solving skills.`,
           aiModel: selectedAIModel,
           isPractice: true
         }),
@@ -1174,6 +1181,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                 onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
                                   handlePracticeComplete('homework', selectedModuleData.week, score, answers, timeSpent)
                                 }
+                                onGenerateNew={() => generatePracticeHomework(selectedModuleData.week)}
                               />
                             );
                           } 
@@ -1213,6 +1221,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                     onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
                                       handlePracticeComplete('homework', selectedModuleData.week, score, answers, timeSpent)
                                     }
+                                    onGenerateNew={() => generatePracticeHomework(selectedModuleData.week)}
                                   />
                                 );
                               }
