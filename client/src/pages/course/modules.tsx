@@ -1050,8 +1050,8 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                               id: q.id || `pf-q${index + 1}`,
                               question: q.question,
                               options: q.options || [],
-                              correct: 0, // Will be graded by AI
-                              answer: '', // AI grading handles all types
+                              correct: q.correctAnswerIndex ?? q.correctAnswer ?? 0, // Use actual correct answer index from AI
+                              answer: q.correctAnswer || '', // Store the text of correct answer too
                               explanation: `This question tests ${q.section || 'critical thinking skills'}.`
                             }
                           ]

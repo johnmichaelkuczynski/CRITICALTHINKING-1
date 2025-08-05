@@ -2039,6 +2039,7 @@ QUESTION REQUIREMENTS:
 - Use realistic scenarios from healthcare, business, politics, media, science
 - Ensure questions require analysis, not just memorization
 - Points should range from 10-25 per question for total of 200 points
+- FOR MULTIPLE CHOICE: Include both correctAnswerIndex (0-3) and correctAnswer (full text) fields
 
 OUTPUT FORMAT:
 Return a JSON object with this structure:
@@ -2053,6 +2054,8 @@ Return a JSON object with this structure:
       "type": "multiple_choice",
       "question": "Question text here...",
       "options": ["A) option", "B) option", "C) option", "D) option"],
+      "correctAnswerIndex": 2,
+      "correctAnswer": "C) option",
       "points": 15,
       "section": "Critical Thinking Foundations"
     },
