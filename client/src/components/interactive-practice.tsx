@@ -296,10 +296,14 @@ export function InteractivePractice({
     let totalQuestions = 0;
     const newGradeResults: Record<string, GradeResult> = {};
 
+    console.log("DEBUG: Starting grading with answers:", answers);
+    console.log("DEBUG: Content problems:", content.problems);
+
     for (const problem of content.problems) {
       for (const question of problem.questions) {
         totalQuestions++;
         const userAnswer = answers[question.id];
+        console.log(`DEBUG: Question ${question.id} - User answer: "${userAnswer}" (type: ${typeof userAnswer})`);
         
         if (problem.type === 'multiple_choice') {
           const isCorrect = userAnswer === question.correct;
@@ -309,12 +313,14 @@ export function InteractivePractice({
             explanation: isCorrect ? 'Correct choice selected' : 'Incorrect choice selected'
           };
         } else if (problem.type === 'text_input' || problem.type === 'calculation') {
-          if (userAnswer && question.answer) {
+          console.log(`DEBUG: Text input - userAnswer: "${userAnswer}", question.answer: "${question.answer}"`);
+          if (userAnswer && userAnswer.trim() !== '') {
             // TRUE PASSTHROUGH: Let LLM decide if answer is correct
-            const gradeResult = await evaluateAnswerWithLLM(userAnswer, question.answer, question.question);
+            const gradeResult = await evaluateAnswerWithLLM(userAnswer, question.answer || '', question.question);
             newGradeResults[question.id] = gradeResult;
             totalCorrect += gradeResult.isCorrect ? 1 : 0;
           } else {
+            console.log(`DEBUG: No valid answer for ${question.id} - userAnswer: "${userAnswer}"`);
             newGradeResults[question.id] = {
               isCorrect: false,
               explanation: 'No answer provided'
