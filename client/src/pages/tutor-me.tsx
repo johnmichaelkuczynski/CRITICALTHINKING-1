@@ -141,16 +141,14 @@ export default function TutorMe() {
       setSession(prev => {
         const newSession = {
           ...prev,
-          messages: [...prev.messages, userMessage, tutorMessage]
+          messages: [...prev.messages, userMessage, tutorMessage],
+          userLevel: data.performance?.currentLevel || prev.userLevel
         };
 
         // Update session based on evaluation
         if (data.evaluation) {
           if (data.evaluation.correct) {
             newSession.strengthAreas = Array.from(new Set([...prev.strengthAreas, data.topic || 'general']));
-            if (data.evaluation.nextLevel === 'advance') {
-              newSession.userLevel = prev.userLevel === 'beginner' ? 'intermediate' : 'advanced';
-            }
           } else {
             newSession.weaknessAreas = Array.from(new Set([...prev.weaknessAreas, data.topic || 'general']));
           }
@@ -205,7 +203,7 @@ export default function TutorMe() {
   const formatTutorMessage = (content: string) => {
     // Look for questions marked with **Question:** pattern and make them stand out
     let formatted = content.replace(
-      /\*\*Question:\*\*(.*?)(?=\n\n|$)/gs,
+      /\*\*Question:\*\*(.*?)(?=\n\n|$)/g,
       '<div class="bg-blue-50 dark:bg-blue-950 border-l-4 border-blue-400 p-4 my-4 rounded-r">' +
       '<div class="font-bold text-blue-800 dark:text-blue-200 mb-2 text-lg">📝 Question:</div>' +
       '<div class="text-blue-700 dark:text-blue-300 font-medium text-base leading-relaxed">$1</div>' +
@@ -272,6 +270,31 @@ export default function TutorMe() {
           </div>
         </div>
         
+        {/* Performance Tracking Display */}
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-blue-50 dark:bg-blue-950 rounded-lg p-3">
+            <div className="text-sm font-medium text-blue-800 dark:text-blue-200">Questions Answered</div>
+            <div className="text-xl font-bold text-blue-900 dark:text-blue-100">
+              {session.messages.filter(m => m.evaluation).length}
+            </div>
+          </div>
+          <div className="bg-green-50 dark:bg-green-950 rounded-lg p-3">
+            <div className="text-sm font-medium text-green-800 dark:text-green-200">Overall Accuracy</div>
+            <div className="text-xl font-bold text-green-900 dark:text-green-100">
+              {session.messages.filter(m => m.evaluation).length > 0 
+                ? Math.round((session.messages.filter(m => m.evaluation?.correct).length / 
+                   session.messages.filter(m => m.evaluation).length) * 100)
+                : 0}%
+            </div>
+          </div>
+          <div className="bg-purple-50 dark:bg-purple-950 rounded-lg p-3">
+            <div className="text-sm font-medium text-purple-800 dark:text-purple-200">Difficulty Level</div>
+            <div className="text-xl font-bold text-purple-900 dark:text-purple-100 capitalize">
+              {session.userLevel}
+            </div>
+          </div>
+        </div>
+
         {(session.strengthAreas.length > 0 || session.weaknessAreas.length > 0) && (
           <div className="mt-4 flex gap-4">
             {session.strengthAreas.length > 0 && (

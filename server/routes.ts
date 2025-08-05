@@ -633,7 +633,7 @@ Output only the abbreviation list, one per line. Be concise and use single capit
     }
   });
 
-  // Tutor endpoint - COMPLETE AI PASSTHROUGH - NO INTERFERENCE WHATSOEVER
+  // Tutor endpoint - ADAPTIVE DIFFICULTY WITH PERFORMANCE TRACKING
   app.post('/api/tutor', async (req, res) => {
     try {
       const { message, isAnswer, session } = req.body;
@@ -646,6 +646,40 @@ Output only the abbreviation list, one per line. Be concise and use single capit
         return res.status(500).json({ error: 'OpenAI API key not configured' });
       }
 
+      // Calculate performance metrics from session
+      const calculatePerformance = (sessionData: any) => {
+        if (!sessionData?.messages) {
+          return { correctRate: 0, recentCorrect: 0, totalAnswers: 0, currentLevel: 'beginner' };
+        }
+
+        const evaluations = sessionData.messages
+          .filter((msg: any) => msg.evaluation)
+          .map((msg: any) => msg.evaluation);
+
+        const totalAnswers = evaluations.length;
+        const correctAnswers = evaluations.filter((evaluation: any) => evaluation.correct).length;
+        const correctRate = totalAnswers > 0 ? correctAnswers / totalAnswers : 0;
+
+        // Recent performance (last 5 evaluations)
+        const recentEvaluations = evaluations.slice(-5);
+        const recentCorrect = recentEvaluations.filter((evaluation: any) => evaluation.correct).length;
+        const recentRate = recentEvaluations.length > 0 ? recentCorrect / recentEvaluations.length : 0;
+
+        // Determine current level based on performance
+        let currentLevel = 'beginner';
+        if (totalAnswers >= 3) {
+          if (correctRate >= 0.8 && recentRate >= 0.8) {
+            currentLevel = 'advanced';
+          } else if (correctRate >= 0.6 && recentRate >= 0.6) {
+            currentLevel = 'intermediate';
+          }
+        }
+
+        return { correctRate, recentCorrect, totalAnswers, currentLevel, recentRate: recentRate || 0 };
+      };
+
+      const performance = calculatePerformance(session);
+
       // Build context from session history
       let conversationHistory = '';
       if (session?.messages && session.messages.length > 0) {
@@ -655,7 +689,33 @@ Output only the abbreviation list, one per line. Be concise and use single capit
           .join('\n\n');
       }
 
-      // PURE AI - No JSON forcing, no structure, no interference
+      // Adaptive difficulty prompt based on performance
+      const getDifficultyInstruction = (perf: any) => {
+        if (perf.totalAnswers < 3) {
+          return "Start with basic, foundational questions to assess the student's level.";
+        }
+        
+        if (perf.recentRate >= 0.8 && perf.correctRate >= 0.8) {
+          return `RAISE THE TEMPERATURE: The student has ${Math.round(perf.correctRate * 100)}% overall accuracy and ${Math.round(perf.recentRate * 100)}% recent accuracy. Increase difficulty with:
+- More complex critical thinking scenarios
+- Multi-step logical analysis questions  
+- Advanced concepts like formal fallacies, modal logic, or philosophical arguments
+- Real-world case studies requiring sophisticated reasoning
+- Questions that require synthesis of multiple concepts`;
+        } else if (perf.recentRate <= 0.4 || perf.correctRate <= 0.4) {
+          return `DIAL IT DOWN: The student is struggling with ${Math.round(perf.correctRate * 100)}% overall accuracy and ${Math.round(perf.recentRate * 100)}% recent accuracy. Use a more hand-holding approach:
+- Break complex concepts into smaller steps
+- Ask simpler, more direct questions
+- Provide more explanatory context before questions
+- Use concrete examples and analogies
+- Offer hints and guidance
+- Focus on reinforcing fundamental concepts`;
+        } else {
+          return `MAINTAIN CURRENT LEVEL: Student shows moderate performance (${Math.round(perf.correctRate * 100)}% overall, ${Math.round(perf.recentRate * 100)}% recent). Continue with intermediate-level questions while monitoring progress.`;
+        }
+      };
+
+      // ADAPTIVE AI WITH PERFORMANCE-BASED DIFFICULTY ADJUSTMENT
       const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -666,29 +726,40 @@ Output only the abbreviation list, one per line. Be concise and use single capit
           model: 'gpt-4o',
           messages: [{
             role: 'system',
-            content: `You are an expert Critical Thinking tutor having a direct conversation with your student.
+            content: `You are an expert Critical Thinking tutor with adaptive difficulty adjustment capabilities.
+
+STUDENT PERFORMANCE ANALYSIS:
+- Total questions answered: ${performance.totalAnswers}
+- Overall accuracy: ${Math.round(performance.correctRate * 100)}%
+- Recent accuracy (last 5): ${Math.round(performance.recentRate * 100)}%
+- Current level: ${performance.currentLevel}
+
+ADAPTIVE DIFFICULTY INSTRUCTION:
+${getDifficultyInstruction(performance)}
 
 ${conversationHistory ? `Recent conversation:\n${conversationHistory}\n\n` : ''}
 
-CRITICAL INSTRUCTIONS:
+CORE TUTORING PRINCIPLES:
 1. Always address the student directly as "you" - NEVER refer to "the student" in third person
 2. Ask ONLY ONE QUESTION at a time - this is essential for proper workflow
 3. When you ask a question, make it clear, specific, and test-like
 4. If evaluating an answer, be honest about whether it's correct or incorrect
-5. Be direct, accurate, and professional
+5. Adapt your teaching style based on the student's demonstrated performance
+6. Be direct, accurate, and professional
 
 WORKFLOW RULES:
 - If this is a new topic, provide a brief explanation then ask ONE specific question
 - If you're evaluating an answer, give feedback then ask ONE follow-up question (if needed)
 - Never ask multiple questions in one response
 - Format questions clearly so they stand out
+- Adjust complexity based on performance metrics above
 
 Example responses:
 "Deductive reasoning moves from general premises to specific conclusions. Here's how it works...
 
 **Question:** Can you identify whether this argument is deductive: 'All birds have wings. Robins are birds. Therefore, robins have wings.'"
 
-Be authentic and educational, not conversational fluff.`
+Remember: Your goal is to challenge successful students and support struggling ones.`
           }, {
             role: 'user',
             content: message
@@ -706,29 +777,39 @@ Be authentic and educational, not conversational fluff.`
 
       const aiResponse = openaiData.choices[0].message.content;
 
-      // Return the pure AI response with minimal processing
-      // Extract difficulty from AI response or determine based on content complexity
-      let difficulty: 'beginner' | 'intermediate' | 'advanced' = 'beginner';
-      
-      const response = aiResponse.toLowerCase();
-      if (response.includes('advanced') || response.includes('complex') || response.includes('sophisticated') || 
-          response.includes('brownian motion') || response.includes('stochastic') || response.includes('calculus') ||
-          response.includes('theoretical') || response.includes('doctoral') || response.includes('phd')) {
-        difficulty = 'advanced';
-      } else if (response.includes('intermediate') || response.includes('moderate') || 
-                response.includes('university') || response.includes('undergraduate') || 
-                response.includes('college') || response.includes('analysis') || response.includes('evaluation')) {
-        difficulty = 'intermediate';  
-      } else {
-        difficulty = 'beginner';
+      // Determine if response contains a question
+      const hasQuestion = aiResponse.includes('**Question:**') || aiResponse.includes('?');
+
+      // Evaluate answer if this was a response to a question
+      let evaluation = null;
+      if (isAnswer) {
+        // Simple evaluation based on AI response content
+        const responseLower = aiResponse.toLowerCase();
+        const isCorrect = responseLower.includes('correct') || responseLower.includes('right') || 
+                         responseLower.includes('good') || responseLower.includes('excellent') ||
+                         responseLower.includes('exactly') || !responseLower.includes('incorrect');
+        
+        evaluation = {
+          correct: isCorrect,
+          explanation: aiResponse,
+          nextLevel: isCorrect ? 
+            (performance.correctRate >= 0.7 ? 'advance' : 'reinforce') : 
+            'remediate'
+        };
       }
 
+      // Return response with performance tracking
       res.json({
         response: aiResponse,
-        hasQuestion: aiResponse.includes('?'), // Simple check for questions
-        difficulty: difficulty, // AI-determined difficulty based on content
-        topic: 'critical-thinking',
-        evaluation: null // Let AI naturally provide feedback in its response
+        difficulty: performance.currentLevel,
+        hasQuestion,
+        evaluation,
+        performance: {
+          totalAnswers: performance.totalAnswers,
+          correctRate: Math.round(performance.correctRate * 100),
+          recentRate: Math.round((performance.recentRate || 0) * 100),
+          currentLevel: performance.currentLevel
+        }
       });
 
     } catch (error) {
