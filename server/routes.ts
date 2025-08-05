@@ -101,7 +101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY!}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
@@ -147,7 +147,7 @@ Is the student's answer correct? Focus on reasoning and understanding, not exact
         const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: {
-            'x-api-key': process.env.ANTHROPIC_API_KEY,
+            'x-api-key': process.env.ANTHROPIC_API_KEY!,
             'Content-Type': 'application/json',
             'anthropic-version': '2023-06-01'
           },
@@ -221,7 +221,7 @@ Is the student correct?`
         const perplexityResponse = await fetch('https://api.perplexity.ai/chat/completions', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`,
+            'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY!}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
@@ -273,7 +273,7 @@ Return JSON: {"isCorrect": true/false, "explanation": "brief reason"}`
         const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: {
-            'x-api-key': process.env.ANTHROPIC_API_KEY,
+            'x-api-key': process.env.ANTHROPIC_API_KEY!,
             'Content-Type': 'application/json',
             'anthropic-version': '2023-06-01'
           },
@@ -316,7 +316,7 @@ Create lecture summary for Week ${weekNumber}: ${topic}. Include relevant course
         const perplexityResponse = await fetch('https://api.perplexity.ai/chat/completions', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`,
+            'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY!}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
@@ -360,7 +360,7 @@ Create lecture summary for Week ${weekNumber}: ${topic}. Include relevant course
         const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY!}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
@@ -411,7 +411,7 @@ Format as structured content with clear headings and bullet points. Make it comp
       console.error('Lecture generation error:', error);
       res.status(500).json({ 
         error: 'Failed to generate lecture',
-        details: error.message 
+        details: error instanceof Error ? error.message : "Unknown error" 
       });
     }
   });
@@ -470,7 +470,7 @@ Material: ${courseMaterial}`;
       if (aiModel === 'anthropic') {
         const response = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
-          headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01' },
+          headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY!, 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01' },
           body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 3000, messages: [{ role: 'user', content: uniquePrompt }] })
         });
         const data = await response.json();
@@ -478,7 +478,7 @@ Material: ${courseMaterial}`;
       } else if (aiModel === 'perplexity') {
         const response = await fetch('https://api.perplexity.ai/chat/completions', {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`, 'Content-Type': 'application/json' },
+          headers: { 'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY!}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ model: 'llama-3.1-sonar-small-128k-online', messages: [{ role: 'user', content: uniquePrompt }], temperature: 0.9, max_tokens: 3000 })
         });
         const data = await response.json();
@@ -486,7 +486,7 @@ Material: ${courseMaterial}`;
       } else {
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
-          headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
+          headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY!}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ model: 'gpt-4o', messages: [{ role: 'user', content: uniquePrompt }], temperature: 0.9, max_tokens: 3000 })
         });
         const data = await response.json();
@@ -504,7 +504,7 @@ Material: ${courseMaterial}`;
       console.error('Homework generation error:', error);
       res.status(500).json({ 
         error: 'Failed to generate homework',
-        details: error.message 
+        details: error instanceof Error ? error instanceof Error ? error.message : "Unknown error" : 'Unknown error'
       });
     }
   });
@@ -528,7 +528,7 @@ Material: ${courseMaterial}`;
         const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: {
-            'x-api-key': process.env.ANTHROPIC_API_KEY,
+            'x-api-key': process.env.ANTHROPIC_API_KEY!,
             'content-type': 'application/json',
             'anthropic-version': '2023-06-01'
           },
@@ -563,7 +563,7 @@ Sentence: ${text}`
       console.error('Logic conversion error:', error);
       res.status(500).json({ 
         error: 'Failed to convert logic statement',
-        details: error.message 
+        details: error instanceof Error ? error.message : "Unknown error" 
       });
     }
   });
@@ -628,7 +628,7 @@ Output only the abbreviation list, one per line. Be concise and use single capit
       res.status(500).json({ 
         success: false, 
         error: 'Failed to generate abbreviations',
-        details: error.message
+        details: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
@@ -659,7 +659,7 @@ Output only the abbreviation list, one per line. Be concise and use single capit
       const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY!}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -735,7 +735,7 @@ Be authentic and educational, not conversational fluff.`
       console.error('Tutor API error:', error);
       res.status(500).json({ 
         error: 'Failed to process tutoring request',
-        details: error.message 
+        details: error instanceof Error ? error.message : "Unknown error" 
       });
     }
   });
@@ -800,7 +800,7 @@ Be authentic and educational, not conversational fluff.`
       }
     } catch (error) {
       console.error("Registration error:", error);
-      res.status(500).json({ success: false, error: "Registration failed: " + error.message });
+      res.status(500).json({ success: false, error: "Registration failed: " + error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -870,7 +870,7 @@ Be authentic and educational, not conversational fluff.`
       }
     } catch (error) {
       console.error("Login error:", error);
-      res.status(500).json({ success: false, error: "Login failed: " + error.message });
+      res.status(500).json({ success: false, error: "Login failed: " + error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -1052,7 +1052,7 @@ Be authentic and educational, not conversational fluff.`
       res.json({ response, isPreview });
     } catch (error) {
       console.error("Chat error:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -1090,7 +1090,7 @@ Be authentic and educational, not conversational fluff.`
       res.json({ response, isPreview });
     } catch (error) {
       console.error("Instruction error:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -1101,7 +1101,7 @@ Be authentic and educational, not conversational fluff.`
       res.json(messages);
     } catch (error) {
       console.error("Chat history error:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -1112,7 +1112,7 @@ Be authentic and educational, not conversational fluff.`
       res.json({ success: true });
     } catch (error) {
       console.error("Clear chat error:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -1156,7 +1156,7 @@ Be authentic and educational, not conversational fluff.`
       });
     } catch (error) {
       console.error("Rewrite error:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -1167,7 +1167,7 @@ Be authentic and educational, not conversational fluff.`
       res.json(rewrites);
     } catch (error) {
       console.error("Error fetching rewrites:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -1190,7 +1190,7 @@ Be authentic and educational, not conversational fluff.`
       res.send(pdfBuffer);
     } catch (error) {
       console.error("PDF generation error:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -1322,7 +1322,7 @@ Be authentic and educational, not conversational fluff.`
       });
     } catch (error) {
       console.error("Quiz generation error:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -1333,7 +1333,7 @@ Be authentic and educational, not conversational fluff.`
       res.json(quizzes);
     } catch (error) {
       console.error("Error fetching quizzes:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -1380,7 +1380,7 @@ Be authentic and educational, not conversational fluff.`
       });
     } catch (error) {
       console.error("Study guide generation error:", error);
-      res.status(500).json({ error: error instanceof Error ? error.message : "Failed to generate study guide" });
+      res.status(500).json({ error: error instanceof Error ? error instanceof Error ? error.message : "Unknown error" : "Failed to generate study guide" });
     }
   });
 
@@ -1391,7 +1391,7 @@ Be authentic and educational, not conversational fluff.`
       res.json(studyGuides);
     } catch (error) {
       console.error("Error fetching study guides:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -1437,7 +1437,7 @@ Be authentic and educational, not conversational fluff.`
       });
     } catch (error) {
       console.error("Student test generation error:", error);
-      res.status(500).json({ error: error instanceof Error ? error.message : "Failed to generate student test" });
+      res.status(500).json({ error: error instanceof Error ? error instanceof Error ? error.message : "Unknown error" : "Failed to generate student test" });
     }
   });
 
@@ -1448,7 +1448,7 @@ Be authentic and educational, not conversational fluff.`
       res.json(studentTests);
     } catch (error) {
       console.error("Error fetching student tests:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error instanceof Error ? error.message : "Unknown error" });
     }
   });
 
@@ -1497,7 +1497,7 @@ Be authentic and educational, not conversational fluff.`
       });
     } catch (error) {
       console.error("Test submission error:", error);
-      res.status(500).json({ error: error instanceof Error ? error.message : "Failed to submit test" });
+      res.status(500).json({ error: error instanceof Error ? error instanceof Error ? error.message : "Unknown error" : "Failed to submit test" });
     }
   });
 
@@ -1552,7 +1552,7 @@ Requirements:
         const response = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: {
-            'x-api-key': process.env.ANTHROPIC_API_KEY,
+            'x-api-key': process.env.ANTHROPIC_API_KEY!,
             'Content-Type': 'application/json',
             'anthropic-version': '2023-06-01'
           },
@@ -1612,7 +1612,7 @@ Requirements:
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY!}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
@@ -1867,7 +1867,7 @@ DO NOT use exact string matching. Evaluate the reasoning and understanding.`;
       console.error("Error generating podcast:", error);
       res.status(500).json({ 
         error: "Failed to generate podcast",
-        details: error instanceof Error ? error.message : String(error)
+        details: error instanceof Error ? error instanceof Error ? error.message : "Unknown error" : String(error)
       });
     }
   });
