@@ -1215,7 +1215,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                   questions: part.questions?.map((q: any) => ({
                                     id: q.id,
                                     question: q.question,
-                                    correctAnswer: '',
+                                    answer: '', // Empty answer for practice homework - no correct answers shown
                                     explanation: q.explanation || ''
                                   })) || []
                                 })) || []
