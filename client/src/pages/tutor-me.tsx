@@ -65,7 +65,7 @@ export default function TutorMe() {
 
   const tutorMutation = useMutation({
     mutationFn: async ({ message, isAnswer }: { message: string; isAnswer: boolean }) => {
-      return apiRequest('/api/tutor', {
+      const response = await apiRequest('/api/tutor', {
         method: 'POST',
         body: JSON.stringify({ 
           message, 
@@ -82,6 +82,7 @@ export default function TutorMe() {
           'Content-Type': 'application/json'
         }
       });
+      return await response.json();
     },
     onSuccess: (data: any, variables) => {
       // Add user message
