@@ -73,10 +73,15 @@ export function InteractivePractice({
   const [isGrading, setIsGrading] = useState(false);
 
   const updateAnswer = (questionId: string, answer: any) => {
-    setAnswers(prev => ({
-      ...prev,
-      [questionId]: answer
-    }));
+    console.log(`DEBUG: updateAnswer called - questionId: "${questionId}", answer: "${answer}"`);
+    setAnswers(prev => {
+      const newAnswers = {
+        ...prev,
+        [questionId]: answer
+      };
+      console.log(`DEBUG: Updated answers state:`, newAnswers);
+      return newAnswers;
+    });
   };
 
   const logicSymbols = [
