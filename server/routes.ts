@@ -695,15 +695,15 @@ Output only the abbreviation list, one per line. Be concise and use single capit
           return "Start with basic, foundational questions to assess the student's level.";
         }
         
-        if (perf.recentRate >= 0.8 && perf.correctRate >= 0.8) {
-          return `RAISE THE TEMPERATURE: The student has ${Math.round(perf.correctRate * 100)}% overall accuracy and ${Math.round(perf.recentRate * 100)}% recent accuracy. Increase difficulty with:
+        if ((perf.recentRate || 0) >= 0.8 && perf.correctRate >= 0.8) {
+          return `RAISE THE TEMPERATURE: The student has ${Math.round(perf.correctRate * 100)}% overall accuracy and ${Math.round((perf.recentRate || 0) * 100)}% recent accuracy. Increase difficulty with:
 - More complex critical thinking scenarios
 - Multi-step logical analysis questions  
 - Advanced concepts like formal fallacies, modal logic, or philosophical arguments
 - Real-world case studies requiring sophisticated reasoning
 - Questions that require synthesis of multiple concepts`;
-        } else if (perf.recentRate <= 0.4 || perf.correctRate <= 0.4) {
-          return `DIAL IT DOWN: The student is struggling with ${Math.round(perf.correctRate * 100)}% overall accuracy and ${Math.round(perf.recentRate * 100)}% recent accuracy. Use a more hand-holding approach:
+        } else if ((perf.recentRate || 0) <= 0.4 || perf.correctRate <= 0.4) {
+          return `DIAL IT DOWN: The student is struggling with ${Math.round(perf.correctRate * 100)}% overall accuracy and ${Math.round((perf.recentRate || 0) * 100)}% recent accuracy. Use a more hand-holding approach:
 - Break complex concepts into smaller steps
 - Ask simpler, more direct questions
 - Provide more explanatory context before questions
@@ -711,7 +711,7 @@ Output only the abbreviation list, one per line. Be concise and use single capit
 - Offer hints and guidance
 - Focus on reinforcing fundamental concepts`;
         } else {
-          return `MAINTAIN CURRENT LEVEL: Student shows moderate performance (${Math.round(perf.correctRate * 100)}% overall, ${Math.round(perf.recentRate * 100)}% recent). Continue with intermediate-level questions while monitoring progress.`;
+          return `MAINTAIN CURRENT LEVEL: Student shows moderate performance (${Math.round(perf.correctRate * 100)}% overall, ${Math.round((perf.recentRate || 0) * 100)}% recent). Continue with intermediate-level questions while monitoring progress.`;
         }
       };
 
@@ -731,7 +731,7 @@ Output only the abbreviation list, one per line. Be concise and use single capit
 STUDENT PERFORMANCE ANALYSIS:
 - Total questions answered: ${performance.totalAnswers}
 - Overall accuracy: ${Math.round(performance.correctRate * 100)}%
-- Recent accuracy (last 5): ${Math.round(performance.recentRate * 100)}%
+- Recent accuracy (last 5): ${Math.round((performance.recentRate || 0) * 100)}%
 - Current level: ${performance.currentLevel}
 
 ADAPTIVE DIFFICULTY INSTRUCTION:
@@ -816,6 +816,104 @@ Remember: Your goal is to challenge successful students and support struggling o
       console.error('Tutor API error:', error);
       res.status(500).json({ 
         error: 'Failed to process tutoring request',
+        details: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
+  // Diagnostic question generator endpoint
+  app.post('/api/diagnostic-question', async (req, res) => {
+    try {
+      const { difficulty, weakAreas, totalAnswered, recentPerformance } = req.body;
+
+      if (!process.env.OPENAI_API_KEY) {
+        return res.status(500).json({ error: 'OpenAI API key not configured' });
+      }
+
+      // Build adaptive prompt based on performance
+      const getAdaptivePrompt = () => {
+        let focusAreas = '';
+        if (weakAreas && weakAreas.length > 0) {
+          focusAreas = `FOCUS AREAS: The user needs more practice with: ${weakAreas.join(', ')}. Generate questions in these areas.`;
+        }
+
+        let difficultyInstruction = '';
+        if (difficulty === 'advanced') {
+          difficultyInstruction = 'Create ADVANCED questions requiring complex critical thinking, multi-step analysis, formal fallacies, modal logic, or sophisticated philosophical reasoning.';
+        } else if (difficulty === 'intermediate') {
+          difficultyInstruction = 'Create INTERMEDIATE questions with moderate complexity, requiring logical analysis and evaluation skills.';
+        } else {
+          difficultyInstruction = 'Create BEGINNER questions focusing on fundamental critical thinking concepts with clear, straightforward analysis.';
+        }
+
+        return `You are a Critical Thinking diagnostic question generator. 
+
+${difficultyInstruction}
+
+${focusAreas}
+
+REQUIREMENTS:
+1. Generate exactly ONE multiple-choice question with 4 options (A, B, C, D)
+2. Include a clear, educational explanation for the correct answer
+3. Categorize the question (e.g., "Logical Fallacies", "Argument Analysis", "Evidence Evaluation", etc.)
+4. Make questions practical and engaging, not purely theoretical
+
+RESPONSE FORMAT (JSON ONLY):
+{
+  "id": "unique-id-string",
+  "question": "The question text here",
+  "options": ["Option A", "Option B", "Option C", "Option D"],
+  "correctAnswer": 0,
+  "explanation": "Detailed explanation of why this is correct and why other options are wrong",
+  "difficulty": "${difficulty}",
+  "category": "Category Name"
+}
+
+Question categories to use: Logical Fallacies, Argument Analysis, Evidence Evaluation, Causal Reasoning, Bias Detection, Inductive Reasoning, Deductive Reasoning, Critical Reading, Problem Solving, Decision Making`;
+      };
+
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY!}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [{
+            role: 'system',
+            content: getAdaptivePrompt()
+          }, {
+            role: 'user',
+            content: `Generate a ${difficulty} critical thinking question. Session stats: ${totalAnswered} questions answered.`
+          }],
+          temperature: 0.8,
+          max_tokens: 800,
+          response_format: { type: "json_object" }
+        })
+      });
+
+      const openaiData = await openaiResponse.json();
+      
+      if (!openaiResponse.ok) {
+        throw new Error(`OpenAI API error: ${openaiData.error?.message || 'Unknown error'}`);
+      }
+
+      const questionData = JSON.parse(openaiData.choices[0].message.content);
+      
+      // Validate required fields
+      if (!questionData.question || !questionData.options || !Array.isArray(questionData.options) || 
+          questionData.options.length !== 4 || typeof questionData.correctAnswer !== 'number' ||
+          !questionData.explanation || !questionData.category) {
+        throw new Error('Invalid question format from AI');
+      }
+
+      res.json(questionData);
+
+    } catch (error) {
+      console.error('Diagnostic question generation error:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate diagnostic question',
         details: error instanceof Error ? error.message : "Unknown error" 
       });
     }

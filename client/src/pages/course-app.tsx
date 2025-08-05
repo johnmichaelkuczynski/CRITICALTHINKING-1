@@ -6,6 +6,7 @@ import Modules from "./course/modules";
 import Analytics from "./course/practice-center";
 import MyGrades from "./course/my-grades";
 import TutorMe from "./tutor-me";
+import Diagnostics from "./diagnostics";
 
 export default function CourseApp() {
   const [activeTab, setActiveTab] = useState("living-book");
@@ -79,6 +80,12 @@ export default function CourseApp() {
           >
             Tutor Me
           </TabsTrigger>
+          <TabsTrigger 
+            value="diagnostics"
+            className="px-6 py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
+          >
+            Diagnostics
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="living-book" className="h-full m-0 p-0">
@@ -113,6 +120,10 @@ export default function CourseApp() {
 
         <TabsContent value="tutor-me" className="h-full m-0 p-0">
           <TutorMe />
+        </TabsContent>
+
+        <TabsContent value="diagnostics" className="h-full m-0 p-0">
+          <Diagnostics />
         </TabsContent>
       </Tabs>
     </div>
