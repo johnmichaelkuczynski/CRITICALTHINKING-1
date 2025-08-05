@@ -199,21 +199,21 @@ export default function TutorMe() {
     }
   };
 
-  // Format tutor messages to make questions distinct and prominent
+  // Format tutor messages to make THE SINGLE QUESTION distinct and prominent
   const formatTutorMessage = (content: string) => {
-    // Look for questions marked with **Question X:** pattern and make them stand out
+    // Look for questions marked with **Question:** pattern and make them stand out
     let formatted = content.replace(
-      /\*\*Question (\d+):\*\*(.*?)(?=\*\*Question \d+:|\n\n|$)/gs,
-      '<div class="bg-blue-50 dark:bg-blue-950 border-l-4 border-blue-400 p-3 my-3 rounded-r">' +
-      '<div class="font-semibold text-blue-800 dark:text-blue-200 mb-1">Question $1:</div>' +
-      '<div class="text-blue-700 dark:text-blue-300">$2</div>' +
+      /\*\*Question:\*\*(.*?)(?=\n\n|$)/gs,
+      '<div class="bg-blue-50 dark:bg-blue-950 border-l-4 border-blue-400 p-4 my-4 rounded-r">' +
+      '<div class="font-bold text-blue-800 dark:text-blue-200 mb-2 text-lg">📝 Question:</div>' +
+      '<div class="text-blue-700 dark:text-blue-300 font-medium text-base leading-relaxed">$1</div>' +
       '</div>'
     );
 
     // Also catch standalone questions that end with ?
     formatted = formatted.replace(
       /^(.+\?)\s*$/gm,
-      '<div class="bg-blue-50 dark:bg-blue-950 border-l-4 border-blue-400 p-3 my-2 rounded-r text-blue-700 dark:text-blue-300 font-medium">$1</div>'
+      '<div class="bg-blue-50 dark:bg-blue-950 border-l-4 border-blue-400 p-4 my-3 rounded-r text-blue-700 dark:text-blue-300 font-medium text-base">📝 $1</div>'
     );
 
     return formatted;
@@ -378,8 +378,8 @@ export default function TutorMe() {
               onKeyDown={handleKeyDown}
               placeholder={
                 isAwaitingAnswer 
-                  ? "Type your answer here... (use mathematical symbols if needed)"
-                  : "Ask me anything you want to learn about..."
+                  ? "📝 ANSWER THE QUESTION ABOVE: Type your response to the specific question shown above..."
+                  : "Ask me anything you want to learn about Critical Thinking..."
               }
               className="min-h-[120px] text-base resize-none pr-16"
               disabled={tutorMutation.isPending}
