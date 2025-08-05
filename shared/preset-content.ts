@@ -1330,13 +1330,13 @@ export const presetPracticeExams = {
   midterm: {
     title: "Midterm Practice Exam: Critical Thinking Integration",
     content: {
-      instructions: "Practice midterm exam covering the first half of critical thinking concepts and skills.",
-      totalPoints: 10,
+      instructions: "Practice midterm exam covering the first half of critical thinking concepts and skills. You have unlimited attempts to practice.",
+      totalPoints: 100,
       problems: [
         {
           id: "p1",
-          title: "Midterm Critical Thinking Test",
-          points: 10,
+          title: "Critical Thinking Foundations",
+          points: 40,
           type: "multiple_choice",
           questions: [
             {
@@ -1345,6 +1345,82 @@ export const presetPracticeExams = {
               options: ["Memorizing facts", "Questioning assumptions", "Following procedures"],
               correct: 1,
               explanation: "Questioning assumptions is the foundation of all critical thinking - it opens the door to examining beliefs and evaluating information objectively."
+            },
+            {
+              id: "p1b",
+              question: "What is the primary purpose of evaluating evidence?",
+              options: ["To prove you are right", "To determine reliability and relevance", "To find supporting information only"],
+              correct: 1,
+              explanation: "Evidence evaluation focuses on assessing the quality, reliability, and relevance of information to make informed judgments."
+            },
+            {
+              id: "p1c",
+              question: "Which best describes confirmation bias?",
+              options: ["Seeking information that confirms existing beliefs", "Testing all possibilities equally", "Changing beliefs based on evidence"],
+              correct: 0,
+              explanation: "Confirmation bias is the tendency to search for and interpret information in ways that confirm pre-existing beliefs."
+            },
+            {
+              id: "p1d",
+              question: "What makes an argument logically valid?",
+              options: ["The premises are true", "The conclusion follows logically from premises", "It is persuasive"],
+              correct: 1,
+              explanation: "Logical validity means the conclusion follows necessarily from the premises, regardless of whether the premises are actually true."
+            }
+          ]
+        },
+        {
+          id: "p2",
+          title: "Argument Analysis",
+          points: 30,
+          type: "text_input",
+          questions: [
+            {
+              id: "p2a",
+              question: "Identify the premise and conclusion in this argument: 'All students who study regularly pass their exams. Maria studies regularly. Therefore, Maria will pass her exam.'",
+              answer: "Premises: 1) All students who study regularly pass their exams, 2) Maria studies regularly. Conclusion: Maria will pass her exam.",
+              explanation: "The premises provide the supporting evidence, while the conclusion is what the argument aims to establish."
+            },
+            {
+              id: "p2b",
+              question: "What type of fallacy is this: 'Either we ban all cars or accept total environmental destruction'?",
+              answer: "False dilemma (false dichotomy)",
+              explanation: "This presents only two extreme options when many other alternatives exist, such as improving car efficiency or using alternative transportation."
+            },
+            {
+              id: "p2c",
+              question: "Explain why ad hominem attacks weaken arguments.",
+              answer: "Ad hominem attacks target the person making the argument rather than the argument itself, which is irrelevant to the truth or validity of the claims being made.",
+              explanation: "Personal attacks distract from the actual issues and fail to address the logical merit of the argument."
+            }
+          ]
+        },
+        {
+          id: "p3",
+          title: "Evidence and Decision Making",
+          points: 30,
+          type: "multiple_choice",
+          questions: [
+            {
+              id: "p3a",
+              question: "What is the difference between correlation and causation?",
+              options: ["There is no difference", "Correlation shows relationship; causation shows cause-effect", "Causation is stronger correlation"],
+              correct: 1,
+              explanation: "Correlation indicates variables change together, but causation means one variable directly causes changes in another."
+            },
+            {
+              id: "p3b",
+              question: "Which is the best approach to evaluating conflicting expert opinions?",
+              options: ["Choose the most famous expert", "Examine their evidence and reasoning", "Go with the majority opinion"],
+              correct: 1,
+              explanation: "The quality of evidence and reasoning matters more than credentials or popularity when evaluating expert claims."
+            },
+            {
+              id: "p3c",
+              question: "What makes a source credible?",
+              options: ["It agrees with your views", "Author expertise, evidence quality, and peer review", "It is published online"],
+              correct: 1,
+              explanation: "Credible sources combine qualified authors, high-quality evidence, and rigorous review processes."
             }
           ]
         }
