@@ -752,7 +752,7 @@ Output only the abbreviation list, one per line. Be concise and use single capit
     }
   });
 
-  // Tutor endpoint - Pure AI tutoring with NO canned responses
+  // Tutor endpoint - COMPLETE AI PASSTHROUGH - NO INTERFERENCE WHATSOEVER
   app.post('/api/tutor', async (req, res) => {
     try {
       const { message, isAnswer, session } = req.body;
@@ -761,167 +761,61 @@ Output only the abbreviation list, one per line. Be concise and use single capit
         return res.status(400).json({ error: 'Message is required' });
       }
 
-      let response = '';
-      let hasQuestion = false;
-      let difficulty: 'beginner' | 'intermediate' | 'advanced' = session?.userLevel || 'beginner';
-      let topic = session?.currentTopic || 'general';
-      let evaluation = null;
-
       if (!process.env.OPENAI_API_KEY) {
         return res.status(500).json({ error: 'OpenAI API key not configured' });
       }
 
       // Build context from session history
-      let conversationContext = '';
+      let conversationHistory = '';
       if (session?.messages && session.messages.length > 0) {
-        conversationContext = session.messages
-          .slice(-6) // Last 6 messages for context
-          .map((msg: any) => `${msg.type}: ${msg.content}`)
-          .join('\n');
+        conversationHistory = session.messages
+          .slice(-10) // More context for better continuity
+          .map((msg: any) => `${msg.type === 'user' ? 'Student' : 'Tutor'}: ${msg.content}`)
+          .join('\n\n');
       }
 
-      // Build user profile context
-      const profileContext = `
-User Level: ${session?.userLevel || 'beginner'}
-Current Topic: ${session?.currentTopic || 'none'}
-Strengths: ${session?.strengthAreas?.join(', ') || 'none identified'}
-Weaknesses: ${session?.weaknessAreas?.join(', ') || 'none identified'}
-`;
+      // PURE AI - No JSON forcing, no structure, no interference
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [{
+            role: 'system',
+            content: `You are an expert Critical Thinking tutor. Your student is asking you about critical thinking concepts.
 
-      if (isAnswer) {
-        // This is a user answer to a previous question - evaluate it with PURE AI
-        const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o',
-            messages: [{
-              role: 'system',
-              content: `You are an expert Critical Thinking tutor analyzing a student's answer. Use your expertise to evaluate their response.
+${conversationHistory ? `Recent conversation:\n${conversationHistory}\n\n` : ''}
 
-User Profile:
-${profileContext}
+Respond naturally as a knowledgeable tutor would. Be accurate, helpful, and engaging. Use your expertise to provide correct information and ask meaningful questions when appropriate.
 
-Recent Conversation:
-${conversationContext}
+DO NOT use any forced structure, JSON formatting, or predetermined phrases. Just respond as a natural, expert tutor would in conversation.`
+          }, {
+            role: 'user',
+            content: message
+          }],
+          temperature: 0.7,
+          max_tokens: 1500
+        })
+      });
 
-INSTRUCTIONS:
-1. Analyze their answer for correctness and understanding
-2. Be generous - accept paraphrasing, different explanations, and alternative correct reasoning  
-3. Provide neutral, professional feedback without repetitive phrases
-4. Give a brief explanation of the evaluation
-5. Ask a relevant follow-up question to continue learning
-
-CRITICAL: Do not use canned phrases like "You really know your stuff!" or similar repetitive responses. Be natural and varied in your feedback.
-
-Respond in this JSON format:
-{
-  "correct": true/false,
-  "explanation": "your evaluation and reasoning", 
-  "response": "your natural tutoring response with follow-up question",
-  "nextLevel": "advance/reinforce/remediate",
-  "hasQuestion": true,
-  "topic": "topic name"
-}`
-            }, {
-              role: 'user',
-              content: `Student's answer: "${message}"`
-            }],
-            temperature: 0.8,
-            max_tokens: 1000
-          })
-        });
-
-        const openaiData = await openaiResponse.json();
-        
-        if (!openaiResponse.ok) {
-          throw new Error(`OpenAI API error: ${openaiData.error?.message || 'Unknown error'}`);
-        }
-
-        const result = JSON.parse(openaiData.choices[0].message.content);
-        response = result.response;
-        hasQuestion = result.hasQuestion;
-        topic = result.topic || topic;
-        evaluation = {
-          correct: result.correct,
-          explanation: result.explanation,
-          nextLevel: result.nextLevel
-        };
-
-        // Adjust difficulty based on performance
-        if (result.correct && result.nextLevel === 'advance') {
-          difficulty = session?.userLevel === 'beginner' ? 'intermediate' : 'advanced';
-        } else if (!result.correct) {
-          difficulty = 'beginner';
-        }
-
-      } else {
-        // This is a new question/topic from the user - pure AI response
-        const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o',
-            messages: [{
-              role: 'system',
-              content: `You are an expert Critical Thinking tutor. Provide thoughtful, accurate tutoring.
-
-User Profile:
-${profileContext}
-
-Recent Conversation:
-${conversationContext}
-
-INSTRUCTIONS:
-1. Give a clear, accurate explanation of the concept (2-3 sentences)
-2. Ask 1-2 questions to test understanding
-3. Adapt complexity to their level: ${session?.userLevel || 'beginner'}
-4. Use mathematical/logical symbols when relevant: ∀, ∃, ∧, ∨, →, ↔, ¬
-5. Be professional and neutral - avoid repetitive encouraging phrases
-
-CRITICAL: Be natural and varied in your responses. Do NOT use canned phrases or repetitive language.
-
-Respond in this JSON format:
-{
-  "response": "your explanation followed by questions",
-  "hasQuestion": true,
-  "topic": "main topic being discussed",
-  "difficulty": "beginner/intermediate/advanced"
-}`
-            }, {
-              role: 'user',
-              content: message
-            }],
-            temperature: 0.8,
-            max_tokens: 1000
-          })
-        });
-
-        const openaiData = await openaiResponse.json();
-        
-        if (!openaiResponse.ok) {
-          throw new Error(`OpenAI API error: ${openaiData.error?.message || 'Unknown error'}`);
-        }
-
-        const result = JSON.parse(openaiData.choices[0].message.content);
-        response = result.response;
-        hasQuestion = result.hasQuestion;
-        topic = result.topic || topic;
-        difficulty = result.difficulty || difficulty;
+      const openaiData = await openaiResponse.json();
+      
+      if (!openaiResponse.ok) {
+        throw new Error(`OpenAI API error: ${openaiData.error?.message || 'Unknown error'}`);
       }
 
+      const aiResponse = openaiData.choices[0].message.content;
+
+      // Return the pure AI response with minimal processing
       res.json({
-        response,
-        hasQuestion,
-        difficulty,
-        topic,
-        evaluation
+        response: aiResponse,
+        hasQuestion: aiResponse.includes('?'), // Simple check for questions
+        difficulty: 'intermediate', // Let AI handle complexity naturally
+        topic: 'critical-thinking',
+        evaluation: null // Let AI naturally provide feedback in its response
       });
 
     } catch (error) {
