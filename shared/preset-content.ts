@@ -1430,20 +1430,110 @@ export const presetPracticeExams = {
   final: {
     title: "Final Practice Exam: Comprehensive Critical Thinking",
     content: {
-      instructions: "Practice final exam covering all critical thinking skills and their real-world applications.",
-      totalPoints: 10,
+      instructions: "Comprehensive practice final exam covering all critical thinking skills from Weeks 1-6. Test your mastery of argument analysis, evidence evaluation, logical reasoning, bias detection, and decision-making processes.",
+      totalPoints: 200,
       problems: [
         {
-          id: "p1",
-          title: "Final Integration Test",
-          points: 10,
+          id: "section1",
+          title: "Critical Thinking Foundations (50 points)",
+          points: 50,
           type: "text_input",
           questions: [
             {
-              id: "p1a",
-              question: "What are the main components of effective critical thinking?",
-              answer: "Analysis, evaluation, inference, interpretation, explanation, and self-regulation",
-              explanation: "These six core skills work together to enable systematic examination and evaluation of information and reasoning."
+              id: "q1",
+              question: "A company CEO claims that increasing employee salaries by 15% will result in a 30% boost in productivity. Identify and analyze the logical assumptions underlying this claim. What evidence would you need to evaluate its validity?",
+              answer: "",
+              explanation: "Strong responses should identify assumptions about motivation-productivity relationships, consider confounding variables, and specify measurable evidence needed."
+            },
+            {
+              id: "q2", 
+              question: "Evaluate this argument: 'Since 90% of successful entrepreneurs dropped out of college, students should drop out to become successful.' Identify the logical fallacies and explain why this reasoning is flawed.",
+              answer: "",
+              explanation: "Should identify hasty generalization, survivorship bias, and correlation vs causation issues."
+            },
+            {
+              id: "q3",
+              question: "A medical study reports that people who drink coffee daily have 25% lower rates of depression. What are three alternative explanations for this correlation that don't involve coffee causing reduced depression?",
+              answer: "",
+              explanation: "Strong answers include reverse causation, confounding variables (lifestyle, socioeconomic factors), and sample selection bias."
+            }
+          ]
+        },
+        {
+          id: "section2", 
+          title: "Argument Analysis and Evidence Evaluation (50 points)",
+          points: 50,
+          type: "text_input",
+          questions: [
+            {
+              id: "q4",
+              question: "A politician argues: 'Crime rates have dropped 20% since we implemented stricter gun laws. Therefore, gun control reduces crime.' Analyze the strength of this argument and identify what additional information would be needed to properly evaluate the causal claim.",
+              answer: "",
+              explanation: "Should address post hoc fallacy, need for control comparisons, other contributing factors, and temporal analysis requirements."
+            },
+            {
+              id: "q5",
+              question: "You're presented with a research study claiming that meditation reduces anxiety by 40%. The study involved 50 participants over 4 weeks. Critically evaluate the reliability of this research and identify at least three methodological concerns.",
+              answer: "",
+              explanation: "Strong responses address sample size, duration, control groups, measurement methods, and potential placebo effects."
+            },
+            {
+              id: "q6",
+              question: "A marketing campaign states: '9 out of 10 doctors recommend our vitamin supplement.' What questions would you ask to evaluate this claim before accepting it as credible evidence?",
+              answer: "",
+              explanation: "Should question sample selection, survey methodology, potential conflicts of interest, and definition of 'recommend.'"
+            }
+          ]
+        },
+        {
+          id: "section3",
+          title: "Bias Detection and Media Analysis (50 points)", 
+          points: 50,
+          type: "text_input",
+          questions: [
+            {
+              id: "q7",
+              question: "A news headline reads: 'SHOCKING: Local School Test Scores Plummet 15%!' Upon reading, you discover scores dropped from 85% to 82%. Identify the bias techniques used and explain how they might mislead readers.",
+              answer: "",
+              explanation: "Should identify sensationalism, misleading math presentation, lack of context, and emotional manipulation techniques."
+            },
+            {
+              id: "q8",
+              question: "You're evaluating job candidates and notice you consistently rate candidates from your alma mater higher. What type of bias is this, and what strategies would you implement to make more objective hiring decisions?",
+              answer: "",
+              explanation: "Should identify affinity bias and propose structured evaluation criteria, diverse review panels, and blind resume reviews."
+            },
+            {
+              id: "q9",
+              question: "A social media post claims: 'Organic foods are proven healthier - just look at how much better I feel since switching!' Identify the logical problems with this reasoning and explain why personal anecdotes aren't reliable evidence.",
+              answer: "",
+              explanation: "Should address anecdotal evidence limitations, placebo effects, confirmation bias, and need for controlled studies."
+            }
+          ]
+        },
+        {
+          id: "section4",
+          title: "Decision-Making and Problem-Solving Integration (50 points)",
+          points: 50,
+          type: "text_input",
+          questions: [
+            {
+              id: "q10",
+              question: "Your company must choose between two software solutions. Solution A costs $50,000 with proven results. Solution B costs $25,000 but is newer with limited data. Using critical thinking principles, outline your decision-making process and key evaluation criteria.",
+              answer: "",
+              explanation: "Strong responses should include risk assessment, cost-benefit analysis, evidence requirements, pilot testing considerations, and long-term implications."
+            },
+            {
+              id: "q11",
+              question: "You encounter conflicting expert opinions about climate change solutions. Expert A advocates for renewable energy, Expert B for nuclear power, both citing scientific studies. How would you approach evaluating these competing claims to form your own informed opinion?",
+              answer: "",
+              explanation: "Should address source credibility, examining methodologies, looking for consensus, identifying potential biases, and seeking additional perspectives."
+            },
+            {
+              id: "q12",
+              question: "Synthesize your learning: Describe a real situation from your life where you initially made a judgment based on limited information, but later changed your view after applying critical thinking skills. What specific critical thinking principles helped you reassess the situation?",
+              answer: "",
+              explanation: "Personal reflection demonstrating application of course concepts - evidence gathering, bias recognition, alternative perspectives, and logical reasoning."
             }
           ]
         }
