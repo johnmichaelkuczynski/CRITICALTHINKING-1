@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Loader2, Send, Brain, BookOpen, Target, Lightbulb } from "lucide-react";
+import { Loader2, Send, Brain, BookOpen, Target, Lightbulb, Calculator } from "lucide-react";
 import { renderMathInElement } from "@/lib/math-renderer";
 
 interface TutorMessage {
@@ -41,8 +41,40 @@ export default function TutorMe() {
     strengthAreas: []
   });
   const [isAwaitingAnswer, setIsAwaitingAnswer] = useState(false);
+  const [showSymbolKeyboard, setShowSymbolKeyboard] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Symbol categories for the keyboard
+  const logicalSymbols = [
+    { symbol: '∀', name: 'For all' },
+    { symbol: '∃', name: 'There exists' },
+    { symbol: '∧', name: 'And' },
+    { symbol: '∨', name: 'Or' },
+    { symbol: '¬', name: 'Not' },
+    { symbol: '→', name: 'Implies' },
+    { symbol: '↔', name: 'If and only if' },
+    { symbol: '⊃', name: 'Material conditional' },
+    { symbol: '≡', name: 'Equivalent' },
+    { symbol: '⊨', name: 'Entails' },
+    { symbol: '⊢', name: 'Proves' },
+    { symbol: '⊥', name: 'Contradiction' }
+  ];
+
+  const mathSymbols = [
+    { symbol: '≤', name: 'Less than or equal' },
+    { symbol: '≥', name: 'Greater than or equal' },
+    { symbol: '≠', name: 'Not equal' },
+    { symbol: '∈', name: 'Element of' },
+    { symbol: '∉', name: 'Not element of' },
+    { symbol: '⊆', name: 'Subset' },
+    { symbol: '⊊', name: 'Proper subset' },
+    { symbol: '∪', name: 'Union' },
+    { symbol: '∩', name: 'Intersection' },
+    { symbol: '∅', name: 'Empty set' },
+    { symbol: '∞', name: 'Infinity' },
+    { symbol: '±', name: 'Plus minus' }
+  ];
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -148,6 +180,22 @@ export default function TutorMe() {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
+    }
+  };
+
+  const insertSymbol = (symbol: string) => {
+    if (textareaRef.current) {
+      const textarea = textareaRef.current;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const newValue = input.slice(0, start) + symbol + input.slice(end);
+      setInput(newValue);
+      
+      // Set cursor position after the inserted symbol
+      setTimeout(() => {
+        textarea.setSelectionRange(start + symbol.length, start + symbol.length);
+        textarea.focus();
+      }, 0);
     }
   };
 
@@ -353,17 +401,76 @@ export default function TutorMe() {
               )}
             </Button>
           </div>
+
+          {/* Symbol Keyboard */}
+          {showSymbolKeyboard && (
+            <Card className="border border-border">
+              <CardContent className="p-4">
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-sm font-medium mb-2 text-foreground">Logical Symbols</h4>
+                    <div className="grid grid-cols-6 gap-2">
+                      {logicalSymbols.map((item) => (
+                        <Button
+                          key={item.symbol}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => insertSymbol(item.symbol)}
+                          className="h-8 w-12 text-lg font-medium hover:bg-primary hover:text-primary-foreground"
+                          title={item.name}
+                        >
+                          {item.symbol}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h4 className="text-sm font-medium mb-2 text-foreground">Mathematical Symbols</h4>
+                    <div className="grid grid-cols-6 gap-2">
+                      {mathSymbols.map((item) => (
+                        <Button
+                          key={item.symbol}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => insertSymbol(item.symbol)}
+                          className="h-8 w-12 text-lg font-medium hover:bg-primary hover:text-primary-foreground"
+                          title={item.name}
+                        >
+                          {item.symbol}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
           
           <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <div>
-              {isAwaitingAnswer ? (
-                <span className="text-blue-600 font-medium">Waiting for your answer...</span>
-              ) : (
-                "Press Enter to send, Shift+Enter for new line"
-              )}
+            <div className="flex items-center gap-4">
+              <div>
+                {isAwaitingAnswer ? (
+                  <span className="text-blue-600 font-medium">Waiting for your answer...</span>
+                ) : (
+                  "Press Enter to send, Shift+Enter for new line"
+                )}
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowSymbolKeyboard(!showSymbolKeyboard)}
+                className="text-xs h-6 px-2"
+              >
+                <Calculator className="h-3 w-3 mr-1" />
+                {showSymbolKeyboard ? 'Hide' : 'Show'} Symbols
+              </Button>
             </div>
             <div className="text-xs">
-              Mathematical symbols: ∀, ∃, ∧, ∨, →, ↔, ¬, ≡, ⊃, ⊨
+              Click symbols or type: ∀, ∃, ∧, ∨, →, ↔, ¬, ≡, ⊃, ⊨
             </div>
           </div>
         </form>
