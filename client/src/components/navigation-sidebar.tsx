@@ -157,22 +157,29 @@ export default function NavigationSidebar() {
         null
       );
       
+      let matches = [];
       let node;
       while (node = walker.nextNode()) {
         if (node.textContent && node.textContent.includes(searchText)) {
           const parentElement = node.parentElement;
           if (parentElement) {
-            console.log(`Found text match, scrolling to element`);
-            parentElement.scrollIntoView({ behavior: "smooth", block: "start" });
-            
-            // Highlight the found section
-            parentElement.style.backgroundColor = '#fef3c7';
-            setTimeout(() => {
-              parentElement.style.backgroundColor = '';
-            }, 3000);
-            return;
+            matches.push(parentElement);
           }
         }
+      }
+      
+      // Find the LAST match (skip table of contents, go to actual content)
+      if (matches.length > 0) {
+        const targetElement = matches[matches.length - 1];
+        console.log(`Found ${matches.length} matches, using the last one (actual content)`);
+        targetElement.scrollIntoView({ behavior: "smooth", block: "start" });
+        
+        // Highlight the found section
+        targetElement.style.backgroundColor = '#fef3c7';
+        setTimeout(() => {
+          targetElement.style.backgroundColor = '';
+        }, 3000);
+        return;
       }
     }
     
