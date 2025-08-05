@@ -9,6 +9,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Loader2, Send, Brain, BookOpen, Target, Lightbulb, Calculator } from "lucide-react";
 import { renderMathInElement } from "@/lib/math-renderer";
+import QuizModal from "@/components/quiz-modal";
 
 interface TutorMessage {
   id: string;
@@ -42,6 +43,7 @@ export default function TutorMe() {
   });
   const [isAwaitingAnswer, setIsAwaitingAnswer] = useState(false);
   const [showSymbolKeyboard, setShowSymbolKeyboard] = useState(false);
+  const [showQuizModal, setShowQuizModal] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -315,8 +317,16 @@ export default function TutorMe() {
                     Ask me about any topic you're learning. I'll provide explanations, 
                     ask you questions to check your understanding, and adapt to your level.
                   </p>
-                  <div className="mt-4 text-sm text-muted-foreground">
-                    Try: "I'm confused about logical models" or "Explain deductive reasoning"
+                  <div className="mt-6 space-y-3">
+                    <Button 
+                      onClick={() => setShowQuizModal(true)}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      🎯 Start Practice Quiz (10 Questions)
+                    </Button>
+                    <div className="text-sm text-muted-foreground">
+                      Or ask: "I'm confused about logical models" or "Explain deductive reasoning"
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -471,6 +481,14 @@ export default function TutorMe() {
           </div>
         </form>
       </div>
+
+      {/* Quiz Modal for Practice Quizzes */}
+      <QuizModal
+        isOpen={showQuizModal}
+        onClose={() => setShowQuizModal(false)}
+        sourceText="Critical Thinking concepts including reasoning, fallacies, argument analysis, evidence evaluation, and logical principles"
+        selectedModel="openai"
+      />
     </div>
   );
 }

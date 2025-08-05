@@ -1380,13 +1380,14 @@ Be authentic and educational, not conversational fluff.`
     }
   });
 
-  // Quiz generation endpoint with authentication
+  // Quiz generation endpoint with authentication - GENERATES 10 FRESH QUESTIONS
   app.post("/api/generate-quiz", async (req, res) => {
     try {
       const { sourceText, instructions, chunkIndex, model } = quizRequestSchema.parse(req.body);
       const user = await getCurrentUser(req);
       
-      const fullQuiz = await generateQuiz(model, sourceText, instructions);
+      // Generate 10 fresh Critical Thinking questions using the selected AI model
+      const fullQuiz = await generateCriticalThinkingQuiz(model || 'openai', sourceText, instructions);
       
       // Check if user has access to full features
       let quiz = fullQuiz;
@@ -1408,7 +1409,7 @@ Be authentic and educational, not conversational fluff.`
       const savedQuiz = await storage.createQuiz({
         sourceText,
         quiz: fullQuiz.testContent || "",
-        instructions: instructions || "Generate a comprehensive quiz",
+        instructions: instructions || "Generate 10 fresh Critical Thinking questions",
         model,
         chunkIndex
       });
@@ -1608,6 +1609,142 @@ Be authentic and educational, not conversational fluff.`
   // REMOVED ALL HARDCODED ANSWER PARSING - TRUE PASSTHROUGH SYSTEM ONLY
 
   // DELETED ALL HARDCODED ANSWER GENERATION FUNCTIONS - TRUE PASSTHROUGH SYSTEM ONLY
+
+  // Generate 10 fresh Critical Thinking questions
+  async function generateCriticalThinkingQuiz(model: string, sourceText: string, instructions: string) {
+    const systemPrompt = `You are an expert Critical Thinking professor creating a practice quiz. Generate exactly 10 fresh multiple choice questions based on Critical Thinking concepts and principles.
+
+CRITICAL REQUIREMENTS:
+- Create exactly 10 questions, never more, never less
+- Each question must be unique and never duplicated
+- All questions must be multiple choice with 3 options each
+- Focus on Critical Thinking concepts: reasoning, fallacies, argument analysis, evidence evaluation, etc.
+- Make questions challenging but fair for university students
+- Provide the correct answer for each question
+
+Format your response as a structured quiz with:
+1. Question text
+2. Three multiple choice options (A, B, C)
+3. Clear indication of the correct answer
+
+Make each question test different aspects of Critical Thinking skills.`;
+
+    const userPrompt = `Generate a 10-question Critical Thinking practice quiz based on these concepts: ${sourceText.substring(0, 2000)}
+
+Instructions: ${instructions || 'Create 10 fresh multiple choice questions testing various Critical Thinking skills'}
+
+Requirements:
+- Exactly 10 questions total
+- Multiple choice format (A, B, C options)
+- Focus on Critical Thinking concepts
+- Each question tests different reasoning skills
+- Never duplicate questions from previous quizzes`;
+
+    try {
+      let quizContent: string;
+
+      if (model === 'anthropic') {
+        if (!process.env.ANTHROPIC_API_KEY) {
+          throw new Error('Anthropic API key not configured');
+        }
+
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': process.env.ANTHROPIC_API_KEY,
+            'Content-Type': 'application/json',
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 2000,
+            messages: [{
+              role: 'user',
+              content: `${systemPrompt}\n\n${userPrompt}`
+            }]
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(`Anthropic API error: ${data.error?.message || 'Unknown error'}`);
+        }
+        quizContent = data.content[0].text;
+
+      } else if (model === 'deepseek') {
+        if (!process.env.DEEPSEEK_API_KEY) {
+          throw new Error('DeepSeek API key not configured');
+        }
+
+        const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'deepseek-chat',
+            messages: [{
+              role: 'system',
+              content: systemPrompt
+            }, {
+              role: 'user',
+              content: userPrompt
+            }],
+            temperature: 0.7,
+            max_tokens: 2000
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(`DeepSeek API error: ${data.error?.message || 'Unknown error'}`);
+        }
+        quizContent = data.choices[0].message.content;
+
+      } else {
+        // Default to OpenAI
+        if (!process.env.OPENAI_API_KEY) {
+          throw new Error('OpenAI API key not configured');
+        }
+
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o',
+            messages: [{
+              role: 'system',
+              content: systemPrompt
+            }, {
+              role: 'user',
+              content: userPrompt
+            }],
+            temperature: 0.7,
+            max_tokens: 2000
+          })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(`OpenAI API error: ${data.error?.message || 'Unknown error'}`);
+        }
+        quizContent = data.choices[0].message.content;
+      }
+
+      return {
+        testContent: quizContent,
+        answerKey: 'Answers are included in the quiz content'
+      };
+
+    } catch (error) {
+      console.error('Error generating Critical Thinking quiz:', error);
+      throw error;
+    }
+  }
 
   // PURE GPT PASSTHROUGH GRADING SYSTEM - NO HARDCODED ANSWERS
   async function gradeTestWithGPT(userAnswers: Record<string, string>, testContent: string) {
