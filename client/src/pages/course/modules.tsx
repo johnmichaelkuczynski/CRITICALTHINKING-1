@@ -613,11 +613,18 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   };
 
   const startPracticeFinal = async () => {
-    // If no content generated yet, automatically generate it
+    console.log('Start Practice Final clicked - current state:', { generatedPracticeFinal: !!generatedPracticeFinal, practiceFinalStarted });
+    
     if (!generatedPracticeFinal) {
+      console.log('No generated content, creating new practice final...');
+      // generateNewPracticeExam will automatically start the practice after generation
       await generateNewPracticeExam('final');
     } else {
+      console.log('Starting practice final with existing content');
       setPracticeFinalStarted(true);
+      setTimeout(() => {
+        console.log('Practice final started state after timeout:', practiceFinalStarted);
+      }, 200);
     }
   };
 
@@ -656,11 +663,16 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
         if (result.success) {
           console.log('Practice final generated successfully:', result.finalExam);
           
-          // Store the generated content
+          // Store the generated content and start practice session
           setGeneratedPracticeFinal(result.finalExam);
+          console.log('Practice final content stored, starting practice session...');
+          
+          // Clear existing state and start fresh
           setPracticeFinalStarted(false);
-          setTimeout(() => setPracticeFinalStarted(true), 100);
-          console.log('Practice final stored and session started');
+          setTimeout(() => {
+            setPracticeFinalStarted(true);
+            console.log('Practice final session started successfully');
+          }, 200);
         } else {
           console.error('Practice final generation failed:', result.error);
           alert('Failed to generate practice final. Please try again.');
@@ -923,7 +935,20 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                   <h1 className="text-2xl font-bold mb-2">Practice Final Exam</h1>
                   <div className="flex items-center space-x-4">
                     <Badge variant="default" className="bg-green-100 text-green-800">🎯 Practice Mode</Badge>
-                    <Badge variant="outline">200 points</Badge>
+                    <Badge variant="outline">
+                      {generatedPracticeFinal ? (
+                        (() => {
+                          try {
+                            const data = JSON.parse(generatedPracticeFinal);
+                            return `${data.questions?.length || 0} questions • ${data.totalPoints || 200} points`;
+                          } catch {
+                            return "200 points";
+                          }
+                        })()
+                      ) : (
+                        "200 points"
+                      )}
+                    </Badge>
                   </div>
                 </div>
 
@@ -1002,6 +1027,19 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                     
                     console.log('DEBUG: Practice content structure:', practiceContent);
                     console.log('DEBUG: Problems count:', practiceContent.problems.length);
+                    
+                    // CRITICAL: Ensure each problem has questions array populated
+                    if (practiceContent.problems.length === 0) {
+                      console.error('CRITICAL ERROR: No problems generated!');
+                      throw new Error('No problems generated from AI response');
+                    }
+                    
+                    practiceContent.problems.forEach((problem, index) => {
+                      console.log(`DEBUG: Problem ${index + 1} questions:`, problem.questions.length);
+                      if (problem.questions.length === 0) {
+                        console.error(`CRITICAL ERROR: Problem ${index + 1} has no questions!`);
+                      }
+                    });
 
                     return (
                       <div className="space-y-4">
