@@ -86,8 +86,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { userAnswer, correctAnswer, question, model = 'openai' } = req.body;
       
-      if (!userAnswer || !correctAnswer) {
-        return res.status(400).json({ error: 'Both userAnswer and correctAnswer are required' });
+      if (!userAnswer) {
+        return res.status(400).json({ error: 'User answer is required' });
+      }
+      
+      // For practice homework with no expected answer, grade based on effort and reasoning
+      if (!correctAnswer || correctAnswer.trim() === '') {
+        if (userAnswer.trim().length > 10) { // Basic effort check
+          return res.json({
+            isCorrect: true,
+            explanation: 'Good effort! Practice homework focuses on developing reasoning skills rather than having specific correct answers.'
+          });
+        } else {
+          return res.json({
+            isCorrect: false,
+            explanation: 'Please provide a more detailed response that demonstrates your reasoning.'
+          });
+        }
       }
 
       let isCorrect = false;
