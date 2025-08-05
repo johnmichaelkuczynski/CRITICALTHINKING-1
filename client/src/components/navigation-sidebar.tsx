@@ -104,9 +104,9 @@ const createTableOfContents = () => {
     
     // Chapter 6: Applied Critical Reasoning
     { id: "chapter-6", title: "Chapter 6: Applied Critical Reasoning", level: 0, searchText: "Chapter 6: Applied Critical Reasoning" },
-    { id: "media-analysis", title: "6.1 Media Analysis", level: 1, searchText: "Chapter 6.1: Media Analysis" },
-    { id: "professional-applications", title: "6.2 Professional Applications", level: 1, searchText: "Chapter 6.2: Professional Applications" },
-    { id: "personal-decision-making", title: "6.3 Personal Decision Making", level: 1, searchText: "Chapter 6.3: Personal Decision Making" },
+    { id: "media-analysis", title: "6.1 Media Analysis", level: 1, searchText: "Media literacy has become essential" },
+    { id: "professional-applications", title: "6.2 Professional Applications", level: 1, searchText: "Critical thinking skills directly translate" },
+    { id: "personal-decision-making", title: "6.3 Personal Decision Making", level: 1, searchText: "Personal Decision-Making" },
     
     // Appendices
     { id: "appendices", title: "Appendices", level: 0, searchText: "Appendices" },
