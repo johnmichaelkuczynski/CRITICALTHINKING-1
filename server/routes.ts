@@ -437,43 +437,50 @@ Format as structured content with clear headings and bullet points. Make it comp
             'anthropic-version': '2023-06-01'
           },
           body: JSON.stringify({
-            model: 'claude-3-5-sonnet-20241022',
+            model: 'claude-sonnet-4-20250514',
             max_tokens: 2000,
             messages: [{
               role: 'user',
-              content: `You are a professor creating homework for a symbolic logic course. Create challenging, academic-level homework assignments that test both practical skills and theoretical understanding. 
+              content: `You are a professor creating FRESH, UNIQUE homework for a Critical Thinking course. CREATE COMPLETELY NEW, DIFFERENT content every time - never repeat similar questions or scenarios.
 
-Course Context: This is Week ${weekNumber} covering "${topic}". 
+CRITICAL: Generate entirely fresh content with new examples, different scenarios, and unique question formulations each time. Use random timestamps, different contexts, and varied approaches.
+
+Random Seed: ${Date.now()}-${Math.random()}
+
+Course Context: This is Week ${weekNumber} covering "${topic}" in Critical Thinking.
 
 Generate a homework assignment with:
-1. Translation problems (symbolic logic notation)
-2. Proof/derivation exercises 
-3. Analysis questions requiring written explanations
-4. Appropriate difficulty for university-level logic course
+1. Argument analysis problems (identifying premises, conclusions, fallacies)
+2. Real-world critical thinking scenarios
+3. Evidence evaluation exercises
+4. Reasoning assessment questions
+5. Appropriate difficulty for university-level Critical Thinking course
+
+Use fresh examples like current events, different professions, varied contexts, and unique scenarios.
 
 Format as JSON with structure:
 {
-  "title": "Homework ${weekNumber}: ${topic}",
-  "instructions": "General instructions",
+  "title": "Week ${weekNumber} Practice Homework: ${topic}",
+  "instructions": "This assignment focuses on developing your critical thinking skills through practical analysis and evaluation exercises.",
   "parts": [
     {
-      "title": "Part 1: Translation",
-      "points": 30,
+      "title": "Part 1: Identifying Assumptions",
+      "points": 20,
       "questions": [
         {
           "id": "q1",
-          "question": "Question text",
+          "question": "Question text with fresh, unique content",
           "points": 10,
-          "type": "translation"
+          "type": "analysis"
         }
       ]
     }
   ],
   "totalPoints": 50,
-  "dueInfo": "Important submission guidelines"
+  "dueInfo": "Focus on developing your analytical reasoning skills"
 }
 
-Create homework for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}`
+Create COMPLETELY NEW homework for Week ${weekNumber}: ${topic}. Use Critical Thinking material: ${courseMaterial}. Make it entirely different from any previous homework with fresh scenarios and examples.`
             }]
           })
         });
@@ -499,41 +506,48 @@ Create homework for Week ${weekNumber}: ${topic}. Include relevant course materi
             model: 'llama-3.1-sonar-small-128k-online',
             messages: [{
               role: 'user',
-              content: `You are a professor creating homework for a symbolic logic course. Create challenging, academic-level homework assignments that test both practical skills and theoretical understanding. 
+              content: `You are a professor creating FRESH, UNIQUE homework for a Critical Thinking course. CREATE COMPLETELY NEW, DIFFERENT content every time - never repeat similar questions or scenarios.
 
-Course Context: This is Week ${weekNumber} covering "${topic}". 
+CRITICAL: Generate entirely fresh content with new examples, different scenarios, and unique question formulations each time. Use random timestamps, different contexts, and varied approaches.
+
+Random Seed: ${Date.now()}-${Math.random()}
+
+Course Context: This is Week ${weekNumber} covering "${topic}" in Critical Thinking.
 
 Generate a homework assignment with:
-1. Translation problems (symbolic logic notation)
-2. Proof/derivation exercises 
-3. Analysis questions requiring written explanations
-4. Appropriate difficulty for university-level logic course
+1. Argument analysis problems (identifying premises, conclusions, fallacies)
+2. Real-world critical thinking scenarios
+3. Evidence evaluation exercises
+4. Reasoning assessment questions
+5. Appropriate difficulty for university-level Critical Thinking course
+
+Use fresh examples like current events, different professions, varied contexts, and unique scenarios.
 
 Format as JSON with structure:
 {
-  "title": "Homework ${weekNumber}: ${topic}",
-  "instructions": "General instructions",
+  "title": "Week ${weekNumber} Practice Homework: ${topic}",
+  "instructions": "This assignment focuses on developing your critical thinking skills through practical analysis and evaluation exercises.",
   "parts": [
     {
-      "title": "Part 1: Translation",
-      "points": 30,
+      "title": "Part 1: Identifying Assumptions",
+      "points": 20,
       "questions": [
         {
           "id": "q1",
-          "question": "Question text",
+          "question": "Question text with fresh, unique content",
           "points": 10,
-          "type": "translation"
+          "type": "analysis"
         }
       ]
     }
   ],
   "totalPoints": 50,
-  "dueInfo": "Important submission guidelines"
+  "dueInfo": "Focus on developing your analytical reasoning skills"
 }
 
-Create homework for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}`
+Create COMPLETELY NEW homework for Week ${weekNumber}: ${topic}. Use Critical Thinking material: ${courseMaterial}. Make it entirely different from any previous homework with fresh scenarios and examples.`
             }],
-            temperature: 0.7,
+            temperature: 0.9,
             max_tokens: 2000
           })
         });
@@ -561,44 +575,51 @@ Create homework for Week ${weekNumber}: ${topic}. Include relevant course materi
             messages: [
               {
                 role: 'system',
-                content: `You are a professor creating homework for a symbolic logic course. Create challenging, academic-level homework assignments that test both practical skills and theoretical understanding. 
+                content: `You are a professor creating FRESH, UNIQUE homework for a Critical Thinking course. CREATE COMPLETELY NEW, DIFFERENT content every time - never repeat similar questions or scenarios.
 
-Course Context: This is Week ${weekNumber} covering "${topic}". 
+CRITICAL: Generate entirely fresh content with new examples, different scenarios, and unique question formulations each time. Use random timestamps, different contexts, and varied approaches.
+
+Random Seed: ${Date.now()}-${Math.random()}
+
+Course Context: This is Week ${weekNumber} covering "${topic}" in Critical Thinking.
 
 Generate a homework assignment with:
-1. Translation problems (symbolic logic notation)
-2. Proof/derivation exercises 
-3. Analysis questions requiring written explanations
-4. Appropriate difficulty for university-level logic course
+1. Argument analysis problems (identifying premises, conclusions, fallacies)
+2. Real-world critical thinking scenarios
+3. Evidence evaluation exercises
+4. Reasoning assessment questions
+5. Appropriate difficulty for university-level Critical Thinking course
+
+Use fresh examples like current events, different professions, varied contexts, and unique scenarios.
 
 Format as JSON with structure:
 {
-  "title": "Homework ${weekNumber}: ${topic}",
-  "instructions": "General instructions",
+  "title": "Week ${weekNumber} Practice Homework: ${topic}",
+  "instructions": "This assignment focuses on developing your critical thinking skills through practical analysis and evaluation exercises.",
   "parts": [
     {
-      "title": "Part 1: Translation",
-      "points": 30,
+      "title": "Part 1: Identifying Assumptions",
+      "points": 20,
       "questions": [
         {
           "id": "q1",
-          "question": "Question text",
+          "question": "Question text with fresh, unique content",
           "points": 10,
-          "type": "translation"
+          "type": "analysis"
         }
       ]
     }
   ],
   "totalPoints": 50,
-  "dueInfo": "Important submission guidelines"
+  "dueInfo": "Focus on developing your analytical reasoning skills"
 }`
               },
               {
                 role: 'user',
-                content: `Create homework for Week ${weekNumber}: ${topic}. Include relevant course material context: ${courseMaterial}`
+                content: `Create COMPLETELY NEW homework for Week ${weekNumber}: ${topic}. Use Critical Thinking material: ${courseMaterial}. Make it entirely different from any previous homework with fresh scenarios and examples. Random Context: ${Date.now()}`
               }
             ],
-            temperature: 0.7,
+            temperature: 0.9,
             max_tokens: 2000
           })
         });
