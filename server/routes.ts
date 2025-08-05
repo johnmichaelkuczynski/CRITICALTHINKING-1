@@ -752,6 +752,190 @@ Output only the abbreviation list, one per line. Be concise and use single capit
     }
   });
 
+  // Tutor endpoint - Adaptive tutoring with Q&A evaluation
+  app.post('/api/tutor', async (req, res) => {
+    try {
+      const { message, isAnswer, session } = req.body;
+      
+      if (!message || typeof message !== 'string') {
+        return res.status(400).json({ error: 'Message is required' });
+      }
+
+      let response = '';
+      let hasQuestion = false;
+      let difficulty: 'beginner' | 'intermediate' | 'advanced' = session?.userLevel || 'beginner';
+      let topic = session?.currentTopic || 'general';
+      let evaluation = null;
+
+      if (!process.env.OPENAI_API_KEY) {
+        return res.status(500).json({ error: 'OpenAI API key not configured' });
+      }
+
+      // Build context from session history
+      let conversationContext = '';
+      if (session?.messages && session.messages.length > 0) {
+        conversationContext = session.messages
+          .slice(-6) // Last 6 messages for context
+          .map((msg: any) => `${msg.type}: ${msg.content}`)
+          .join('\n');
+      }
+
+      // Build user profile context
+      const profileContext = `
+User Level: ${session?.userLevel || 'beginner'}
+Current Topic: ${session?.currentTopic || 'none'}
+Strengths: ${session?.strengthAreas?.join(', ') || 'none identified'}
+Weaknesses: ${session?.weaknessAreas?.join(', ') || 'none identified'}
+`;
+
+      if (isAnswer) {
+        // This is a user answer to a previous question - evaluate it
+        const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o',
+            messages: [{
+              role: 'system',
+              content: `You are an adaptive tutor evaluating a student's answer in Critical Thinking. 
+
+User Profile:
+${profileContext}
+
+Recent Conversation:
+${conversationContext}
+
+Your response should:
+1. Evaluate if the answer shows understanding (be generous - accept paraphrasing and alternative explanations)
+2. Give encouraging feedback ("You really know your stuff!" or "You might need a little help here")
+3. Provide a brief explanation of why the answer is correct/incorrect
+4. Then either:
+   - If correct: Give a more advanced follow-up question on the same topic
+   - If incorrect: Explain the concept simply and give an easier practice question
+
+Always end with a question to continue the learning. Use mathematical symbols when relevant.
+
+Respond in this JSON format:
+{
+  "correct": true/false,
+  "explanation": "brief evaluation explanation", 
+  "response": "your tutoring response with follow-up question",
+  "nextLevel": "advance/reinforce/remediate",
+  "hasQuestion": true,
+  "topic": "topic name"
+}`
+            }, {
+              role: 'user',
+              content: `Student's answer: "${message}"`
+            }],
+            temperature: 0.7,
+            max_tokens: 1000
+          })
+        });
+
+        const openaiData = await openaiResponse.json();
+        
+        if (!openaiResponse.ok) {
+          throw new Error(`OpenAI API error: ${openaiData.error?.message || 'Unknown error'}`);
+        }
+
+        const result = JSON.parse(openaiData.choices[0].message.content);
+        response = result.response;
+        hasQuestion = result.hasQuestion;
+        topic = result.topic || topic;
+        evaluation = {
+          correct: result.correct,
+          explanation: result.explanation,
+          nextLevel: result.nextLevel
+        };
+
+        // Adjust difficulty based on performance
+        if (result.correct && result.nextLevel === 'advance') {
+          difficulty = session?.userLevel === 'beginner' ? 'intermediate' : 'advanced';
+        } else if (!result.correct) {
+          difficulty = 'beginner';
+        }
+
+      } else {
+        // This is a new question/topic from the user
+        const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o',
+            messages: [{
+              role: 'system',
+              content: `You are an adaptive tutor for Critical Thinking. Your job is to:
+
+1. Give a brief, clear explanation (2-3 sentences) of the concept the student asked about
+2. Then ask 1-2 questions to test their understanding
+3. Adapt to their current level: ${session?.userLevel || 'beginner'}
+
+User Profile:
+${profileContext}
+
+Recent Conversation:
+${conversationContext}
+
+Guidelines:
+- Keep explanations simple for beginners, more sophisticated for advanced students
+- Use examples they can relate to
+- Include mathematical/logical symbols when relevant: ∀, ∃, ∧, ∨, →, ↔, ¬
+- Always end with questions to check understanding
+- Be encouraging and supportive
+
+Respond in this JSON format:
+{
+  "response": "your explanation followed by questions",
+  "hasQuestion": true,
+  "topic": "main topic being discussed",
+  "difficulty": "beginner/intermediate/advanced"
+}`
+            }, {
+              role: 'user',
+              content: message
+            }],
+            temperature: 0.7,
+            max_tokens: 1000
+          })
+        });
+
+        const openaiData = await openaiResponse.json();
+        
+        if (!openaiResponse.ok) {
+          throw new Error(`OpenAI API error: ${openaiData.error?.message || 'Unknown error'}`);
+        }
+
+        const result = JSON.parse(openaiData.choices[0].message.content);
+        response = result.response;
+        hasQuestion = result.hasQuestion;
+        topic = result.topic || topic;
+        difficulty = result.difficulty || difficulty;
+      }
+
+      res.json({
+        response,
+        hasQuestion,
+        difficulty,
+        topic,
+        evaluation
+      });
+
+    } catch (error) {
+      console.error('Tutor API error:', error);
+      res.status(500).json({ 
+        error: 'Failed to process tutoring request',
+        details: error.message 
+      });
+    }
+  });
+
   // Test database connection endpoint
   app.get("/api/test-db", async (req, res) => {
     try {
