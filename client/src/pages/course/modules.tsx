@@ -510,9 +510,10 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
         },
         body: JSON.stringify({
           sourceText: `Week ${weekNumber}: ${modules.find(m => m.week === weekNumber)?.title || ''}. This is part of a 6-week Critical Thinking course.`,
-          instructions: 'Generate a practice quiz with Critical Thinking problems, argument analysis, and reasoning assessment questions.',
+          instructions: 'Generate a practice quiz with 6-8 Critical Thinking problems, argument analysis, and reasoning assessment questions.',
           model: selectedAIModel,
-          isPractice: true
+          isPractice: true,
+          questionCount: 6
         }),
       });
 
