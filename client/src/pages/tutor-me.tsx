@@ -199,6 +199,26 @@ export default function TutorMe() {
     }
   };
 
+  // Format tutor messages to make questions distinct and prominent
+  const formatTutorMessage = (content: string) => {
+    // Look for questions marked with **Question X:** pattern and make them stand out
+    let formatted = content.replace(
+      /\*\*Question (\d+):\*\*(.*?)(?=\*\*Question \d+:|\n\n|$)/gs,
+      '<div class="bg-blue-50 dark:bg-blue-950 border-l-4 border-blue-400 p-3 my-3 rounded-r">' +
+      '<div class="font-semibold text-blue-800 dark:text-blue-200 mb-1">Question $1:</div>' +
+      '<div class="text-blue-700 dark:text-blue-300">$2</div>' +
+      '</div>'
+    );
+
+    // Also catch standalone questions that end with ?
+    formatted = formatted.replace(
+      /^(.+\?)\s*$/gm,
+      '<div class="bg-blue-50 dark:bg-blue-950 border-l-4 border-blue-400 p-3 my-2 rounded-r text-blue-700 dark:text-blue-300 font-medium">$1</div>'
+    );
+
+    return formatted;
+  };
+
   const getMessageIcon = (message: TutorMessage) => {
     if (message.type === 'user') return null;
     
@@ -330,34 +350,10 @@ export default function TutorMe() {
                       
                       <div 
                         className="prose prose-sm max-w-none dark:prose-invert"
-                        dangerouslySetInnerHTML={{ __html: message.content }}
+                        dangerouslySetInnerHTML={{ __html: formatTutorMessage(message.content) }}
                       />
                       
-                      {message.evaluation && (
-                        <div className={`mt-3 p-3 rounded border-l-4 ${
-                          message.evaluation.correct 
-                            ? 'bg-green-50 border-green-400 dark:bg-green-950' 
-                            : 'bg-yellow-50 border-yellow-400 dark:bg-yellow-950'
-                        }`}>
-                          <div className="flex items-center gap-2 mb-1">
-                            {message.evaluation.correct ? (
-                              <Target className="h-4 w-4 text-green-600" />
-                            ) : (
-                              <Lightbulb className="h-4 w-4 text-yellow-600" />
-                            )}
-                            <span className={`font-medium text-sm ${
-                              message.evaluation.correct ? 'text-green-700' : 'text-yellow-700'
-                            }`}>
-                              {message.evaluation.correct ? "You really know your stuff!" : "You might need a little help here"}
-                            </span>
-                          </div>
-                          <p className={`text-sm ${
-                            message.evaluation.correct ? 'text-green-600' : 'text-yellow-600'
-                          }`}>
-                            {message.evaluation.explanation}
-                          </p>
-                        </div>
-                      )}
+
                       
                       <div className="text-xs text-muted-foreground mt-2">
                         {message.timestamp.toLocaleTimeString()}
