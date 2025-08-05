@@ -198,15 +198,8 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
 
   const showPresetPracticeQuiz = (weekNumber: number) => {
     const presetContent = presetPracticeQuizzes[weekNumber as keyof typeof presetPracticeQuizzes];
-    if (presetContent && typeof presetContent.content === 'object') {
-      // For structured content, just mark as started - the InteractivePractice will read directly
-      setPracticeQuizStarted(prev => ({ ...prev, [weekNumber]: true }));
-    } else if (presetContent && typeof presetContent.content === 'string') {
-      // For string content, set in generated state
-      setGeneratedPracticeQuiz(prev => ({
-        ...prev,
-        [weekNumber]: presetContent.content
-      }));
+    if (presetContent) {
+      // Just mark as started - the InteractivePractice will read directly from presetPracticeQuizzes
       setPracticeQuizStarted(prev => ({ ...prev, [weekNumber]: true }));
     }
   };
@@ -871,7 +864,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         title: 'Comprehensive Logic Final',
                         points: 200,
                         type: 'multiple_choice' as const,
-                        context: presetContent.content,
+                        context: typeof presetContent.content === 'string' ? presetContent.content : 'Interactive practice content',
                         questions: [
                           {
                             id: 'final-q1',

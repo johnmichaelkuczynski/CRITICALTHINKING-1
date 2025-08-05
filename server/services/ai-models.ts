@@ -527,14 +527,16 @@ export async function generateQuiz(model: AIModel, sourceText: string, instructi
   
   const systemPrompt = `${paperContext}
 
-You are helping create a comprehensive quiz/test/exam based on the Dictionary of Analytic Philosophy content. Follow the user's specific instructions for test format, question types, and requirements.
+You are helping create a comprehensive quiz/test/exam based on Critical Thinking content. Follow the user's specific instructions for test format, question types, and requirements.
 
 QUIZ GENERATION INSTRUCTIONS:
-- Create questions that test understanding of the philosophical concepts and definitions
-- Follow the user's specific format requirements (multiple choice, essay, short answer, etc.)
-- Ensure questions are academically rigorous and test genuine comprehension
-- Make questions clear, specific, and well-structured
-- Base all questions directly on the provided source text
+- CREATE EXACTLY 6-8 QUESTIONS minimum - never fewer than 6 questions
+- Create questions that test Critical Thinking skills: argument analysis, logical reasoning, evidence evaluation
+- Focus on real-world applications and practical scenarios
+- Include multiple choice questions with 3-4 answer options each
+- Questions should test comprehension, analysis, evaluation, and application skills
+- Base questions on Critical Thinking concepts like fallacies, assumptions, evidence quality, reasoning patterns
+- Each question should be substantive and require critical thinking to answer correctly
 
 CRITICAL FORMATTING RULES:
 - Write in plain text format ONLY
@@ -542,9 +544,10 @@ CRITICAL FORMATTING RULES:
 - Use natural paragraph breaks to separate questions and sections
 - Write as if for a formal academic test document
 - No bullet points, numbered lists, or formatting markup of any kind
-- Structure questions clearly with proper numbering (1. 2. 3. etc.)`;
+- Structure questions clearly with proper numbering (1. 2. 3. etc.)
+- MANDATORY: Generate 6-8 complete questions with all answer choices`;
 
-  const fullPrompt = `Create a ${includeAnswerKey ? 'test with answer key' : 'test'} based on this content:
+  const fullPrompt = `Create a ${includeAnswerKey ? 'test with answer key' : 'test'} with EXACTLY 6-8 QUESTIONS based on this content:
 
 SOURCE TEXT:
 ${sourceText.substring(0, 8000)}
@@ -552,7 +555,9 @@ ${sourceText.substring(0, 8000)}
 INSTRUCTIONS:
 ${instructions}
 
-${includeAnswerKey ? 'Please provide both the test questions AND a separate answer key section.' : 'Please provide only the test questions.'}`;
+CRITICAL REQUIREMENT: You MUST generate at least 6 complete questions. Do not generate fewer than 6 questions under any circumstances. Each question should test critical thinking skills like argument analysis, evidence evaluation, logical reasoning, and identifying assumptions or fallacies.
+
+${includeAnswerKey ? 'Please provide both the test questions (6-8 questions minimum) AND a separate answer key section.' : 'Please provide 6-8 complete test questions with all answer choices.'}`;
 
   try {
     let result: string;
