@@ -1081,17 +1081,23 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                     ) : (
                       <div className="text-center py-8">
                         <p className="text-muted-foreground mb-4">
-                          View pre-existing lecture summary or generate a new AI-powered summary.
+                          {presetLectures[selectedModuleData.week as keyof typeof presetLectures] 
+                            ? "View pre-existing lecture summary or generate a new AI-powered summary."
+                            : "Generate an AI-powered lecture summary for this week's content."
+                          }
                         </p>
                         <div className="flex justify-center space-x-4">
-                          <Button
-                            variant="outline"
-                            onClick={() => showPresetLecture(selectedModuleData.week)}
-                            className="flex items-center space-x-2"
-                          >
-                            <Eye className="w-4 h-4" />
-                            <span>Show Lecture Summary</span>
-                          </Button>
+                          {/* Only show "Show Lecture Summary" if preset content exists for this week */}
+                          {presetLectures[selectedModuleData.week as keyof typeof presetLectures] && (
+                            <Button
+                              variant="outline"
+                              onClick={() => showPresetLecture(selectedModuleData.week)}
+                              className="flex items-center space-x-2"
+                            >
+                              <Eye className="w-4 h-4" />
+                              <span>Show Lecture Summary</span>
+                            </Button>
+                          )}
                           <Button
                             onClick={() => generateLecture(selectedModuleData.week)}
                             disabled={generatingLecture}
@@ -1105,7 +1111,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                             ) : (
                               <>
                                 <Play className="w-4 h-4" />
-                                <span>Generate New Lecture</span>
+                                <span>Generate AI Lecture</span>
                               </>
                             )}
                           </Button>
