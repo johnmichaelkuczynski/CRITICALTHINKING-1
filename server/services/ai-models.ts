@@ -525,18 +525,60 @@ async function generatePerplexityQuizResponse(prompt: string, systemPrompt: stri
 export async function generateQuiz(model: AIModel, sourceText: string, instructions: string, includeAnswerKey: boolean = false): Promise<{ testContent: string; answerKey?: string }> {
   const paperContext = getPaperContext();
   
+  // Generate unique session ID for randomization
+  const sessionId = Math.random().toString(36).substring(2, 15);
+  const timestamp = Date.now();
+  
+  // Randomization scenarios for unique content generation
+  const scenarios = [
+    "workplace disputes and professional conflicts",
+    "news analysis and media credibility assessment", 
+    "scientific research evaluation and evidence quality",
+    "consumer decision-making and advertising claims",
+    "social media information and bias detection",
+    "healthcare decisions and medical information",
+    "educational content and learning strategies",
+    "environmental issues and policy evaluation",
+    "technology ethics and digital literacy",
+    "financial planning and economic reasoning"
+  ];
+  
+  const skillFocus = [
+    "argument structure analysis",
+    "evidence evaluation and source credibility",
+    "logical fallacy identification",
+    "assumption identification and testing",
+    "bias detection and critical assessment",
+    "cause-and-effect reasoning",
+    "statistical thinking and data interpretation",
+    "ethical reasoning and moral arguments"
+  ];
+  
+  // Random selections for unique content
+  const randomScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+  const randomSkillFocus = skillFocus[Math.floor(Math.random() * skillFocus.length)];
+  const questionCount = 6 + Math.floor(Math.random() * 3); // 6-8 questions randomly
+  
   const systemPrompt = `${paperContext}
 
 You are helping create a comprehensive quiz/test/exam based on Critical Thinking content. Follow the user's specific instructions for test format, question types, and requirements.
 
+ANTI-DUPLICATION SYSTEM ACTIVE - Session ID: ${sessionId}
+TIMESTAMP: ${timestamp}
+FOCUS SCENARIO: ${randomScenario}
+SKILL FOCUS: ${randomSkillFocus}
+TARGET QUESTIONS: ${questionCount}
+
 QUIZ GENERATION INSTRUCTIONS:
-- CREATE EXACTLY 6-8 QUESTIONS minimum - never fewer than 6 questions
+- CREATE EXACTLY ${questionCount} QUESTIONS minimum - never fewer than 6 questions
 - Create questions that test Critical Thinking skills: argument analysis, logical reasoning, evidence evaluation
-- Focus on real-world applications and practical scenarios
+- Focus specifically on ${randomScenario} for practical scenarios
+- Emphasize ${randomSkillFocus} in question design
 - Include multiple choice questions with 3-4 answer options each
 - Questions should test comprehension, analysis, evaluation, and application skills
 - Base questions on Critical Thinking concepts like fallacies, assumptions, evidence quality, reasoning patterns
 - Each question should be substantive and require critical thinking to answer correctly
+- VARY question types: some analytical, some evaluative, some application-based
 
 CRITICAL FORMATTING RULES:
 - Write in plain text format ONLY
@@ -545,9 +587,9 @@ CRITICAL FORMATTING RULES:
 - Write as if for a formal academic test document
 - No bullet points, numbered lists, or formatting markup of any kind
 - Structure questions clearly with proper numbering (1. 2. 3. etc.)
-- MANDATORY: Generate 6-8 complete questions with all answer choices`;
+- MANDATORY: Generate ${questionCount} complete questions with all answer choices`;
 
-  const fullPrompt = `Create a ${includeAnswerKey ? 'test with answer key' : 'test'} with EXACTLY 6-8 QUESTIONS based on this content:
+  const fullPrompt = `Create a ${includeAnswerKey ? 'test with answer key' : 'test'} with EXACTLY ${questionCount} QUESTIONS based on this content:
 
 SOURCE TEXT:
 ${sourceText.substring(0, 8000)}
@@ -555,9 +597,18 @@ ${sourceText.substring(0, 8000)}
 INSTRUCTIONS:
 ${instructions}
 
-CRITICAL REQUIREMENT: You MUST generate at least 6 complete questions. Do not generate fewer than 6 questions under any circumstances. Each question should test critical thinking skills like argument analysis, evidence evaluation, logical reasoning, and identifying assumptions or fallacies.
+ANTI-DUPLICATION REQUIREMENTS:
+- Session ID: ${sessionId} - Ensure this generates COMPLETELY UNIQUE content
+- Focus on ${randomScenario} scenarios 
+- Emphasize ${randomSkillFocus} skills
+- Generate ${questionCount} questions (not more, not less)
+- Each question must be DIFFERENT from previous generations
+- Use varied contexts, examples, and situations
+- Avoid repetitive question patterns or familiar phrasings
 
-${includeAnswerKey ? 'Please provide both the test questions (6-8 questions minimum) AND a separate answer key section.' : 'Please provide 6-8 complete test questions with all answer choices.'}`;
+CRITICAL REQUIREMENT: You MUST generate exactly ${questionCount} complete questions. Do not generate fewer than 6 questions under any circumstances. Each question should test critical thinking skills like argument analysis, evidence evaluation, logical reasoning, and identifying assumptions or fallacies.
+
+${includeAnswerKey ? `Please provide both the test questions (${questionCount} questions) AND a separate answer key section.` : `Please provide ${questionCount} complete test questions with all answer choices.`}`;
 
   try {
     let result: string;
