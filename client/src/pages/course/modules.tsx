@@ -970,32 +970,38 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                   try {
                     const finalExamData = JSON.parse(generatedPracticeFinal);
                     console.log('Rendering AI-generated practice final:', finalExamData.title);
+                    console.log('DEBUG: Final exam data:', finalExamData);
+                    console.log('DEBUG: Questions array:', finalExamData.questions);
+                    console.log('DEBUG: Questions count:', finalExamData.questions?.length);
                     
                     // Convert AI-generated content to InteractivePractice format
                     const practiceContent = {
                       instructions: finalExamData.instructions || "Comprehensive Practice Final covering all course material from Weeks 1-6. This is your opportunity to test your complete understanding of critical thinking.",
                       totalPoints: finalExamData.totalPoints || 200,
-                      problems: [
-                        {
-                          id: 'ai-final-section-1',
-                          title: finalExamData.title || 'Practice Final Exam - Critical Thinking',
-                          points: finalExamData.totalPoints || 200,
-                          type: 'mixed' as const,
-                          context: 'AI-generated comprehensive Critical Thinking practice final exam',
-                          questions: finalExamData.questions?.map((q: any, index: number) => ({
-                            id: q.id || `pf-q${index + 1}`,
-                            question: q.question,
-                            options: q.options || [],
-                            type: q.type || 'multiple_choice',
-                            points: q.points || 15,
-                            section: q.section || 'Critical Thinking',
-                            correct: 0, // Will be graded by AI
-                            answer: '', // AI grading handles all types
-                            explanation: `This question tests ${q.section || 'critical thinking skills'}.`
-                          })) || []
-                        }
-                      ]
+                      problems: finalExamData.questions?.map((q: any, index: number) => {
+                        console.log(`DEBUG: Processing question ${index + 1}:`, q);
+                        return {
+                          id: `final-problem-${index + 1}`,
+                          title: `Question ${index + 1}: ${q.section || 'Critical Thinking'}`,
+                          points: q.points || 15,
+                          type: (q.type === 'short_answer' || q.type === 'essay') ? 'text_input' : 'multiple_choice' as const,
+                          context: '', // Don't duplicate the question in context
+                          questions: [
+                            {
+                              id: q.id || `pf-q${index + 1}`,
+                              question: q.question,
+                              options: q.options || [],
+                              correct: 0, // Will be graded by AI
+                              answer: '', // AI grading handles all types
+                              explanation: `This question tests ${q.section || 'critical thinking skills'}.`
+                            }
+                          ]
+                        };
+                      }) || []
                     };
+                    
+                    console.log('DEBUG: Practice content structure:', practiceContent);
+                    console.log('DEBUG: Problems count:', practiceContent.problems.length);
 
                     return (
                       <div className="space-y-4">
