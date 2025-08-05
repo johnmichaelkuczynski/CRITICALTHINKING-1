@@ -800,7 +800,7 @@ Be authentic and educational, not conversational fluff.`
       }
     } catch (error) {
       console.error("Registration error:", error);
-      res.status(500).json({ success: false, error: "Registration failed: " + error instanceof Error ? error.message : "Unknown error" });
+      res.status(500).json({ success: false, error: "Registration failed: " + (error instanceof Error ? error.message : "Unknown error") });
     }
   });
 
@@ -870,7 +870,7 @@ Be authentic and educational, not conversational fluff.`
       }
     } catch (error) {
       console.error("Login error:", error);
-      res.status(500).json({ success: false, error: "Login failed: " + error instanceof Error ? error.message : "Unknown error" });
+      res.status(500).json({ success: false, error: "Login failed: " + (error instanceof Error ? error.message : "Unknown error") });
     }
   });
 
@@ -1284,7 +1284,7 @@ Be authentic and educational, not conversational fluff.`
       const user = await getCurrentUser(req);
       
       // Generate 10 fresh Critical Thinking questions using the selected AI model
-      const fullQuiz = await generateCriticalThinkingQuiz(model || 'openai', sourceText, instructions);
+      const fullQuiz = await generateQuiz(model || 'openai', sourceText, instructions || "Generate 6-8 Critical Thinking questions", true);
       
       // Check if user has access to full features
       let quiz = fullQuiz;
@@ -1345,17 +1345,17 @@ Be authentic and educational, not conversational fluff.`
       
 
       
-      const fullStudyGuide = await generateStudyGuide(model, sourceText, instructions);
+      const fullStudyGuide = await generateStudyGuide(model || 'openai', sourceText, instructions || "Generate comprehensive study guide");
       
       // Check if user has access to full features
       let studyGuide = fullStudyGuide;
       let isPreview = false;
       
       if (!canAccessFeature(user)) {
-        studyGuide = getPreviewResponse(fullStudyGuide.guideContent, !user);
+        studyGuide = { guideContent: getPreviewResponse(fullStudyGuide.guideContent, !user) };
         isPreview = true;
       } else {
-        studyGuide = fullStudyGuide.guideContent;
+        studyGuide = { guideContent: fullStudyGuide.guideContent };
         // Deduct 1 credit for full response (skip for admin)
         if (!isAdmin(user)) {
           await storage.updateUserCredits(user!.id, user!.credits - 1);
@@ -1373,7 +1373,7 @@ Be authentic and educational, not conversational fluff.`
       res.json({ 
         studyGuide: {
           id: savedStudyGuide.id,
-          guideContent: studyGuide, // Return preview or full study guide based on user status
+          guideContent: studyGuide.guideContent, // Return preview or full study guide based on user status
           timestamp: savedStudyGuide.timestamp
         },
         isPreview 
@@ -1401,7 +1401,7 @@ Be authentic and educational, not conversational fluff.`
       const { sourceText, instructions, chunkIndex, model, questionTypes, questionCount } = studentTestRequestSchema.parse(req.body);
       const user = await getCurrentUser(req);
       
-      const fullStudentTest = await generateStudentTest(model, sourceText, instructions, questionTypes, questionCount);
+      const fullStudentTest = await generateStudentTest(model || 'openai', sourceText, instructions || "Generate student test", questionTypes, questionCount);
       console.log("Generated test content:", fullStudentTest.testContent.substring(0, 1500));
       
       // Check if user has access to full features
@@ -1409,10 +1409,10 @@ Be authentic and educational, not conversational fluff.`
       let isPreview = false;
       
       if (!canAccessFeature(user)) {
-        studentTest = getPreviewResponse(fullStudentTest.testContent, !user);
+        studentTest = { testContent: getPreviewResponse(fullStudentTest.testContent, !user) };
         isPreview = true;
       } else {
-        studentTest = fullStudentTest.testContent;
+        studentTest = { testContent: fullStudentTest.testContent };
         // Deduct 1 credit for full response (skip for admin)
         if (!isAdmin(user)) {
           await storage.updateUserCredits(user!.id, user!.credits - 1);
@@ -1430,7 +1430,7 @@ Be authentic and educational, not conversational fluff.`
       res.json({ 
         studentTest: {
           id: savedStudentTest.id,
-          testContent: studentTest, // Return preview or full test based on user status
+          testContent: studentTest.testContent, // Return preview or full test based on user status
           timestamp: savedStudentTest.timestamp
         },
         isPreview 
@@ -1507,145 +1507,7 @@ Be authentic and educational, not conversational fluff.`
 
   // DELETED ALL HARDCODED ANSWER GENERATION FUNCTIONS - TRUE PASSTHROUGH SYSTEM ONLY
 
-  // Generate 10 fresh Critical Thinking questions
-  async function generateCriticalThinkingQuiz(model: string, sourceText: string, instructions: string) {
-    const systemPrompt = `You are an expert Critical Thinking professor. You MUST generate exactly 10 multiple choice questions. NO FEWER THAN 10. NO MORE THAN 10.
-
-ABSOLUTE REQUIREMENTS:
-- Generate all 10 questions in a single response
-- Number each question 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-- Each question has exactly 3 options (A, B, C)
-- Mark the correct answer clearly
-- Focus on Critical Thinking: reasoning, fallacies, argument analysis, evidence evaluation
-- Make questions challenging but fair for university students
-
-YOU MUST COMPLETE ALL 10 QUESTIONS IN THIS RESPONSE. Do not stop at 5 or 6 questions.
-
-Format each question as:
-[Number]. **[Question text]**
-   A) [Option A]
-   B) [Option B]  
-   C) [Option C]
-   **Correct Answer: [A/B/C]**
-
-Generate all 10 questions now.`;
-
-    const userPrompt = `Generate a 10-question Critical Thinking practice quiz based on these concepts: ${sourceText.substring(0, 2000)}
-
-Instructions: ${instructions || 'Create 10 fresh multiple choice questions testing various Critical Thinking skills'}
-
-Requirements:
-- Exactly 10 questions total
-- Multiple choice format (A, B, C options)
-- Focus on Critical Thinking concepts
-- Each question tests different reasoning skills
-- Never duplicate questions from previous quizzes`;
-
-    try {
-      let quizContent: string;
-
-      if (model === 'anthropic') {
-        if (!process.env.ANTHROPIC_API_KEY) {
-          throw new Error('Anthropic API key not configured');
-        }
-
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'x-api-key': process.env.ANTHROPIC_API_KEY!,
-            'Content-Type': 'application/json',
-            'anthropic-version': '2023-06-01'
-          },
-          body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 6000,
-            messages: [{
-              role: 'user',
-              content: `${systemPrompt}\n\n${userPrompt}`
-            }]
-          })
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(`Anthropic API error: ${data.error?.message || 'Unknown error'}`);
-        }
-        quizContent = data.content[0].text;
-
-      } else if (model === 'deepseek') {
-        if (!process.env.DEEPSEEK_API_KEY) {
-          throw new Error('DeepSeek API key not configured');
-        }
-
-        const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'deepseek-chat',
-            messages: [{
-              role: 'system',
-              content: systemPrompt
-            }, {
-              role: 'user',
-              content: userPrompt
-            }],
-            temperature: 0.7,
-            max_tokens: 6000
-          })
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(`DeepSeek API error: ${data.error?.message || 'Unknown error'}`);
-        }
-        quizContent = data.choices[0].message.content;
-
-      } else {
-        // Default to OpenAI
-        if (!process.env.OPENAI_API_KEY) {
-          throw new Error('OpenAI API key not configured');
-        }
-
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY!}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o',
-            messages: [{
-              role: 'system',
-              content: systemPrompt
-            }, {
-              role: 'user',
-              content: userPrompt
-            }],
-            temperature: 0.7,
-            max_tokens: 6000
-          })
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(`OpenAI API error: ${data.error?.message || 'Unknown error'}`);
-        }
-        quizContent = data.choices[0].message.content;
-      }
-
-      return {
-        testContent: quizContent,
-        answerKey: 'Answers are included in the quiz content'
-      };
-
-    } catch (error) {
-      console.error('Error generating Critical Thinking quiz:', error);
-      throw error;
-    }
-  }
+  // REMOVED DUPLICATE FUNCTION - Using generateQuiz from ai-models.ts instead
 
   // PURE GPT PASSTHROUGH GRADING SYSTEM - NO HARDCODED ANSWERS
   async function gradeTestWithGPT(userAnswers: Record<string, string>, testContent: string) {
@@ -1761,7 +1623,7 @@ DO NOT use exact string matching. Evaluate the reasoning and understanding.`;
         max_tokens: 300
       });
       
-      const result = JSON.parse(response.choices[0].message.content);
+      const result = JSON.parse(response.choices[0].message.content || '{}');
       return {
         isCorrect: result.isCorrect || false,
         explanation: result.explanation || 'No explanation provided'
@@ -1787,7 +1649,7 @@ DO NOT use exact string matching. Evaluate the reasoning and understanding.`;
 
       // Check feature access for non-admin users
       if (!isAdmin(user) && !canAccessFeature(user)) {
-        const previewResponse = getPreviewResponse(user, "podcast generation");
+        const previewResponse = getPreviewResponse("podcast generation", !user);
         return res.json({ 
           script: previewResponse,
           hasAudio: false,
@@ -1834,7 +1696,7 @@ DO NOT use exact string matching. Evaluate the reasoning and understanding.`;
         const podcast = await storage.getPodcastById(tempPodcast.id);
 
         return res.json({
-          id: podcast.id,
+          id: podcast!.id,
           script: previewScript,
           hasAudio: result.hasAudio,
           isPreview: true
@@ -1857,7 +1719,7 @@ DO NOT use exact string matching. Evaluate the reasoning and understanding.`;
       const podcast = await storage.getPodcastById(tempPodcast.id);
 
       res.json({
-        id: podcast.id,
+        id: podcast!.id,
         script: result.script,
         hasAudio: result.hasAudio,
         isPreview: false
