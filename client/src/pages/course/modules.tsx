@@ -543,9 +543,25 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   };
 
   const generatePracticeQuiz = async (weekNumber: number) => {
-    if (!user) return;
+    if (!user) {
+      alert('Please log in to generate practice quiz');
+      return;
+    }
     
+    console.log("Generate New Practice Quiz clicked for week:", weekNumber);
     setGeneratingPracticeQuiz(true);
+    
+    // FORCE COMPLETE RESET - Clear all existing content to ensure fresh generation
+    setPracticeQuizStarted(prev => ({ ...prev, [weekNumber]: false }));
+    setGeneratedPracticeQuiz(prev => ({
+      ...prev,
+      [weekNumber]: ''
+    }));
+    
+    const timestamp = Date.now();
+    const weekTopic = modules.find(m => m.week === weekNumber)?.title || 'Critical Thinking Foundations';
+    
+    console.log("Sending practice quiz generation request:", { weekNumber, weekTopic });
     
     try {
       const response = await fetch('/api/generate-quiz', {
@@ -554,33 +570,38 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          sourceText: `Week ${weekNumber}: ${modules.find(m => m.week === weekNumber)?.title || ''}. This is part of a 6-week Critical Thinking course.`,
+          sourceText: `Week ${weekNumber}: ${weekTopic}. This is part of a 6-week Critical Thinking course. Generate fresh content - timestamp: ${timestamp}`,
           instructions: 'Generate a practice quiz with 6-8 Critical Thinking problems, argument analysis, and reasoning assessment questions.',
           model: selectedAIModel,
           isPractice: true,
-          questionCount: 6
+          questionCount: Math.floor(Math.random() * 3) + 6, // 6-8 questions randomly
+          seed: timestamp // Force unique generation
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate practice quiz');
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log("LLM response received:", data);
       
-      if (data.quiz) {
+      if (data.quiz && data.quiz.testContent) {
+        console.log('Practice quiz generated successfully:', data.quiz.testContent);
         setGeneratedPracticeQuiz(prev => ({
           ...prev,
           [weekNumber]: data.quiz.testContent
         }));
+        setPracticeQuizStarted(prev => ({ ...prev, [weekNumber]: true }));
+        console.log('Practice quiz stored and session started');
       } else {
-        throw new Error('Failed to generate practice quiz');
+        console.error('Practice quiz generation failed:', 'No quiz content returned');
+        throw new Error('No quiz content returned from AI');
       }
-      setPracticeQuizStarted(prev => ({ ...prev, [weekNumber]: true }));
       
     } catch (error) {
       console.error('Error generating practice quiz:', error);
-      alert('Failed to generate practice quiz. Please try again.');
+      alert('Failed to generate practice quiz. Please try again. Details: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setGeneratingPracticeQuiz(false);
     }
@@ -1807,15 +1828,24 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         </div>
                       ) : (
                         <div className="space-y-4">
-                          <div className="flex space-x-4">
+                          <div className="flex space-x-4 mb-4">
                             <Button 
                               variant="outline" 
-                              className="flex items-center space-x-2"
+                              className="flex items-center space-x-2 border-green-300 text-green-700 hover:bg-green-50"
                               onClick={() => generatePracticeQuiz(selectedModuleData.week)}
                               disabled={generatingPracticeQuiz}
                             >
-                              <RefreshCw className="w-4 h-4" />
-                              <span>Generate New Quiz</span>
+                              {generatingPracticeQuiz ? (
+                                <>
+                                  <Clock className="w-4 h-4 animate-spin" />
+                                  <span>Generating New Quiz...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <RefreshCw className="w-4 h-4" />
+                                  <span>Generate New Practice Quiz</span>
+                                </>
+                              )}
                             </Button>
                           </div>
 
@@ -1832,6 +1862,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                   onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
                                     handlePracticeComplete('quiz', selectedModuleData.week, score, answers, timeSpent)
                                   }
+                                  onGenerateNew={() => generatePracticeQuiz(selectedModuleData.week)}
                                 />
                               );
                             } 
@@ -1872,6 +1903,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                                       onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
                                         handlePracticeComplete('quiz', selectedModuleData.week, score, answers, timeSpent)
                                       }
+                                      onGenerateNew={() => generatePracticeQuiz(selectedModuleData.week)}
                                     />
                                   );
                                 }
