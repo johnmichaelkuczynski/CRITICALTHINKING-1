@@ -617,6 +617,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     
     if (!generatedPracticeFinal) {
       console.log('No generated content, creating new practice final...');
+      setLoadingStates(prev => ({ ...prev, final: true }));
       // generateNewPracticeExam will automatically start the practice after generation
       await generateNewPracticeExam('final');
     } else {
@@ -636,6 +637,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     } else {
       // Generate new AI practice final
       console.log('Generate New Practice Final clicked');
+      setLoadingStates(prev => ({ ...prev, final: true }));
       
       const requestData = {
         examType: 'final',
@@ -671,14 +673,17 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
           setPracticeFinalStarted(false);
           setTimeout(() => {
             setPracticeFinalStarted(true);
+            setLoadingStates(prev => ({ ...prev, final: false }));
             console.log('Practice final session started successfully');
           }, 200);
         } else {
           console.error('Practice final generation failed:', result.error);
+          setLoadingStates(prev => ({ ...prev, final: false }));
           alert('Failed to generate practice final. Please try again.');
         }
       } catch (error) {
         console.error('Error generating practice final:', error);
+        setLoadingStates(prev => ({ ...prev, final: false }));
         alert('Error generating practice final. Please try again.');
       }
     }
@@ -974,13 +979,42 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                       </div>
 
                       <div className="flex space-x-4">
-                        <Button size="lg" className="flex items-center space-x-2" onClick={startPracticeFinal}>
-                          <Play className="w-4 h-4" />
-                          <span>Start Practice Final</span>
+                        <Button 
+                          size="lg" 
+                          className="flex items-center space-x-2" 
+                          onClick={startPracticeFinal}
+                          disabled={loadingStates.final}
+                        >
+                          {loadingStates.final ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                              <span>Starting...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Play className="w-4 h-4" />
+                              <span>Start Practice Final</span>
+                            </>
+                          )}
                         </Button>
-                        <Button variant="outline" size="lg" className="flex items-center space-x-2" onClick={() => generateNewPracticeExam('final')}>
-                          <RefreshCw className="w-4 h-4" />
-                          <span>Generate New Practice Final</span>
+                        <Button 
+                          variant="outline" 
+                          size="lg" 
+                          className="flex items-center space-x-2" 
+                          onClick={() => generateNewPracticeExam('final')}
+                          disabled={loadingStates.final}
+                        >
+                          {loadingStates.final ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                              <span>Generating...</span>
+                            </>
+                          ) : (
+                            <>
+                              <RefreshCw className="w-4 h-4" />
+                              <span>Generate New Practice Final</span>
+                            </>
+                          )}
                         </Button>
                       </div>
                     </div>
