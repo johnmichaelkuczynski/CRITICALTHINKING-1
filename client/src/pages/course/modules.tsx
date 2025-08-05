@@ -63,7 +63,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   const modules: ModuleData[] = [
     {
       week: 1,
-      title: "Basic Concepts, Notation, and Logical Operators",
+      title: "Critical Thinking Foundations and Argument Recognition",
       livingBookSection: "section-1",
       lectureGenerated: false,
       homeworkAvailable: true,
@@ -72,7 +72,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     },
     {
       week: 2,
-      title: "Truth Tables and Proof Methods",
+      title: "Understanding Arguments and Logical Structure",
       livingBookSection: "section-2",
       lectureGenerated: false,
       homeworkAvailable: true,
@@ -81,7 +81,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     },
     {
       week: 3,
-      title: "Boolean Algebra and Functions",
+      title: "Scientific and Empirical Reasoning",
       livingBookSection: "section-3",
       lectureGenerated: false,
       homeworkAvailable: true,
@@ -90,7 +90,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     },
     {
       week: 4,
-      title: "Quantifier Logic and Translation",
+      title: "Statistical Thinking and Data Analysis",
       livingBookSection: "section-4",
       lectureGenerated: false,
       homeworkAvailable: true,
@@ -99,7 +99,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     },
     {
       week: 5,
-      title: "Complex Translation and Mathematical Logic",
+      title: "Media Analysis and Information Evaluation",
       livingBookSection: "section-5",
       lectureGenerated: false,
       homeworkAvailable: true,
@@ -108,7 +108,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     },
     {
       week: 6,
-      title: "Using Models to Prove Invalidity and Consistency",
+      title: "Applied Critical Reasoning and Decision Making",
       livingBookSection: "section-6",
       lectureGenerated: false,
       homeworkAvailable: true,
@@ -246,7 +246,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
         body: JSON.stringify({
           weekNumber,
           topic: weekTopic,
-          courseMaterial: `Week ${weekNumber} covers ${weekTopic}. This is part of a 6-week symbolic logic course.`,
+          courseMaterial: `Week ${weekNumber} covers ${weekTopic}. This is part of a 6-week Critical Thinking course.`,
           aiModel: selectedAIModel
         }),
       });
@@ -286,7 +286,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
         body: JSON.stringify({
           weekNumber,
           topic: weekTopic,
-          courseMaterial: `Week ${weekNumber} covers ${weekTopic}. This is part of a 6-week symbolic logic course.`,
+          courseMaterial: `Week ${weekNumber} covers ${weekTopic}. This is part of a 6-week Critical Thinking course.`,
           aiModel: selectedAIModel
         }),
       });
@@ -516,8 +516,8 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          sourceText: `Week ${weekNumber}: ${modules.find(m => m.week === weekNumber)?.title || ''}. This is part of a 6-week symbolic logic course.`,
-          instructions: 'Generate a practice quiz with symbolic logic problems and conceptual questions.',
+          sourceText: `Week ${weekNumber}: ${modules.find(m => m.week === weekNumber)?.title || ''}. This is part of a 6-week Critical Thinking course.`,
+          instructions: 'Generate a practice quiz with Critical Thinking problems, argument analysis, and reasoning assessment questions.',
           model: selectedAIModel,
           isPractice: true
         }),
