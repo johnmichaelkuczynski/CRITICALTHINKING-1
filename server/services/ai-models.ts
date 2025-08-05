@@ -608,7 +608,27 @@ ANTI-DUPLICATION REQUIREMENTS:
 
 CRITICAL REQUIREMENT: You MUST generate exactly ${questionCount} complete questions. Do not generate fewer than 6 questions under any circumstances. Each question should test critical thinking skills like argument analysis, evidence evaluation, logical reasoning, and identifying assumptions or fallacies.
 
-${includeAnswerKey ? `Please provide both the test questions (${questionCount} questions) AND a separate answer key section.` : `Please provide ${questionCount} complete test questions with all answer choices.`}`;
+CRITICAL OUTPUT FORMAT: 
+Your response must be in JSON format wrapped in markdown code blocks like this:
+\`\`\`json
+{
+  "title": "Quiz Title",
+  "instructions": "Quiz instructions",
+  "totalPoints": 100,
+  "questions": [
+    {
+      "id": "q1",
+      "question": "Question text here",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correctAnswer": "Option A",
+      "points": 10,
+      "explanation": "Why this answer is correct"
+    }
+  ]
+}
+\`\`\`
+
+${includeAnswerKey ? `Please provide both the test questions (${questionCount} questions) AND a separate answer key section.` : `Please provide ${questionCount} complete test questions with all answer choices in the JSON format above.`}`;
 
   try {
     let result: string;
@@ -629,8 +649,8 @@ ${includeAnswerKey ? `Please provide both the test questions (${questionCount} q
         throw new Error(`Unsupported AI model: ${model}`);
     }
     
-    // Clean the result
-    const cleanedResult = cleanRewriteText(result);
+    // For quiz generation, don't clean the result as we need to preserve JSON formatting
+    const cleanedResult = result; // Skip cleanRewriteText to preserve JSON code blocks
     
     if (includeAnswerKey && cleanedResult) {
       // Try to split test and answer key
@@ -652,7 +672,7 @@ ${includeAnswerKey ? `Please provide both the test questions (${questionCount} q
       console.log(`Attempting fallback to AI2 due to ${modelName} failure`);
       try {
         const fallbackResult = await generateOpenAIQuizResponse(fullPrompt, systemPrompt);
-        const cleanedResult = cleanRewriteText(fallbackResult);
+        const cleanedResult = fallbackResult; // Skip cleanRewriteText to preserve JSON code blocks
         
         if (includeAnswerKey && cleanedResult) {
           const answerKeyMatch = cleanedResult.match(/(answer\s*key|answers?)\s*:?\s*([\s\S]+)$/i);
