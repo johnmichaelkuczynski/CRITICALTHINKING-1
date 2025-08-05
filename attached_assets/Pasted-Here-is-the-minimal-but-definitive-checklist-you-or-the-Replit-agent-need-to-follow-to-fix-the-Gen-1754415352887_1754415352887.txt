@@ -1,0 +1,73 @@
+Here is the minimal but definitive checklist you (or the Replit agent) need to follow to fix the Generate New Practice Homework button in a passthrough app:
+
+🔍 GOAL
+When user clicks “Generate New Practice Homework,” it should:
+
+Send a fresh prompt to the LLM.
+
+Get a full response back (e.g. 5–10 questions).
+
+Replace any prior content with the new one.
+
+Render the result.
+
+✅ FIX CHECKLIST
+1. 🔗 Button is wired to function
+tsx
+Copy
+Edit
+<button onClick={handleGenerateHomework}>Generate New Practice Homework</button>
+2. 📤 Prompt is built correctly
+ts
+Copy
+Edit
+const prompt = `Generate 10 new practice homework questions in critical reasoning. Format them clearly with numbered questions. Avoid duplicates.`;
+You MUST avoid anything like slice(0, 1) or filtering a static question array.
+
+3. 🧠 LLM call is actually happening
+ts
+Copy
+Edit
+const response = await callLLM(prompt);
+console.log("LLM raw response:", response);
+If this returns undefined, you're not getting a real response.
+
+4. ♻️ Previous state is cleared
+ts
+Copy
+Edit
+setHomework(null); // or setHomework([]), depending on your state structure
+5. 🧩 Result is displayed
+tsx
+Copy
+Edit
+{homework && homework.map((q, idx) => (
+  <div key={idx}>{q}</div>
+))}
+If your LLM is returning a blob of text, parse it:
+
+ts
+Copy
+Edit
+const questions = response.split(/\d+\.\s/).filter(q => q.trim() !== "");
+setHomework(questions);
+🔴 COMMON FAILURE POINTS (Double-check these)
+Button is calling a generateHomework() that has no await or doesn’t update state.
+
+Response from LLM is empty, but no error message shows.
+
+You are caching a prior response or state (e.g., old array isn’t cleared before render).
+
+The result is set, but the render component is watching the wrong state variable.
+
+🧪 TEST IN DEV CONSOLE
+Drop this in a temp component and confirm it generates:
+
+ts
+Copy
+Edit
+async function testLLM() {
+  const prompt = `Give me 5 new practice homework questions in critical thinking.`;
+  const res = await callLLM(prompt);
+  console.log(">>> LLM Response", res);
+}
