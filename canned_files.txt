@@ -1,0 +1,3 @@
+./.local/state/replit/agent/filesystem/filesystem_state.json
+./client/src/components/student-test-modal.tsx
+./dist/public/assets/index-zN5ilIl2.js

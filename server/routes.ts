@@ -752,7 +752,7 @@ Output only the abbreviation list, one per line. Be concise and use single capit
     }
   });
 
-  // Tutor endpoint - Adaptive tutoring with Q&A evaluation
+  // Tutor endpoint - Pure AI tutoring with NO canned responses
   app.post('/api/tutor', async (req, res) => {
     try {
       const { message, isAnswer, session } = req.body;
@@ -789,7 +789,7 @@ Weaknesses: ${session?.weaknessAreas?.join(', ') || 'none identified'}
 `;
 
       if (isAnswer) {
-        // This is a user answer to a previous question - evaluate it
+        // This is a user answer to a previous question - evaluate it with PURE AI
         const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
@@ -800,7 +800,7 @@ Weaknesses: ${session?.weaknessAreas?.join(', ') || 'none identified'}
             model: 'gpt-4o',
             messages: [{
               role: 'system',
-              content: `You are an adaptive tutor evaluating a student's answer in Critical Thinking. 
+              content: `You are an expert Critical Thinking tutor analyzing a student's answer. Use your expertise to evaluate their response.
 
 User Profile:
 ${profileContext}
@@ -808,21 +808,20 @@ ${profileContext}
 Recent Conversation:
 ${conversationContext}
 
-Your response should:
-1. Evaluate if the answer shows understanding (be generous - accept paraphrasing and alternative explanations)
-2. Give encouraging feedback ("You really know your stuff!" or "You might need a little help here")
-3. Provide a brief explanation of why the answer is correct/incorrect
-4. Then either:
-   - If correct: Give a more advanced follow-up question on the same topic
-   - If incorrect: Explain the concept simply and give an easier practice question
+INSTRUCTIONS:
+1. Analyze their answer for correctness and understanding
+2. Be generous - accept paraphrasing, different explanations, and alternative correct reasoning  
+3. Provide neutral, professional feedback without repetitive phrases
+4. Give a brief explanation of the evaluation
+5. Ask a relevant follow-up question to continue learning
 
-Always end with a question to continue the learning. Use mathematical symbols when relevant.
+CRITICAL: Do not use canned phrases like "You really know your stuff!" or similar repetitive responses. Be natural and varied in your feedback.
 
 Respond in this JSON format:
 {
   "correct": true/false,
-  "explanation": "brief evaluation explanation", 
-  "response": "your tutoring response with follow-up question",
+  "explanation": "your evaluation and reasoning", 
+  "response": "your natural tutoring response with follow-up question",
   "nextLevel": "advance/reinforce/remediate",
   "hasQuestion": true,
   "topic": "topic name"
@@ -831,7 +830,7 @@ Respond in this JSON format:
               role: 'user',
               content: `Student's answer: "${message}"`
             }],
-            temperature: 0.7,
+            temperature: 0.8,
             max_tokens: 1000
           })
         });
@@ -860,7 +859,7 @@ Respond in this JSON format:
         }
 
       } else {
-        // This is a new question/topic from the user
+        // This is a new question/topic from the user - pure AI response
         const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
@@ -871,11 +870,7 @@ Respond in this JSON format:
             model: 'gpt-4o',
             messages: [{
               role: 'system',
-              content: `You are an adaptive tutor for Critical Thinking. Your job is to:
-
-1. Give a brief, clear explanation (2-3 sentences) of the concept the student asked about
-2. Then ask 1-2 questions to test their understanding
-3. Adapt to their current level: ${session?.userLevel || 'beginner'}
+              content: `You are an expert Critical Thinking tutor. Provide thoughtful, accurate tutoring.
 
 User Profile:
 ${profileContext}
@@ -883,12 +878,14 @@ ${profileContext}
 Recent Conversation:
 ${conversationContext}
 
-Guidelines:
-- Keep explanations simple for beginners, more sophisticated for advanced students
-- Use examples they can relate to
-- Include mathematical/logical symbols when relevant: ∀, ∃, ∧, ∨, →, ↔, ¬
-- Always end with questions to check understanding
-- Be encouraging and supportive
+INSTRUCTIONS:
+1. Give a clear, accurate explanation of the concept (2-3 sentences)
+2. Ask 1-2 questions to test understanding
+3. Adapt complexity to their level: ${session?.userLevel || 'beginner'}
+4. Use mathematical/logical symbols when relevant: ∀, ∃, ∧, ∨, →, ↔, ¬
+5. Be professional and neutral - avoid repetitive encouraging phrases
+
+CRITICAL: Be natural and varied in your responses. Do NOT use canned phrases or repetitive language.
 
 Respond in this JSON format:
 {
@@ -901,7 +898,7 @@ Respond in this JSON format:
               role: 'user',
               content: message
             }],
-            temperature: 0.7,
+            temperature: 0.8,
             max_tokens: 1000
           })
         });
