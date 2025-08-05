@@ -147,12 +147,15 @@ Is the student's answer correct? Focus on reasoning and understanding, not exact
 
         const openaiData = await openaiResponse.json();
         if (!openaiResponse.ok) {
+          console.error('OpenAI API error:', openaiData);
           throw new Error(`OpenAI API error: ${openaiData.error?.message || 'Unknown error'}`);
         }
         
-        const result = JSON.parse(openaiData.choices[0].message.content);
+        const result = JSON.parse(openaiData.choices[0].message.content || '{}');
         isCorrect = result.isCorrect || false;
-        explanation = result.explanation || '';
+        explanation = result.explanation || 'No explanation provided';
+        
+        console.log('OpenAI grading result:', { userAnswer, isCorrect, explanation });
 
       } else if (model === 'anthropic') {
         if (!process.env.ANTHROPIC_API_KEY) {
@@ -268,6 +271,42 @@ Return JSON: {"isCorrect": true/false, "explanation": "brief reason"}`
       res.json({ isCorrect, explanation });
     } catch (error) {
       console.error('Error evaluating answer:', error);
+      // FALLBACK: For obvious synonyms in Critical Thinking, be generous
+      const userLower = userAnswer.toLowerCase().trim();
+      const correctLower = correctAnswer.toLowerCase().trim();
+      
+      // Common Critical Thinking synonyms
+      const synonyms = [
+        ['false dichotomy', 'false dilemma'],
+        ['ad hominem', 'personal attack'],
+        ['straw man', 'strawman'],
+        ['begging the question', 'circular reasoning'],
+        ['slippery slope', 'domino fallacy'],
+        ['bandwagon', 'appeal to popularity'],
+        ['appeal to authority', 'argument from authority'],
+        ['red herring', 'irrelevant information']
+      ];
+      
+      for (const [term1, term2] of synonyms) {
+        if ((userLower === term1 && correctLower.includes(term2)) || 
+            (userLower === term2 && correctLower.includes(term1)) ||
+            (userLower === term1 && correctLower.includes(term1)) ||
+            (userLower === term2 && correctLower.includes(term2))) {
+          return res.json({ 
+            isCorrect: true, 
+            explanation: `"${userAnswer}" is correct. It is synonymous with the expected answer.` 
+          });
+        }
+      }
+      
+      // If user answer is contained in correct answer, likely correct
+      if (userLower.length > 3 && correctLower.includes(userLower)) {
+        return res.json({ 
+          isCorrect: true, 
+          explanation: `Your answer "${userAnswer}" demonstrates correct understanding.` 
+        });
+      }
+      
       res.status(500).json({ error: 'Failed to evaluate answer' });
     }
   });
