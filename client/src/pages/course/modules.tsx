@@ -40,6 +40,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   const [practiceQuizStarted, setPracticeQuizStarted] = useState<{[key: number]: boolean}>({});
   const [practiceMidtermStarted, setPracticeMidtermStarted] = useState(false);
   const [practiceFinalStarted, setPracticeFinalStarted] = useState(false);
+  const [generatedPracticeMidterm, setGeneratedPracticeMidterm] = useState<string>('');
   const [generatedPracticeFinal, setGeneratedPracticeFinal] = useState<string | null>(null);
   const [practiceAnswers, setPracticeAnswers] = useState<{[key: string]: string}>({});
   const [generatedPracticeHomework, setGeneratedPracticeHomework] = useState<{[key: number]: string}>({});
@@ -49,6 +50,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   const [showingLecture, setShowingLecture] = useState<{[key: number]: boolean}>({});
   const [generatingLecture, setGeneratingLecture] = useState(false);
   const [generatedLectures, setGeneratedLectures] = useState<{[key: number]: string}>({});
+  const [loadingStates, setLoadingStates] = useState<{midterm: boolean, final: boolean}>({ midterm: false, final: false });
 
   // Update selected module when selectedWeek prop changes
   useEffect(() => {
@@ -608,8 +610,20 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     }
   };
 
-  const startPracticeMidterm = () => {
-    setPracticeMidtermStarted(true);
+  const startPracticeMidterm = async () => {
+    console.log('Start Practice Midterm clicked - current state:', { generatedPracticeMidterm: !!generatedPracticeMidterm, practiceMidtermStarted });
+    
+    if (!generatedPracticeMidterm) {
+      console.log('No generated content, creating new practice midterm...');
+      setLoadingStates(prev => ({ ...prev, midterm: true }));
+      await generateNewPracticeExam('midterm');
+    } else {
+      console.log('Starting practice midterm with existing content');
+      setPracticeMidtermStarted(true);
+      setTimeout(() => {
+        console.log('Practice midterm started state after timeout:', practiceMidtermStarted);
+      }, 200);
+    }
   };
 
   const startPracticeFinal = async () => {
@@ -631,9 +645,56 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
 
   const generateNewPracticeExam = async (examType: 'midterm' | 'final') => {
     if (examType === 'midterm') {
-      setPracticeMidtermStarted(false);
-      setTimeout(() => startPracticeMidterm(), 100);
-      alert(`Generated new practice ${examType} exam!`);
+      // Generate new AI practice midterm
+      console.log('Generate New Practice Midterm clicked');
+      setLoadingStates(prev => ({ ...prev, midterm: true }));
+      
+      const requestData = {
+        examType: 'midterm',
+        totalQuestions: 10,
+        sections: [
+          'Critical Thinking Foundations',
+          'Argument Analysis', 
+          'Evidence and Decision Making'
+        ]
+      };
+      
+      console.log('Sending practice midterm generation request:', requestData);
+      
+      try {
+        const response = await fetch('/api/practice-final/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestData)
+        });
+        
+        const result = await response.json();
+        console.log('Practice midterm LLM response received:', result);
+        
+        if (result.success) {
+          console.log('Practice midterm generated successfully:', result.finalExam);
+          
+          // Store the generated content and start practice session
+          setGeneratedPracticeMidterm(result.finalExam);
+          console.log('Practice midterm content stored, starting practice session...');
+          
+          // Clear existing state and start fresh
+          setPracticeMidtermStarted(false);
+          setTimeout(() => {
+            setPracticeMidtermStarted(true);
+            setLoadingStates(prev => ({ ...prev, midterm: false }));
+            console.log('Practice midterm session started successfully');
+          }, 200);
+        } else {
+          console.error('Practice midterm generation failed:', result.error);
+          setLoadingStates(prev => ({ ...prev, midterm: false }));
+          alert('Failed to generate practice midterm. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error generating practice midterm:', error);
+        setLoadingStates(prev => ({ ...prev, midterm: false }));
+        alert('Error generating practice midterm. Please try again.');
+      }
     } else {
       // Generate new AI practice final
       console.log('Generate New Practice Final clicked');
@@ -855,13 +916,42 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                       </div>
 
                       <div className="flex space-x-4">
-                        <Button size="lg" className="flex items-center space-x-2" onClick={startPracticeMidterm}>
-                          <Play className="w-4 h-4" />
-                          <span>Start Practice Midterm</span>
+                        <Button 
+                          size="lg" 
+                          className="flex items-center space-x-2" 
+                          onClick={startPracticeMidterm}
+                          disabled={loadingStates.midterm}
+                        >
+                          {loadingStates.midterm ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                              <span>Starting...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Play className="w-4 h-4" />
+                              <span>Start Practice Midterm</span>
+                            </>
+                          )}
                         </Button>
-                        <Button variant="outline" size="lg" className="flex items-center space-x-2" onClick={() => generateNewPracticeExam('midterm')}>
-                          <RefreshCw className="w-4 h-4" />
-                          <span>Generate New Practice Exam</span>
+                        <Button 
+                          variant="outline" 
+                          size="lg" 
+                          className="flex items-center space-x-2" 
+                          onClick={() => generateNewPracticeExam('midterm')}
+                          disabled={loadingStates.midterm}
+                        >
+                          {loadingStates.midterm ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                              <span>Generating...</span>
+                            </>
+                          ) : (
+                            <>
+                              <RefreshCw className="w-4 h-4" />
+                              <span>Generate New Practice Midterm</span>
+                            </>
+                          )}
                         </Button>
                       </div>
                     </div>
@@ -869,8 +959,60 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                 </Card>
               </div>
             ) : (
-              // Show Interactive Practice Test
+              // Show Interactive Practice Test (use generated content if available, otherwise preset)
               (() => {
+                if (generatedPracticeMidterm) {
+                  // Use AI-generated content
+                  try {
+                    const midtermData = JSON.parse(generatedPracticeMidterm);
+                    const processedQuestions = midtermData.questions?.map((q: any, index: number) => {
+                      console.log(`DEBUG: Processing question ${index + 1}:`, q);
+                      return {
+                        id: `midterm-problem-${index + 1}`,
+                        title: `Question ${index + 1}: ${q.section || 'Critical Thinking'}`,
+                        points: q.points || 10,
+                        type: (q.type === 'short_answer' || q.type === 'essay') ? 'text_input' : 'multiple_choice' as const,
+                        context: '',
+                        questions: [
+                          {
+                            id: q.id || `pm-q${index + 1}`,
+                            question: q.question,
+                            options: q.options || [],
+                            correct: q.correctAnswerIndex ?? q.correctAnswer ?? 0,
+                            answer: q.correctAnswer || '',
+                            explanation: `This question tests ${q.section || 'critical thinking skills'}.`
+                          }
+                        ]
+                      };
+                    }) || [];
+
+                    const practiceContent = {
+                      instructions: midtermData.instructions || "This is a practice midterm exam designed to test your critical thinking skills.",
+                      totalPoints: midtermData.totalPoints || 100,
+                      problems: processedQuestions
+                    };
+
+                    console.log('DEBUG: Practice midterm content structure:', practiceContent);
+                    console.log('DEBUG: Problems count:', practiceContent.problems.length);
+
+                    return (
+                      <InteractivePractice
+                        title="AI-Generated Practice Midterm"
+                        content={practiceContent}
+                        practiceType="test"
+                        weekNumber={1}
+                        onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
+                          handlePracticeComplete('test', 1, score, answers, timeSpent)
+                        }
+                      />
+                    );
+                  } catch (error) {
+                    console.error('Error parsing generated practice midterm:', error);
+                    // Fall back to preset content
+                  }
+                }
+                
+                // Use preset content as fallback
                 const presetContent = presetPracticeExams.midterm;
                 if (presetContent && typeof presetContent.content === 'object') {
                   return (
