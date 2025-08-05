@@ -201,7 +201,7 @@ export default function DocumentContent({
           if (!paragraph.trim()) return '';
           
           // Check if this is a heading and add appropriate ID
-          if (paragraph.match(/^(Week \d+:|Introduction|Basic Concepts|Applications|Key Takeaways|Boolean|Truth Tables|Material vs|Strict Implication|Symbolic Logic|Part [IVX]+:|Midterm|Final|Examination)/i)) {
+          if (paragraph.match(/^(Week \d+:|Introduction|Basic Concepts|Applications|Key Takeaways|Boolean|Truth Tables|Material vs|Strict Implication|Critical Thinking|Part [IVX]+:|Midterm|Final|Examination)/i)) {
             let headingId = '';
             const text = paragraph.trim();
             

@@ -102,7 +102,7 @@ export default function LivingBook({ openSection, onNavigateToModules }: LivingB
             "basic-logical-symbols": "Basic Logical Symbols",
             "material-vs-strict-implication": "Material vs. Strict Implication",
             "translation-practice": "Translation Practice",
-            "homework-1": "Symbolic Logic - Homework 1",
+            "homework-1": "Critical Thinking - Homework 1",
             
             // Week 2 content patterns
             "section-2": "Week 2",
@@ -110,7 +110,7 @@ export default function LivingBook({ openSection, onNavigateToModules }: LivingB
             "truth-tables": "Truth Tables",
             "elementary-proofs": "Elementary Proofs",
             "de-morgans-laws": "De Morgan's Laws",
-            "homework-2": "Symbolic Logic - Homework 2",
+            "homework-2": "Critical Thinking - Homework 2",
             
             // Week 3 content patterns
             "section-3": "Week 3",
@@ -118,7 +118,7 @@ export default function LivingBook({ openSection, onNavigateToModules }: LivingB
             "boolean-operations": "NOT (Complement) Symbol:",
             "boolean-laws": "Fundamental Laws of Boolean Algebra",
             "boolean-functions": "Boolean Functions and Truth Tables",
-            "homework-3": "Symbolic Logic - Homework 3",
+            "homework-3": "Critical Thinking - Homework 3",
             
             // Week 4 content patterns
             "section-4": "Week 4",
@@ -126,28 +126,28 @@ export default function LivingBook({ openSection, onNavigateToModules }: LivingB
             "universal-quantifier": "Universal Quantifier (∀)",
             "existential-quantifier": "Existential Quantifier (∃)",
             "complex-quantification": "Complex Quantification",
-            "homework-4": "Symbolic Logic - Homework 4",
+            "homework-4": "Critical Thinking - Homework 4",
             
             // Week 5 content patterns
             "section-5": "Week 5",
             "advanced-translation": "Advanced Translation Patterns",
             "uniqueness-quantifier": "Uniqueness Quantifier (∃!)",
             "mathematical-logic": "Mathematical Logic Applications",
-            "homework-5": "Symbolic Logic - Homework 5",
+            "homework-5": "Critical Thinking - Homework 5",
             
             // Week 6 content patterns
             "section-6": "Week 6",
             "models-introduction": "Introduction to Models",
             "model-definition": "Definition of a Model",
             "proving-invalidity": "Proving Invalidity",
-            "homework-6": "Symbolic Logic - Homework 6",
+            "homework-6": "Critical Thinking - Homework 6",
             
             // Week 7 content patterns
             "section-7": "Week 7",
             "recursive-number-systems": "Recursive Number Systems",
             "natural-numbers": "Natural Numbers (ℕ)",
             "statement-classes": "Statement Classes",
-            "homework-7": "Symbolic Logic - Homework 7",
+            "homework-7": "Critical Thinking - Homework 7",
             
             // Week 8 content patterns
             "section-8": "Week 8",

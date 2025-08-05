@@ -857,7 +857,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                 if (presetContent) {
                   // Convert preset test content to InteractivePractice format
                   const practiceContent = {
-                    instructions: "Comprehensive Practice Final covering all course material from Weeks 1-6. This is your opportunity to test your complete understanding of symbolic logic.",
+                    instructions: "Comprehensive Practice Final covering all course material from Weeks 1-6. This is your opportunity to test your complete understanding of critical thinking.",
                     totalPoints: 200,
                     problems: [
                       {
@@ -873,7 +873,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                             options: ['I have completed all sections', 'I need to review more material', 'Ready for final submission'],
                             correct: 0,
                             answer: 'I have completed all sections',
-                            explanation: 'This comprehensive final tests all aspects of symbolic logic from basic concepts to advanced applications.'
+                            explanation: 'This comprehensive final tests all aspects of critical thinking from basic concepts to advanced applications.'
                           }
                         ]
                       }
