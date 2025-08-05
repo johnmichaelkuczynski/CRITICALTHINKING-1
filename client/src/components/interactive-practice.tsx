@@ -783,7 +783,7 @@ export function InteractivePractice({
                   </div>
                   
                   {/* GENERATE NEW PRACTICE BUTTON */}
-                  {onGenerateNew && practiceType === 'homework' && (
+                  {onGenerateNew && (
                     <div className="flex justify-center mt-6">
                       <Button 
                         onClick={onGenerateNew}
@@ -791,7 +791,13 @@ export function InteractivePractice({
                         size="lg"
                       >
                         <RefreshCw className="w-4 h-4" />
-                        <span>Generate New Practice Homework</span>
+                        <span>
+                          Generate New Practice {
+                            practiceType === 'homework' ? 'Homework' :
+                            practiceType === 'quiz' ? 'Quiz' : 
+                            'Exam'
+                          }
+                        </span>
                       </Button>
                     </div>
                   )}

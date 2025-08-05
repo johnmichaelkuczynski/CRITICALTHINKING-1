@@ -1004,6 +1004,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
                           handlePracticeComplete('test', 1, score, answers, timeSpent)
                         }
+                        onGenerateNew={() => generateNewPracticeExam('midterm')}
                       />
                     );
                   } catch (error) {
@@ -1024,6 +1025,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                       onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
                         handlePracticeComplete('test', 1, score, answers, timeSpent)
                       }
+                      onGenerateNew={() => generateNewPracticeExam('midterm')}
                     />
                   );
                 }
@@ -1245,6 +1247,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                           onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
                             handlePracticeComplete('test', 6, score, answers, timeSpent)
                           }
+                          onGenerateNew={() => generateNewPracticeExam('final')}
                         />
                       </div>
                     );
