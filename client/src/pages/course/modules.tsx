@@ -40,6 +40,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   const [practiceQuizStarted, setPracticeQuizStarted] = useState<{[key: number]: boolean}>({});
   const [practiceMidtermStarted, setPracticeMidtermStarted] = useState(false);
   const [practiceFinalStarted, setPracticeFinalStarted] = useState(false);
+  const [generatedPracticeFinal, setGeneratedPracticeFinal] = useState<string | null>(null);
   const [practiceAnswers, setPracticeAnswers] = useState<{[key: string]: string}>({});
   const [generatedPracticeHomework, setGeneratedPracticeHomework] = useState<{[key: number]: string}>({});
   const [generatedPracticeQuiz, setGeneratedPracticeQuiz] = useState<{[key: number]: string}>({});
@@ -611,19 +612,64 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
     setPracticeMidtermStarted(true);
   };
 
-  const startPracticeFinal = () => {
-    setPracticeFinalStarted(true);
+  const startPracticeFinal = async () => {
+    // If no content generated yet, automatically generate it
+    if (!generatedPracticeFinal) {
+      await generateNewPracticeExam('final');
+    } else {
+      setPracticeFinalStarted(true);
+    }
   };
 
-  const generateNewPracticeExam = (examType: 'midterm' | 'final') => {
+  const generateNewPracticeExam = async (examType: 'midterm' | 'final') => {
     if (examType === 'midterm') {
       setPracticeMidtermStarted(false);
       setTimeout(() => startPracticeMidterm(), 100);
+      alert(`Generated new practice ${examType} exam!`);
     } else {
-      setPracticeFinalStarted(false);
-      setTimeout(() => startPracticeFinal(), 100);
+      // Generate new AI practice final
+      console.log('Generate New Practice Final clicked');
+      
+      const requestData = {
+        examType: 'final',
+        totalQuestions: 12,
+        sections: [
+          'Critical Thinking Foundations',
+          'Argument Analysis and Evidence Evaluation', 
+          'Bias Detection and Media Analysis',
+          'Decision-Making and Problem-Solving Integration'
+        ]
+      };
+      
+      console.log('Sending practice final generation request:', requestData);
+      
+      try {
+        const response = await fetch('/api/practice-final/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestData)
+        });
+        
+        const result = await response.json();
+        console.log('LLM response received:', result);
+        
+        if (result.success) {
+          console.log('Practice final generated successfully:', result.finalExam);
+          
+          // Store the generated content
+          setGeneratedPracticeFinal(result.finalExam);
+          setPracticeFinalStarted(false);
+          setTimeout(() => setPracticeFinalStarted(true), 100);
+          console.log('Practice final stored and session started');
+        } else {
+          console.error('Practice final generation failed:', result.error);
+          alert('Failed to generate practice final. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error generating practice final:', error);
+        alert('Error generating practice final. Please try again.');
+      }
     }
-    alert(`Generated new practice ${examType} exam!`);
   };
 
   const getStatusBadge = (status: ModuleData["status"]) => {
@@ -917,48 +963,104 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                 </Card>
               </div>
             ) : (
-              // Show Interactive Practice Final
+              // Show AI-Generated Practice Final
               (() => {
-                const presetContent = presetPracticeExams.final; // Comprehensive Final
-                if (presetContent) {
-                  // Convert preset test content to InteractivePractice format
-                  const practiceContent = {
-                    instructions: "Comprehensive Practice Final covering all course material from Weeks 1-6. This is your opportunity to test your complete understanding of critical thinking.",
-                    totalPoints: 200,
-                    problems: [
-                      {
-                        id: 'final-section-1',
-                        title: 'Comprehensive Logic Final',
-                        points: 200,
-                        type: 'multiple_choice' as const,
-                        context: typeof presetContent.content === 'string' ? presetContent.content : 'Interactive practice content',
-                        questions: [
-                          {
-                            id: 'final-q1',
-                            question: 'Complete the comprehensive final exam above. Work through all sections systematically.',
-                            options: ['I have completed all sections', 'I need to review more material', 'Ready for final submission'],
-                            correct: 0,
-                            answer: 'I have completed all sections',
-                            explanation: 'This comprehensive final tests all aspects of critical thinking from basic concepts to advanced applications.'
-                          }
-                        ]
-                      }
-                    ]
-                  };
+                // Use AI-generated content if available, otherwise show loading/error
+                if (generatedPracticeFinal) {
+                  try {
+                    const finalExamData = JSON.parse(generatedPracticeFinal);
+                    console.log('Rendering AI-generated practice final:', finalExamData.title);
+                    
+                    // Convert AI-generated content to InteractivePractice format
+                    const practiceContent = {
+                      instructions: finalExamData.instructions || "Comprehensive Practice Final covering all course material from Weeks 1-6. This is your opportunity to test your complete understanding of critical thinking.",
+                      totalPoints: finalExamData.totalPoints || 200,
+                      problems: [
+                        {
+                          id: 'ai-final-section-1',
+                          title: finalExamData.title || 'Practice Final Exam - Critical Thinking',
+                          points: finalExamData.totalPoints || 200,
+                          type: 'mixed' as const,
+                          context: 'AI-generated comprehensive Critical Thinking practice final exam',
+                          questions: finalExamData.questions?.map((q: any, index: number) => ({
+                            id: q.id || `pf-q${index + 1}`,
+                            question: q.question,
+                            options: q.options || [],
+                            type: q.type || 'multiple_choice',
+                            points: q.points || 15,
+                            section: q.section || 'Critical Thinking',
+                            correct: 0, // Will be graded by AI
+                            answer: '', // AI grading handles all types
+                            explanation: `This question tests ${q.section || 'critical thinking skills'}.`
+                          })) || []
+                        }
+                      ]
+                    };
 
+                    return (
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <h3 className="text-lg font-semibold">{finalExamData.title}</h3>
+                            <p className="text-sm text-muted-foreground">
+                              {finalExamData.questions?.length || 0} questions • {finalExamData.totalPoints || 200} points
+                            </p>
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex items-center space-x-2" 
+                            onClick={() => generateNewPracticeExam('final')}
+                          >
+                            <RefreshCw className="w-4 h-4" />
+                            <span>Generate New Practice Final</span>
+                          </Button>
+                        </div>
+                        
+                        <InteractivePractice
+                          title="Practice Final Exam (Comprehensive)"
+                          content={practiceContent}
+                          practiceType="test"
+                          weekNumber={6}
+                          onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
+                            handlePracticeComplete('test', 6, score, answers, timeSpent)
+                          }
+                        />
+                      </div>
+                    );
+                  } catch (error) {
+                    console.error('Error parsing generated practice final:', error);
+                    return (
+                      <div className="text-center py-8">
+                        <p className="text-muted-foreground">Error loading practice final. Please generate a new one.</p>
+                        <Button 
+                          className="mt-4" 
+                          onClick={() => generateNewPracticeExam('final')}
+                        >
+                          Generate New Practice Final
+                        </Button>
+                      </div>
+                    );
+                  }
+                } else {
+                  // Show message to generate practice final
                   return (
-                    <InteractivePractice
-                      title="Practice Final Exam (Comprehensive)"
-                      content={practiceContent}
-                      practiceType="test"
-                      weekNumber={6}
-                      onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
-                        handlePracticeComplete('test', 6, score, answers, timeSpent)
-                      }
-                    />
+                    <div className="text-center py-8 space-y-4">
+                      <h3 className="text-lg font-semibold">Practice Final Ready to Generate</h3>
+                      <p className="text-muted-foreground">
+                        Click below to generate a comprehensive AI-powered practice final exam.
+                      </p>
+                      <Button 
+                        size="lg" 
+                        className="flex items-center space-x-2"
+                        onClick={() => generateNewPracticeExam('final')}
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                        <span>Generate Practice Final</span>
+                      </Button>
+                    </div>
                   );
                 }
-                return null;
               })()
             )}
           </div>

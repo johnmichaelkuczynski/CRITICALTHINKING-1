@@ -2007,6 +2007,108 @@ DO NOT use exact string matching. Evaluate the reasoning and understanding.`;
     }
   });
 
+  // Practice Final generation endpoint
+  app.post("/api/practice-final/generate", async (req, res) => {
+    try {
+      const { examType, totalQuestions, sections } = req.body;
+      console.log('Practice Final generation request received:', { examType, totalQuestions, sections });
+      
+      const user = await getCurrentUser(req);
+      if (!user) {
+        return res.status(401).json({ error: "Authentication required" });
+      }
+      
+      // Use OpenAI for practice final generation
+      const prompt = `Generate a comprehensive Critical Thinking practice final exam with the following requirements:
+
+EXAM SPECIFICATIONS:
+- Total Questions: ${totalQuestions || 12}
+- Format: Mix of multiple choice, short answer, and essay questions
+- Difficulty: Challenging but fair for college-level Critical Thinking course
+- Sections: ${sections?.join(', ') || 'Critical Thinking Foundations, Argument Analysis, Evidence Evaluation, Decision-Making'}
+
+CONTENT AREAS TO COVER:
+1. Critical Thinking Foundations (25%): Logic, reasoning, cognitive biases
+2. Argument Analysis & Evidence Evaluation (25%): Identifying premises, conclusions, evaluating evidence quality  
+3. Bias Detection & Media Analysis (25%): Recognizing fallacies, media literacy, source evaluation
+4. Decision-Making & Problem-Solving Integration (25%): Real-world application, ethical reasoning
+
+QUESTION REQUIREMENTS:
+- Each question should test specific critical thinking skills
+- Include varied formats: multiple choice (4 options), short answer, brief essays
+- Use realistic scenarios from healthcare, business, politics, media, science
+- Ensure questions require analysis, not just memorization
+- Points should range from 10-25 per question for total of 200 points
+
+OUTPUT FORMAT:
+Return a JSON object with this structure:
+{
+  "title": "Practice Final Exam - Critical Thinking",
+  "totalPoints": 200,
+  "timeLimit": "120 minutes",
+  "instructions": "Comprehensive practice exam instructions",
+  "questions": [
+    {
+      "id": "pf-q1",
+      "type": "multiple_choice",
+      "question": "Question text here...",
+      "options": ["A) option", "B) option", "C) option", "D) option"],
+      "points": 15,
+      "section": "Critical Thinking Foundations"
+    },
+    {
+      "id": "pf-q2", 
+      "type": "short_answer",
+      "question": "Question text here...",
+      "points": 20,
+      "section": "Argument Analysis"
+    }
+  ]
+}
+
+Generate exactly ${totalQuestions || 12} unique, challenging questions that comprehensively test critical thinking mastery.`;
+
+      console.log('Sending prompt to OpenAI for practice final generation');
+
+      const { default: OpenAI } = await import('openai');
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        max_tokens: 6000,
+        temperature: 0.8
+      });
+      
+      const generatedContent = response.choices[0].message.content;
+      console.log('OpenAI response received for practice final');
+      
+      try {
+        const finalExam = JSON.parse(generatedContent || '{}');
+        console.log('Practice final parsed successfully:', finalExam.title);
+        
+        res.json({
+          success: true,
+          finalExam: generatedContent
+        });
+      } catch (parseError) {
+        console.error('Failed to parse practice final JSON:', parseError);
+        res.status(500).json({ 
+          success: false, 
+          error: 'Failed to parse generated exam content' 
+        });
+      }
+      
+    } catch (error) {
+      console.error('Practice final generation error:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: 'Failed to generate practice final exam' 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
