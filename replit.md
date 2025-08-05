@@ -18,6 +18,7 @@ Preferred communication style: Simple, everyday language.
 - **Content Preservation**: Book content fully preserved (23,187 lines) with all Critical Thinking material intact
 - **User Feedback**: Confirmed "EXCELLENT" user satisfaction with navigation fixes and "BETTER" confirmation for latest navigation improvements
 - **HOMEWORK GENERATION FIXED**: Completely rebuilt homework generation system to produce fresh, unique Critical Thinking content with proper randomization. Fixed critical duplication issue where same content was being returned repeatedly. All AI models (OpenAI, Anthropic, Perplexity) now generate authentic Critical Thinking scenarios with argument analysis, assumption identification, and real-world applications instead of symbolic logic translation problems.
+- **PRACTICE QUIZ GENERATION OPTIMIZED**: Increased token limits to 6000 across all AI models (OpenAI, Anthropic, DeepSeek) and improved prompts to ensure complete quiz generation. System now reliably generates 6+ high-quality Critical Thinking questions with proper formatting. User confirmed "SIX IS FINE" for question count.
 
 ## System Architecture
 

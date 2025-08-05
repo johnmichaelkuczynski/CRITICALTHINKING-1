@@ -847,10 +847,26 @@ Be authentic and educational, not conversational fluff.`
       const aiResponse = openaiData.choices[0].message.content;
 
       // Return the pure AI response with minimal processing
+      // Extract difficulty from AI response or determine based on content complexity
+      let difficulty: 'beginner' | 'intermediate' | 'advanced' = 'beginner';
+      
+      const response = aiResponse.toLowerCase();
+      if (response.includes('advanced') || response.includes('complex') || response.includes('sophisticated') || 
+          response.includes('brownian motion') || response.includes('stochastic') || response.includes('calculus') ||
+          response.includes('theoretical') || response.includes('doctoral') || response.includes('phd')) {
+        difficulty = 'advanced';
+      } else if (response.includes('intermediate') || response.includes('moderate') || 
+                response.includes('university') || response.includes('undergraduate') || 
+                response.includes('college') || response.includes('analysis') || response.includes('evaluation')) {
+        difficulty = 'intermediate';  
+      } else {
+        difficulty = 'beginner';
+      }
+
       res.json({
         response: aiResponse,
         hasQuestion: aiResponse.includes('?'), // Simple check for questions
-        difficulty: 'intermediate', // Let AI handle complexity naturally
+        difficulty: difficulty, // AI-determined difficulty based on content
         topic: 'critical-thinking',
         evaluation: null // Let AI naturally provide feedback in its response
       });
@@ -1633,22 +1649,26 @@ Be authentic and educational, not conversational fluff.`
 
   // Generate 10 fresh Critical Thinking questions
   async function generateCriticalThinkingQuiz(model: string, sourceText: string, instructions: string) {
-    const systemPrompt = `You are an expert Critical Thinking professor creating a practice quiz. Generate exactly 10 fresh multiple choice questions based on Critical Thinking concepts and principles.
+    const systemPrompt = `You are an expert Critical Thinking professor. You MUST generate exactly 10 multiple choice questions. NO FEWER THAN 10. NO MORE THAN 10.
 
-CRITICAL REQUIREMENTS:
-- Create exactly 10 questions, never more, never less
-- Each question must be unique and never duplicated
-- All questions must be multiple choice with 3 options each
-- Focus on Critical Thinking concepts: reasoning, fallacies, argument analysis, evidence evaluation, etc.
+ABSOLUTE REQUIREMENTS:
+- Generate all 10 questions in a single response
+- Number each question 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+- Each question has exactly 3 options (A, B, C)
+- Mark the correct answer clearly
+- Focus on Critical Thinking: reasoning, fallacies, argument analysis, evidence evaluation
 - Make questions challenging but fair for university students
-- Provide the correct answer for each question
 
-Format your response as a structured quiz with:
-1. Question text
-2. Three multiple choice options (A, B, C)
-3. Clear indication of the correct answer
+YOU MUST COMPLETE ALL 10 QUESTIONS IN THIS RESPONSE. Do not stop at 5 or 6 questions.
 
-Make each question test different aspects of Critical Thinking skills.`;
+Format each question as:
+[Number]. **[Question text]**
+   A) [Option A]
+   B) [Option B]  
+   C) [Option C]
+   **Correct Answer: [A/B/C]**
+
+Generate all 10 questions now.`;
 
     const userPrompt = `Generate a 10-question Critical Thinking practice quiz based on these concepts: ${sourceText.substring(0, 2000)}
 
@@ -1678,7 +1698,7 @@ Requirements:
           },
           body: JSON.stringify({
             model: 'claude-sonnet-4-20250514',
-            max_tokens: 2000,
+            max_tokens: 6000,
             messages: [{
               role: 'user',
               content: `${systemPrompt}\n\n${userPrompt}`
@@ -1713,7 +1733,7 @@ Requirements:
               content: userPrompt
             }],
             temperature: 0.7,
-            max_tokens: 2000
+            max_tokens: 6000
           })
         });
 
@@ -1745,7 +1765,7 @@ Requirements:
               content: userPrompt
             }],
             temperature: 0.7,
-            max_tokens: 2000
+            max_tokens: 6000
           })
         });
 
