@@ -1193,8 +1193,53 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         </Button>
                       </div>
 
-                      {/* Check if we have preset content and show it immediately */}
+                      {/* Check if we have generated content first, then fallback to preset */}
                       {(() => {
+                        // Priority 1: Show generated content if it exists
+                        if (generatedPracticeHomework[selectedModuleData.week]) {
+                          const generatedText = generatedPracticeHomework[selectedModuleData.week];
+                          try {
+                            // Extract JSON from markdown code block
+                            const jsonMatch = generatedText.match(/```json\n([\s\S]*?)\n```/);
+                            if (jsonMatch) {
+                              const homeworkData = JSON.parse(jsonMatch[1]);
+                              // Convert to InteractivePractice format
+                              const interactiveContent = {
+                                instructions: homeworkData.instructions,
+                                totalPoints: homeworkData.totalPoints || 100,
+                                problems: homeworkData.parts?.map((part: any, index: number) => ({
+                                  id: `part-${index + 1}`,
+                                  title: part.title,
+                                  points: part.points,
+                                  type: 'text_input' as const,
+                                  questions: part.questions?.map((q: any) => ({
+                                    id: q.id,
+                                    question: q.question,
+                                    correctAnswer: '',
+                                    explanation: q.explanation || ''
+                                  })) || []
+                                })) || []
+                              };
+                              
+                              return (
+                                <InteractivePractice
+                                  title={homeworkData.title || `Practice Homework - Week ${selectedModuleData.week}`}
+                                  content={interactiveContent}
+                                  practiceType="homework"
+                                  weekNumber={selectedModuleData.week}
+                                  onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
+                                    handlePracticeComplete('homework', selectedModuleData.week, score, answers, timeSpent)
+                                  }
+                                  onGenerateNew={() => generatePracticeHomework(selectedModuleData.week)}
+                                />
+                              );
+                            }
+                          } catch (error) {
+                            console.error('Failed to parse generated homework JSON:', error);
+                          }
+                        }
+                        
+                        // Priority 2: Show preset content if no generated content
                         const presetContent = presetPracticeHomework[selectedModuleData.week as keyof typeof presetPracticeHomework];
                         if (presetContent && typeof presetContent.content === 'object') {
                           return (
@@ -1231,91 +1276,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         );
                       })()}
 
-                      {practiceHomeworkStarted[selectedModuleData.week] && (() => {
-                        const presetContent = presetPracticeHomework[selectedModuleData.week as keyof typeof presetPracticeHomework];
-                        const hasPresetContent = presetContent && typeof presetContent.content === 'object';
-                        return !hasPresetContent;
-                      })() && (
-                        (() => {
-                          // Check if we have preset interactive content
-                          const presetContent = presetPracticeHomework[selectedModuleData.week as keyof typeof presetPracticeHomework];
-                          if (presetContent && typeof presetContent.content === 'object') {
-                            // Use interactive practice component for structured content
-                            return (
-                              <InteractivePractice
-                                title={presetContent.title}
-                                content={presetContent.content as any}
-                                practiceType="homework"
-                                weekNumber={selectedModuleData.week}
-                                onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
-                                  handlePracticeComplete('homework', selectedModuleData.week, score, answers, timeSpent)
-                                }
-                                onGenerateNew={() => generatePracticeHomework(selectedModuleData.week)}
-                              />
-                            );
-                          } 
-                          
-                          // Try to parse generated content as JSON for interactive component
-                          if (generatedPracticeHomework[selectedModuleData.week]) {
-                            const generatedText = generatedPracticeHomework[selectedModuleData.week];
-                            try {
-                              // Extract JSON from markdown code block
-                              const jsonMatch = generatedText.match(/```json\n([\s\S]*?)\n```/);
-                              if (jsonMatch) {
-                                const homeworkData = JSON.parse(jsonMatch[1]);
-                                // Convert to InteractivePractice format
-                                const interactiveContent = {
-                                  instructions: homeworkData.instructions,
-                                  totalPoints: homeworkData.totalPoints || 100,
-                                  problems: homeworkData.parts?.map((part: any, index: number) => ({
-                                    id: `part-${index + 1}`,
-                                    title: part.title,
-                                    points: part.points,
-                                    type: 'text_input' as const,
-                                    questions: part.questions?.map((q: any) => ({
-                                      id: q.id,
-                                      question: q.question,
-                                      correctAnswer: '',
-                                      explanation: q.explanation || ''
-                                    })) || []
-                                  })) || []
-                                };
-                                
-                                return (
-                                  <InteractivePractice
-                                    title={homeworkData.title}
-                                    content={interactiveContent}
-                                    practiceType="homework"
-                                    weekNumber={selectedModuleData.week}
-                                    onComplete={(score: number, answers: Record<string, any>, timeSpent: number) => 
-                                      handlePracticeComplete('homework', selectedModuleData.week, score, answers, timeSpent)
-                                    }
-                                    onGenerateNew={() => generatePracticeHomework(selectedModuleData.week)}
-                                  />
-                                );
-                              }
-                            } catch (error) {
-                              console.error('Failed to parse generated homework JSON:', error);
-                            }
-                            
-                            // Fallback: display as formatted text
-                            return (
-                              <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-6">
-                                <h4 className="font-semibold text-green-800 mb-4">🎯 Practice Homework Content</h4>
-                                <div className="bg-white border rounded-lg p-4">
-                                  <div className="prose max-w-none">
-                                    <div className="text-sm text-gray-700 whitespace-pre-wrap">
-                                      Generated homework format error. Please try generating again.
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          }
-                          
-                          return null;
-                        })()
-                      )}
+
                     </div>
                   </CardContent>
                 </Card>

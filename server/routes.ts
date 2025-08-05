@@ -456,7 +456,9 @@ Create homework using ONLY ${selectedProfession} examples with ${selectedContext
 Focus on ${selectedApproach} skills through ${selectedScenario}.
 Generate exactly ${questionCount} unique questions.
 
-JSON FORMAT:
+CRITICAL OUTPUT FORMAT: 
+Your response must be in JSON format wrapped in markdown code blocks like this:
+\`\`\`json
 {
   "title": "Week ${weekNumber}: ${selectedApproach} in ${selectedProfession}",
   "instructions": "Develop ${selectedApproach} through ${selectedProfession} scenarios",
@@ -464,6 +466,7 @@ JSON FORMAT:
   "totalPoints": 50,
   "dueInfo": "${selectedApproach} in ${selectedProfession} contexts"
 }
+\`\`\`
 
 Material: ${courseMaterial}`;
 
