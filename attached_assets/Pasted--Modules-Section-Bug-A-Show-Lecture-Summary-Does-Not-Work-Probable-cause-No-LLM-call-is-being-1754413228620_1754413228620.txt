@@ -1,0 +1,93 @@
+ Modules Section
+🔴 Bug A: “Show Lecture Summary” Does Not Work
+Probable cause: No LLM call is being made or it's being blocked/silently rejected.
+
+Check:
+
+Confirm onClick or onSubmit is wired to a function that:
+
+Sends the selected lecture content or module to the LLM.
+
+Awaits and displays the result in a state-bound component.
+
+Ensure you're passing actual lecture content (not just a title) into the LLM request.
+
+ts
+Copy
+Edit
+// Diagnostic insert (pseudo-code)
+console.log("Lecture content sent:", selectedLecture);
+console.log("LLM response:", llmResponse);
+🔴 Bug B: “Generate New Lecture” Does Not Work
+Probable cause:
+
+Either generateLecture() is not called,
+
+Or the payload is malformed/empty when sent to the LLM.
+
+Check:
+
+Is there a default topic or module context being passed? If not, the LLM has nothing to generate from.
+
+Check for undefined/null on the prompt builder.
+
+ts
+Copy
+Edit
+const prompt = `Generate a new lecture on ${selectedTopic || 'critical thinking foundations'}.`;
+// fallback to a default topic ensures it doesn’t break
+UI-level fallback: Add loading and error feedback states (e.g., "No content generated" or "Waiting for response...").
+
+🔧 2. Practice Homework Section
+🔴 Bug: “Generate New Practice Homework” Does Not Work
+Probable cause:
+
+Old state being reused (homework.length === 1).
+
+LLM not being triggered because initial generation didn't occur or cached result is returned.
+
+Check:
+
+Disable all slice(0, 1) or hardcoded .length = 1 logic in the generator.
+
+Ensure you are forcing a fresh prompt each time:
+
+ts
+Copy
+Edit
+const seed = Date.now(); // include timestamp to force unique context
+const prompt = `Generate a new set of 10 critical thinking practice homework questions. Seed: ${seed}`;
+Confirm button explicitly resets the previous state before triggering the LLM:
+
+ts
+Copy
+Edit
+setHomework([]);
+await generateHomework(); // ensure fresh call
+✅ General Fix Protocol (Passthrough App Context)
+LLM call audit: Wrap every LLM call in a try/catch block and log:
+
+ts
+Copy
+Edit
+try {
+  const response = await callLLM(prompt);
+  console.log("LLM output:", response);
+} catch (err) {
+  console.error("LLM failure:", err);
+}
+UI confirmation: Every button press should:
+
+Clear old results
+
+Visibly show loading
+
+Render output or show "LLM returned empty" error
+
+Force fresh prompts using a combination of:
+
+Random seed
+
+Timestamp
+
+Shuffling internal modules or prepending unique tokens

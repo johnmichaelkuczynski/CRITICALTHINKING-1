@@ -175,13 +175,20 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
 
   // Show preset content functions
   const showPresetLecture = (weekNumber: number) => {
+    console.log("Show Lecture Summary clicked for week:", weekNumber);
     const presetContent = presetLectures[weekNumber as keyof typeof presetLectures];
+    console.log("Preset content found:", presetContent);
+    
     if (presetContent) {
       setGeneratedLectures(prev => ({
         ...prev,
         [weekNumber]: presetContent.content
       }));
       setShowingLecture(prev => ({ ...prev, [weekNumber]: true }));
+      console.log("Lecture content set successfully");
+    } else {
+      console.error("No preset content found for week", weekNumber);
+      alert(`No preset lecture content available for Week ${weekNumber}`);
     }
   };
 
@@ -226,9 +233,23 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
   };
 
   const generateLecture = async (weekNumber: number) => {
+    console.log("Generate New Lecture clicked for week:", weekNumber);
     setGeneratingLecture(true);
     
-    const weekTopic = modules.find(m => m.week === weekNumber)?.title || '';
+    // Clear existing content to force fresh generation
+    setGeneratedLectures(prev => ({
+      ...prev,
+      [weekNumber]: ''
+    }));
+    setShowingLecture(prev => ({
+      ...prev,
+      [weekNumber]: false
+    }));
+    
+    const weekTopic = modules.find(m => m.week === weekNumber)?.title || 'Critical Thinking Foundations';
+    const timestamp = Date.now();
+    
+    console.log("Sending lecture generation request:", { weekNumber, weekTopic });
     
     try {
       const response = await fetch('/api/lecture/generate', {
@@ -239,29 +260,105 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
         body: JSON.stringify({
           weekNumber,
           topic: weekTopic,
-          courseMaterial: `Week ${weekNumber} covers ${weekTopic}. This is part of a 6-week Critical Thinking course.`,
-          aiModel: selectedAIModel
+          courseMaterial: `Week ${weekNumber} covers ${weekTopic}. This is part of a 6-week Critical Thinking course. Generate fresh content - timestamp: ${timestamp}`,
+          aiModel: selectedAIModel,
+          seed: timestamp // Force unique generation
         }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
       const data = await response.json();
+      console.log("LLM response received:", data);
       
-      if (data.success) {
-        // Mark lecture as generated for this week
-        const updatedModules = modules.map(m => 
-          m.week === weekNumber ? { ...m, lectureGenerated: true } : m
-        );
-        console.log('Lecture generated successfully for week', weekNumber);
-        // Remove annoying popup - just mark as generated
+      if (data.success && data.lecture) {
+        // Store the generated lecture content
+        setGeneratedLectures(prev => ({
+          ...prev,
+          [weekNumber]: data.lecture
+        }));
+        setShowingLecture(prev => ({
+          ...prev,
+          [weekNumber]: true
+        }));
+        console.log('Lecture generated and stored successfully for week', weekNumber);
       } else {
-        console.error('Lecture generation failed:', data.error);
-        alert('Failed to generate lecture: ' + data.error);
+        console.error('Lecture generation failed:', data.error || 'No lecture content returned');
+        alert('Failed to generate lecture: ' + (data.error || 'No content returned from AI'));
       }
     } catch (error) {
       console.error('Error generating lecture:', error);
-      alert('Error generating lecture. Please try again.');
+      alert('Error generating lecture. Please try again. Details: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setGeneratingLecture(false);
+    }
+  };
+
+  const generatePracticeHomework = async (weekNumber: number) => {
+    if (!user) {
+      alert('Please log in to generate practice homework');
+      return;
+    }
+    
+    console.log("Generate New Practice Homework clicked for week:", weekNumber);
+    setGeneratingPracticeHomework(true);
+    
+    // FORCE COMPLETE RESET - Clear all existing content to ensure fresh generation
+    setPracticeHomeworkStarted(prev => ({ ...prev, [weekNumber]: false }));
+    setGeneratedPracticeHomework(prev => ({
+      ...prev,
+      [weekNumber]: ''
+    }));
+    
+    const timestamp = Date.now();
+    const weekTopic = modules.find(m => m.week === weekNumber)?.title || 'Critical Thinking Foundations';
+    
+    console.log("Sending practice homework generation request:", { weekNumber, weekTopic });
+    
+    try {
+      const response = await fetch('/api/homework/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          weekNumber: weekNumber,
+          topic: weekTopic,
+          courseMaterial: `Week ${weekNumber} Critical Thinking Practice Session. This is part of an 8-week Critical Thinking course covering logical reasoning, argument analysis, decision-making, and problem-solving skills. Generate 5-10 unique questions - timestamp: ${timestamp}`,
+          aiModel: selectedAIModel,
+          isPractice: true,
+          seed: timestamp, // Force unique generation
+          questionCount: Math.floor(Math.random() * 6) + 5 // 5-10 questions randomly
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log("LLM response received:", data);
+      
+      if (data.success && data.homework) {
+        console.log('Practice homework generated successfully:', data.homework);
+        setGeneratedPracticeHomework(prev => ({
+          ...prev,
+          [weekNumber]: data.homework
+        }));
+        setPracticeHomeworkStarted(prev => ({ ...prev, [weekNumber]: true }));
+        console.log('Practice homework stored and session started');
+      } else {
+        console.error('Practice homework generation failed:', data.error || 'No homework content returned');
+        throw new Error(data.error || 'No homework content returned from AI');
+      }
+      
+    } catch (error) {
+      console.error('Error generating practice homework:', error);
+      alert('Failed to generate practice homework. Please try again. Details: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    } finally {
+      setGeneratingPracticeHomework(false);
     }
   };
 
@@ -442,58 +539,6 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
       }
     } catch (error) {
       console.error('Error logging practice performance:', error);
-    }
-  };
-
-  const generatePracticeHomework = async (weekNumber: number) => {
-    if (!user) return;
-    
-    setGeneratingPracticeHomework(true);
-    
-    // Reset the practice session to show loading state
-    setPracticeHomeworkStarted(prev => ({ ...prev, [weekNumber]: false }));
-    setGeneratedPracticeHomework(prev => ({
-      ...prev,
-      [weekNumber]: ''
-    }));
-    
-    try {
-      const response = await fetch('/api/homework/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          weekNumber: weekNumber,
-          topic: modules.find(m => m.week === weekNumber)?.title || '',
-          courseMaterial: `Week ${weekNumber} Critical Thinking Practice Session. This is part of an 8-week Critical Thinking course covering logical reasoning, argument analysis, decision-making, and problem-solving skills.`,
-          aiModel: selectedAIModel,
-          isPractice: true
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate practice homework');
-      }
-
-      const data = await response.json();
-      
-      if (data.success) {
-        console.log('Practice homework generated successfully:', data.homework);
-        setGeneratedPracticeHomework(prev => ({
-          ...prev,
-          [weekNumber]: data.homework
-        }));
-        setPracticeHomeworkStarted(prev => ({ ...prev, [weekNumber]: true }));
-      } else {
-        throw new Error(data.error || 'Failed to generate practice homework');
-      }
-      
-    } catch (error) {
-      console.error('Error generating practice homework:', error);
-      alert('Failed to generate practice homework. Please try again.');
-    } finally {
-      setGeneratingPracticeHomework(false);
     }
   };
 
