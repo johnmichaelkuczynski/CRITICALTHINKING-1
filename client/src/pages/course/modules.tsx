@@ -1005,6 +1005,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                           handlePracticeComplete('test', 1, score, answers, timeSpent)
                         }
                         onGenerateNew={() => generateNewPracticeExam('midterm')}
+                        isGenerating={loadingStates.midterm}
                       />
                     );
                   } catch (error) {
@@ -1026,6 +1027,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         handlePracticeComplete('test', 1, score, answers, timeSpent)
                       }
                       onGenerateNew={() => generateNewPracticeExam('midterm')}
+                      isGenerating={loadingStates.midterm}
                     />
                   );
                 }
@@ -1212,7 +1214,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                       throw new Error('No problems generated from AI response');
                     }
                     
-                    practiceContent.problems.forEach((problem, index) => {
+                    practiceContent.problems.forEach((problem: any, index: number) => {
                       console.log(`DEBUG: Problem ${index + 1} questions:`, problem.questions.length);
                       if (problem.questions.length === 0) {
                         console.error(`CRITICAL ERROR: Problem ${index + 1} has no questions!`);
@@ -1233,9 +1235,10 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                             size="sm" 
                             className="flex items-center space-x-2" 
                             onClick={() => generateNewPracticeExam('final')}
+                            disabled={loadingStates.final}
                           >
-                            <RefreshCw className="w-4 h-4" />
-                            <span>Generate New Practice Final</span>
+                            <RefreshCw className={`w-4 h-4 ${loadingStates.final ? 'animate-spin' : ''}`} />
+                            <span>{loadingStates.final ? 'Generating...' : 'Generate New Practice Final'}</span>
                           </Button>
                         </div>
                         
@@ -1248,6 +1251,7 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                             handlePracticeComplete('test', 6, score, answers, timeSpent)
                           }
                           onGenerateNew={() => generateNewPracticeExam('final')}
+                          isGenerating={loadingStates.final}
                         />
                       </div>
                     );
@@ -1259,8 +1263,9 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         <Button 
                           className="mt-4" 
                           onClick={() => generateNewPracticeExam('final')}
+                          disabled={loadingStates.final}
                         >
-                          Generate New Practice Final
+                          {loadingStates.final ? 'Generating...' : 'Generate New Practice Final'}
                         </Button>
                       </div>
                     );
@@ -1277,9 +1282,10 @@ export default function Modules({ onNavigateToLivingBook, selectedWeek, onWeekCh
                         size="lg" 
                         className="flex items-center space-x-2"
                         onClick={() => generateNewPracticeExam('final')}
+                        disabled={loadingStates.final}
                       >
-                        <RefreshCw className="w-4 h-4" />
-                        <span>Generate Practice Final</span>
+                        <RefreshCw className={`w-4 h-4 ${loadingStates.final ? 'animate-spin' : ''}`} />
+                        <span>{loadingStates.final ? 'Generating...' : 'Generate Practice Final'}</span>
                       </Button>
                     </div>
                   );

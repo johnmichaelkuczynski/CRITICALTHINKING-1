@@ -580,6 +580,13 @@ QUIZ GENERATION INSTRUCTIONS:
 - Each question should be substantive and require critical thinking to answer correctly
 - VARY question types: some analytical, some evaluative, some application-based
 
+CRITICAL LOGIC QUESTION GUIDELINES:
+- When asking to identify "premises" (plural), the correct answer must include ALL premises, not just one
+- When asking to identify "the premise" (singular), include only one premise as the correct answer
+- Ensure argument analysis questions have logically sound correct answers
+- For syllogism questions, make sure conclusions logically follow from premises
+- Test understanding of logical structure, not just vocabulary memorization
+
 CRITICAL FORMATTING RULES:
 - Write in plain text format ONLY
 - Do NOT use any markdown formatting, headers (####), bold (**), italics, or special characters

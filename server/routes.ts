@@ -272,6 +272,7 @@ Return JSON: {"isCorrect": true/false, "explanation": "brief reason"}`
     } catch (error) {
       console.error('Error evaluating answer:', error);
       // FALLBACK: For obvious synonyms in Critical Thinking, be generous
+      const { userAnswer, correctAnswer } = req.body;
       const userLower = userAnswer.toLowerCase().trim();
       const correctLower = correctAnswer.toLowerCase().trim();
       
@@ -294,7 +295,7 @@ Return JSON: {"isCorrect": true/false, "explanation": "brief reason"}`
             (userLower === term2 && correctLower.includes(term2))) {
           return res.json({ 
             isCorrect: true, 
-            explanation: `"${userAnswer}" is correct. It is synonymous with the expected answer.` 
+            explanation: `"${req.body.userAnswer}" is correct. It is synonymous with the expected answer.` 
           });
         }
       }
@@ -303,7 +304,7 @@ Return JSON: {"isCorrect": true/false, "explanation": "brief reason"}`
       if (userLower.length > 3 && correctLower.includes(userLower)) {
         return res.json({ 
           isCorrect: true, 
-          explanation: `Your answer "${userAnswer}" demonstrates correct understanding.` 
+          explanation: `Your answer "${req.body.userAnswer}" demonstrates correct understanding.` 
         });
       }
       
@@ -2079,6 +2080,13 @@ QUESTION REQUIREMENTS:
 - Ensure questions require analysis, not just memorization
 - Points should range from 10-25 per question for total of 200 points
 - FOR MULTIPLE CHOICE: Include both correctAnswerIndex (0-3) and correctAnswer (full text) fields
+
+CRITICAL LOGIC QUESTION GUIDELINES:
+- When asking to identify "premises" (plural), the correct answer must include ALL premises, not just one
+- When asking to identify "the premise" (singular), include only one premise as the correct answer
+- Ensure argument analysis questions have logically sound correct answers
+- For syllogism questions, make sure conclusions logically follow from premises
+- Test understanding of logical structure, not just vocabulary memorization
 
 OUTPUT FORMAT:
 Return a JSON object with this structure:

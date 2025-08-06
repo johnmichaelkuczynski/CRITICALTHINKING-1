@@ -40,6 +40,7 @@ interface InteractivePracticeProps {
   weekNumber: number;
   onComplete: (score: number, answers: Record<string, any>, timeSpent: number) => void;
   onGenerateNew?: () => void;
+  isGenerating?: boolean;
 }
 
 interface GradeResult {
@@ -53,7 +54,8 @@ export function InteractivePractice({
   practiceType, 
   weekNumber, 
   onComplete,
-  onGenerateNew
+  onGenerateNew,
+  isGenerating = false
 }: InteractivePracticeProps) {
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [showResults, setShowResults] = useState(false);
@@ -787,16 +789,17 @@ export function InteractivePractice({
                     <div className="flex justify-center mt-6">
                       <Button 
                         onClick={onGenerateNew}
-                        className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white"
+                        disabled={isGenerating}
+                        className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white disabled:opacity-50"
                         size="lg"
                       >
-                        <RefreshCw className="w-4 h-4" />
+                        <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
                         <span>
-                          Generate New Practice {
+                          {isGenerating ? 'Generating...' : `Generate New Practice ${
                             practiceType === 'homework' ? 'Homework' :
                             practiceType === 'quiz' ? 'Quiz' : 
                             'Exam'
-                          }
+                          }`}
                         </span>
                       </Button>
                     </div>
